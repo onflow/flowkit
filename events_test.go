@@ -25,8 +25,8 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flow-cli/flowkit"
-	"github.com/onflow/flow-cli/flowkit/tests"
+	"github.com/onflow/flowkit"
+	"github.com/onflow/flowkit/tests"
 )
 
 func Test_AccountCreatedEvent(t *testing.T) {

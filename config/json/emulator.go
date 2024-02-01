@@ -21,7 +21,7 @@ package json
 import (
 	"fmt"
 
-	"github.com/onflow/flow-cli/flowkit/config"
+	"github.com/onflow/flowkit/config"
 )
 
 type jsonEmulators map[string]jsonEmulator

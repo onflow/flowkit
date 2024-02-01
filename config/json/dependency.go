@@ -27,7 +27,7 @@ import (
 
 	"github.com/onflow/flow-go-sdk"
 
-	"github.com/onflow/flow-cli/flowkit/config"
+	"github.com/onflow/flowkit/config"
 )
 
 type jsonDependencies map[string]jsonDependency

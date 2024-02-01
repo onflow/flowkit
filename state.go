@@ -28,10 +28,10 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/exp/slices"
 
-	"github.com/onflow/flow-cli/flowkit/accounts"
-	"github.com/onflow/flow-cli/flowkit/config"
-	"github.com/onflow/flow-cli/flowkit/config/json"
-	"github.com/onflow/flow-cli/flowkit/project"
+	"github.com/onflow/flowkit/accounts"
+	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/config/json"
+	"github.com/onflow/flowkit/project"
 )
 
 // ReaderWriter defines read file and write file methods.

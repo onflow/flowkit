@@ -39,12 +39,12 @@ import (
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 
-	"github.com/onflow/flow-cli/flowkit/accounts"
-	"github.com/onflow/flow-cli/flowkit/config"
-	"github.com/onflow/flow-cli/flowkit/gateway"
-	"github.com/onflow/flow-cli/flowkit/output"
-	"github.com/onflow/flow-cli/flowkit/project"
-	"github.com/onflow/flow-cli/flowkit/transactions"
+	"github.com/onflow/flowkit/accounts"
+	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/gateway"
+	"github.com/onflow/flowkit/output"
+	"github.com/onflow/flowkit/project"
+	"github.com/onflow/flowkit/transactions"
 )
 
 // BlockQuery defines possible queries for block.
