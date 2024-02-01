@@ -37,6 +37,25 @@ generate-schema:
 check-schema:
 	go run ./cmd/flow-schema/flow-schema.go --verify=true ./schema.json 
 
+.PHONY: check-tidy
+check-tidy:
+	go mod tidy
+
+.PHONY: check-headers
+check-headers:
+	@./check-headers.sh
+
 .PHONY: generate
 generate: install-tools
 	go generate ./...
+
+.PHONY: coverage
+coverage:
+ifeq ($(COVER), true)
+	# file has to be called index.html
+	gocov convert $(COVER_PROFILE) > cover.json
+	./cover-summary.sh
+	gocov-html cover.json > index.html
+	# coverage.zip will automatically be picked up by teamcity
+	gozip -c coverage.zip index.html
+endif
