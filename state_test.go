@@ -25,7 +25,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/onflow/flowkit/accounts"
+	"github.com/onflow/flowkit/v2/accounts"
 
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
@@ -34,9 +34,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/thoas/go-funk"
 
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/config/json"
-	"github.com/onflow/flowkit/project"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/config/json"
+	"github.com/onflow/flowkit/v2/project"
 )
 
 var af = afero.Afero{Fs: afero.NewMemMapFs()}

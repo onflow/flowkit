@@ -23,13 +23,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/flowkit/config/json"
+	"github.com/onflow/flowkit/v2/config/json"
 )
 
 var mockFS = afero.NewMemMapFs()

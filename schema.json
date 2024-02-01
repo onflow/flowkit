@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/onflow/flowkit/config/json/json-config",
+  "$id": "https://github.com/onflow/flowkit/v2/config/json/json-config",
   "$ref": "#/$defs/jsonConfig",
   "$defs": {
     "account": {
