@@ -134,22 +134,23 @@ func Test_ParseWithoutType(t *testing.T) {
 					Type: cadence.StringType,
 				},
 			},
-			// TODO: depends on https://github.com/onflow/cadence/pull/2469
-			//{
-			//	Name: "doubly optional String, nil",
-			//	Value: cadence.NewOptional(
-			//		cadence.NewOptional(nil),
-			//	),
-			//	Type: &cadence.OptionalType{
-			//		Type: &cadence.OptionalType{
-			//			Type: cadence.StringType{},
-			//		},
-			//	},
-			//},
+			{
+				Name: "doubly optional String, nil",
+				Value: cadence.NewOptional(
+					cadence.NewOptional(nil),
+				),
+				Type: &cadence.OptionalType{
+					Type: &cadence.OptionalType{
+						Type: cadence.StringType,
+					},
+				},
+			},
 			{
 				Name: "variable-sized array",
 				Value: cadence.NewArray([]cadence.Value{
 					cadence.String("42"),
+				}).WithType(&cadence.VariableSizedArrayType{
+					ElementType: cadence.StringType,
 				}),
 				Type: &cadence.VariableSizedArrayType{
 					ElementType: cadence.StringType,
@@ -159,6 +160,9 @@ func Test_ParseWithoutType(t *testing.T) {
 				Name: "constant-sized array",
 				Value: cadence.NewArray([]cadence.Value{
 					cadence.String("42"),
+				}).WithType(&cadence.ConstantSizedArrayType{
+					ElementType: cadence.StringType,
+					Size:        1,
 				}),
 				Type: &cadence.ConstantSizedArrayType{
 					ElementType: cadence.StringType,
