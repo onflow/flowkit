@@ -49,3 +49,4 @@ jobs:
         with:
           version: v1.52.2
           args: --timeout=3m
+          skip-pkg-cache: true
