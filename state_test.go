@@ -344,7 +344,8 @@ func generateAliasesComplexProject() State {
 func Test_GetContractsByNameSimple(t *testing.T) {
 	p := generateSimpleProject()
 	path := filepath.FromSlash("../hungry-kitties/cadence/contracts/NonFungibleToken.cdc")
-	af.WriteFile(path, []byte("access(all) contract{}"), os.ModePerm)
+	err := af.WriteFile(path, []byte("access(all) contract{}"), os.ModePerm)
+	require.NoError(t, err)
 
 	contracts, err := p.DeploymentContractsByNetwork(config.EmulatorNetwork)
 	require.NoError(t, err)
