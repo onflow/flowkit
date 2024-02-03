@@ -145,10 +145,10 @@ func TestAccounts(t *testing.T) {
 			ctx,
 			serviceAcc,
 			[]accounts.PublicKey{{
-				pubKey,
-				flow.AccountKeyWeightThreshold,
-				crypto.ECDSA_P256,
-				crypto.SHA3_256,
+				Public: pubKey,
+				Weight: flow.AccountKeyWeightThreshold,
+				SigAlgo: crypto.ECDSA_P256,
+				HashAlgo: crypto.SHA3_256,
 			}},
 		)
 
@@ -262,7 +262,6 @@ func TestAccountsCreate_Integration(t *testing.T) {
 
 	type accountsOut struct {
 		address string
-		code    map[string][]byte
 		balance uint64
 		pubKeys []crypto.PublicKey
 		weights []int
@@ -450,7 +449,7 @@ func TestAccountsAddContract_Integration(t *testing.T) {
 		require.NotNil(t, acc)
 		assert.Equal(t, acc.Contracts["Simple"], tests.ContractSimple.Source)
 
-		ID, _, err = flowkit.AddContract(
+		_, _, err = flowkit.AddContract(
 			ctx,
 			srvAcc,
 			resourceToContract(tests.ContractSimpleUpdated),
@@ -1306,6 +1305,7 @@ func TestProject_Integration(t *testing.T) {
 		assert.Len(t, contracts, 3)
 
 		account, err := flowkit.GetAccount(ctx, srvAcc.Address)
+		assert.NoError(t, err)
 
 		for i, c := range testContracts {
 			code, exists := account.Contracts[c.Name]
@@ -1527,10 +1527,10 @@ func setupAccount(state *State, flowkit Flowkit, account *accounts.Account) {
 		ctx,
 		srv,
 		[]accounts.PublicKey{{
-			(*pk).PublicKey(),
-			flow.AccountKeyWeightThreshold,
-			key.SigAlgo(),
-			key.HashAlgo(),
+			Public: (*pk).PublicKey(),
+			Weight: flow.AccountKeyWeightThreshold,
+			SigAlgo: key.SigAlgo(),
+			HashAlgo: key.HashAlgo(),
 		}},
 	)
 
@@ -1744,9 +1744,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				signer,
-				[]flow.Address{signer},
-				signer,
+				Proposer: signer,
+				Authorizers: []flow.Address{signer},
+				Payer: signer,
 			},
 			srvAcc.Key.Index(),
 			Script{
@@ -1778,9 +1778,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				a.Address,
-				nil,
-				a.Address,
+				Proposer: a.Address,
+				Authorizers: nil,
+				Payer: a.Address,
 			},
 			0,
 			Script{
@@ -1817,9 +1817,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				a.Address,
-				[]flow.Address{a.Address},
-				a.Address,
+				Proposer: a.Address,
+				Authorizers: []flow.Address{a.Address},
+				Payer: a.Address,
 			},
 			0,
 			Script{
@@ -1856,9 +1856,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				a.Address,
-				[]flow.Address{a.Address},
-				a.Address,
+				Proposer: a.Address,
+				Authorizers: []flow.Address{a.Address},
+				Payer: a.Address,
 			},
 			0,
 			Script{
