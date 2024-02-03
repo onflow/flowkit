@@ -60,7 +60,11 @@ func main() {
 			os.Exit(1)
 		}
 	} else {
-		os.WriteFile(path, json, 0644)
+
+		if err := os.WriteFile(path, json, 0644); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 }
 

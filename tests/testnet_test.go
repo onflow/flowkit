@@ -138,12 +138,15 @@ var testnet = config.TestnetNetwork.Name
 func Test_Foo(t *testing.T) {
 	_, st, _, rw, _ := initTestnet(t)
 
-	rw.WriteFile("test", []byte("foo"), 0644)
+	err := rw.WriteFile("test", []byte("foo"), 0644)
+	require.NoError(t, err)
 
 	out, _ := rw.ReadFile("test")
 	assert.Equal(t, out, []byte("foo"))
 
-	rw.WriteFile("test", []byte("bar"), 0644)
+	err = rw.WriteFile("test", []byte("bar"), 0644)
+	require.NoError(t, err)
+
 	out, _ = st.ReadFile("test")
 	assert.Equal(t, out, []byte("bar"))
 }
