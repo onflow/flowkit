@@ -67,6 +67,7 @@ func Test_TransformDependenciesToJSON(t *testing.T) {
 	assert.NoError(t, err)
 
 	contracts, err := jsonContracts.transformToConfig()
+	assert.NoError(t, err)
 	dependencies, err := jsonDependencies.transformToConfig()
 	assert.NoError(t, err)
 
