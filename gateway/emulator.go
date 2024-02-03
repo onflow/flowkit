@@ -30,7 +30,6 @@ import (
 
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
-	flowGo "github.com/onflow/flow-go/model/flow"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc/status"
 )
@@ -253,21 +252,6 @@ func messageToCadenceValue(m []byte) (cadence.Value, error) {
 	}
 
 	return v, nil
-}
-
-func convertBlock(block *flowGo.Block) *flow.Block {
-	return &flow.Block{
-		BlockHeader: flow.BlockHeader{
-			ID:        flow.Identifier(block.Header.ID()),
-			ParentID:  flow.Identifier(block.Header.ParentID),
-			Height:    block.Header.Height,
-			Timestamp: block.Header.Timestamp,
-		},
-		BlockPayload: flow.BlockPayload{
-			CollectionGuarantees: nil,
-			Seals:                nil,
-		},
-	}
 }
 
 func (g *EmulatorGateway) GetEvents(
