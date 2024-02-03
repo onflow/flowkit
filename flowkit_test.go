@@ -262,7 +262,6 @@ func TestAccountsCreate_Integration(t *testing.T) {
 
 	type accountsOut struct {
 		address string
-		code    map[string][]byte
 		balance uint64
 		pubKeys []crypto.PublicKey
 		weights []int
@@ -450,7 +449,7 @@ func TestAccountsAddContract_Integration(t *testing.T) {
 		require.NotNil(t, acc)
 		assert.Equal(t, acc.Contracts["Simple"], tests.ContractSimple.Source)
 
-		ID, _, err = flowkit.AddContract(
+		_, _, err = flowkit.AddContract(
 			ctx,
 			srvAcc,
 			resourceToContract(tests.ContractSimpleUpdated),
@@ -1306,6 +1305,7 @@ func TestProject_Integration(t *testing.T) {
 		assert.Len(t, contracts, 3)
 
 		account, err := flowkit.GetAccount(ctx, srvAcc.Address)
+		assert.NoError(t, err)
 
 		for i, c := range testContracts {
 			code, exists := account.Contracts[c.Name]
