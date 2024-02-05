@@ -19,6 +19,8 @@
 package gateway
 
 import (
+	"context"
+
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 )
@@ -27,21 +29,21 @@ import (
 
 // Gateway describes blockchain access interface
 type Gateway interface {
-	GetAccount(flow.Address) (*flow.Account, error)
-	SendSignedTransaction(*flow.Transaction) (*flow.Transaction, error)
-	GetTransaction(flow.Identifier) (*flow.Transaction, error)
-	GetTransactionResultsByBlockID(blockID flow.Identifier) ([]*flow.TransactionResult, error)
-	GetTransactionResult(flow.Identifier, bool) (*flow.TransactionResult, error)
-	GetTransactionsByBlockID(blockID flow.Identifier) ([]*flow.Transaction, error)
-	ExecuteScript([]byte, []cadence.Value) (cadence.Value, error)
-	ExecuteScriptAtHeight([]byte, []cadence.Value, uint64) (cadence.Value, error)
-	ExecuteScriptAtID([]byte, []cadence.Value, flow.Identifier) (cadence.Value, error)
-	GetLatestBlock() (*flow.Block, error)
-	GetBlockByHeight(uint64) (*flow.Block, error)
-	GetBlockByID(flow.Identifier) (*flow.Block, error)
-	GetEvents(string, uint64, uint64) ([]flow.BlockEvents, error)
-	GetCollection(flow.Identifier) (*flow.Collection, error)
-	GetLatestProtocolStateSnapshot() ([]byte, error)
-	Ping() error
+	GetAccount(context.Context, flow.Address) (*flow.Account, error)
+	SendSignedTransaction(context.Context, *flow.Transaction) (*flow.Transaction, error)
+	GetTransaction(context.Context, flow.Identifier) (*flow.Transaction, error)
+	GetTransactionResultsByBlockID(ctx context.Context, blockID flow.Identifier) ([]*flow.TransactionResult, error)
+	GetTransactionResult(context.Context, flow.Identifier, bool) (*flow.TransactionResult, error)
+	GetTransactionsByBlockID(context.Context, flow.Identifier) ([]*flow.Transaction, error)
+	ExecuteScript(context.Context, []byte, []cadence.Value) (cadence.Value, error)
+	ExecuteScriptAtHeight(context.Context, []byte, []cadence.Value, uint64) (cadence.Value, error)
+	ExecuteScriptAtID(context.Context, []byte, []cadence.Value, flow.Identifier) (cadence.Value, error)
+	GetLatestBlock(context.Context) (*flow.Block, error)
+	GetBlockByHeight(context.Context, uint64) (*flow.Block, error)
+	GetBlockByID(context.Context, flow.Identifier) (*flow.Block, error)
+	GetEvents(context.Context, string, uint64, uint64) ([]flow.BlockEvents, error)
+	GetCollection(context.Context, flow.Identifier) (*flow.Collection, error)
+	GetLatestProtocolStateSnapshot(context.Context) ([]byte, error)
+	Ping(context.Context) error
 	SecureConnection() bool
 }
