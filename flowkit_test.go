@@ -110,7 +110,7 @@ func TestAccounts(t *testing.T) {
 		_, flowkit, gw := setup()
 		account, err := flowkit.GetAccount(ctx, serviceAddress)
 
-		gw.Mock.AssertCalled(t, "GetAccount", serviceAddress)
+		gw.Mock.AssertCalled(t, "GetAccount", ctx, serviceAddress)
 		assert.NoError(t, err)
 		assert.Equal(t, serviceAddress, account.Address)
 	})
@@ -120,7 +120,7 @@ func TestAccounts(t *testing.T) {
 		newAddress := flow.HexToAddress("192440c99cb17282")
 
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, serviceAddress, tx.Authorizers[0])
 			assert.Equal(t, serviceAddress, tx.Payer)
 
@@ -129,7 +129,7 @@ func TestAccounts(t *testing.T) {
 
 		compareAddress := serviceAddress
 		gw.GetAccount.Run(func(args mock.Arguments) {
-			address := args.Get(0).(flow.Address)
+			address := args.Get(1).(flow.Address)
 			assert.Equal(t, address, compareAddress)
 			compareAddress = newAddress
 			gw.GetAccount.Return(
@@ -145,15 +145,15 @@ func TestAccounts(t *testing.T) {
 			ctx,
 			serviceAcc,
 			[]accounts.PublicKey{{
-				Public: pubKey,
-				Weight: flow.AccountKeyWeightThreshold,
-				SigAlgo: crypto.ECDSA_P256,
+				Public:   pubKey,
+				Weight:   flow.AccountKeyWeightThreshold,
+				SigAlgo:  crypto.ECDSA_P256,
 				HashAlgo: crypto.SHA3_256,
 			}},
 		)
 
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, serviceAddress)
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, newAddress)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, serviceAddress)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, newAddress)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetAccountFunc, 2)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
 		gw.Mock.AssertNumberOfCalls(t, mocks.SendSignedTransactionFunc, 1)
@@ -166,7 +166,7 @@ func TestAccounts(t *testing.T) {
 	t.Run("Contract Add for Account", func(t *testing.T) {
 		_, flowkit, gw := setup()
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, serviceAddress)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.add"))
 
@@ -180,7 +180,7 @@ func TestAccounts(t *testing.T) {
 			UpdateExistingContract(false),
 		)
 
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, serviceAddress)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, serviceAddress)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetAccountFunc, 2)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
 		gw.Mock.AssertNumberOfCalls(t, mocks.SendSignedTransactionFunc, 1)
@@ -191,7 +191,7 @@ func TestAccounts(t *testing.T) {
 	t.Run("Contract Remove for Account", func(t *testing.T) {
 		_, flowkit, gw := setup()
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, serviceAddress)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.remove"))
 
@@ -199,7 +199,7 @@ func TestAccounts(t *testing.T) {
 		})
 
 		gw.GetAccount.Run(func(args mock.Arguments) {
-			addr := args.Get(0).(flow.Address)
+			addr := args.Get(1).(flow.Address)
 			assert.Equal(t, addr.String(), serviceAcc.Address.String())
 			racc := tests.NewAccountWithAddress(addr.String())
 			racc.Contracts = map[string][]byte{
@@ -215,7 +215,7 @@ func TestAccounts(t *testing.T) {
 			tests.ContractHelloString.Name,
 		)
 
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, serviceAddress)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, serviceAddress)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetAccountFunc, 2)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
 		gw.Mock.AssertNumberOfCalls(t, mocks.SendSignedTransactionFunc, 1)
@@ -662,7 +662,7 @@ func TestBlocks(t *testing.T) {
 
 		_, err := flowkit.GetBlock(ctx, BlockQuery{Latest: true})
 
-		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc)
+		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc, ctx)
 		gw.Mock.AssertNotCalled(t, mocks.GetBlockByHeightFunc)
 		gw.Mock.AssertNotCalled(t, mocks.GetBlockByIDFunc)
 		assert.NoError(t, err)
@@ -679,7 +679,7 @@ func TestBlocks(t *testing.T) {
 
 		_, err := flowkit.GetBlock(ctx, BlockQuery{Height: 10})
 
-		gw.Mock.AssertCalled(t, mocks.GetBlockByHeightFunc, uint64(10))
+		gw.Mock.AssertCalled(t, mocks.GetBlockByHeightFunc, ctx, uint64(10))
 		gw.Mock.AssertNotCalled(t, mocks.GetLatestBlockFunc)
 		gw.Mock.AssertNotCalled(t, mocks.GetBlockByIDFunc)
 		assert.NoError(t, err)
@@ -693,7 +693,7 @@ func TestBlocks(t *testing.T) {
 		_, err := flowkit.GetBlock(ctx, BlockQuery{ID: &ID})
 
 		assert.NoError(t, err)
-		gw.Mock.AssertCalled(t, mocks.GetBlockByIDFunc, ID)
+		gw.Mock.AssertCalled(t, mocks.GetBlockByIDFunc, ctx, ID)
 		gw.Mock.AssertNotCalled(t, mocks.GetBlockByHeightFunc)
 		gw.Mock.AssertNotCalled(t, mocks.GetLatestBlockFunc)
 	})
@@ -720,7 +720,7 @@ func TestCollections(t *testing.T) {
 		_, err := flowkit.GetCollection(ctx, ID)
 
 		assert.NoError(t, err)
-		gw.Mock.AssertCalled(t, "GetCollection", ID)
+		gw.Mock.AssertCalled(t, "GetCollection", ctx, ID)
 	})
 }
 
@@ -732,7 +732,7 @@ func TestEvents(t *testing.T) {
 		_, err := flowkit.GetEvents(ctx, []string{"flow.CreateAccount"}, 0, 0, nil)
 
 		assert.NoError(t, err)
-		gw.Mock.AssertCalled(t, mocks.GetEventsFunc, "flow.CreateAccount", uint64(0), uint64(0))
+		gw.Mock.AssertCalled(t, mocks.GetEventsFunc, ctx, "flow.CreateAccount", uint64(0), uint64(0))
 	})
 
 	t.Run("Should have larger endHeight then startHeight", func(t *testing.T) {
@@ -988,7 +988,7 @@ func TestProject(t *testing.T) {
 		state.Deployments().AddOrUpdate(d)
 
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, acct2.Address)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.add"))
 
@@ -1052,7 +1052,7 @@ func TestProject(t *testing.T) {
 		} // don't change formatting of the above code since it compares the strings with included formatting
 
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, a.Address)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.add"))
 
@@ -1074,8 +1074,8 @@ func TestProject(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, len(contracts), 2)
-		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc)
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, a.Address)
+		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc, ctx)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, a.Address)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 2)
 	})
 
@@ -1129,7 +1129,7 @@ func TestProject(t *testing.T) {
 		} // don't change formatting of the above code since it compares the strings with included formatting
 
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, a.Address)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.add"))
 
@@ -1151,8 +1151,8 @@ func TestProject(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, len(contracts), 2)
-		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc)
-		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, a.Address)
+		gw.Mock.AssertCalled(t, mocks.GetLatestBlockFunc, ctx)
+		gw.Mock.AssertCalled(t, mocks.GetAccountFunc, ctx, a.Address)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 2)
 	})
 
@@ -1185,7 +1185,7 @@ func TestProject(t *testing.T) {
 		state.Deployments().AddOrUpdate(d)
 
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			assert.Equal(t, tx.Payer, acct2.Address)
 			assert.True(t, strings.Contains(string(tx.Script), "signer.contracts.add"))
 
@@ -1332,8 +1332,8 @@ func TestScripts(t *testing.T) {
 		_, flowkit, gw := setup()
 
 		gw.ExecuteScript.Run(func(args mock.Arguments) {
-			assert.Len(t, string(args.Get(0).([]byte)), 78)
-			assert.Equal(t, "\"Foo\"", args.Get(1).([]cadence.Value)[0].String())
+			assert.Len(t, string(args.Get(1).([]byte)), 78)
+			assert.Equal(t, "\"Foo\"", args.Get(2).([]cadence.Value)[0].String())
 			gw.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
 		})
 
@@ -1470,7 +1470,7 @@ func TestTransactions(t *testing.T) {
 
 		assert.NoError(t, err)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
-		gw.Mock.AssertCalled(t, mocks.GetTransactionFunc, txs.ID())
+		gw.Mock.AssertCalled(t, mocks.GetTransactionFunc, ctx, txs.ID())
 	})
 
 	t.Run("Send Transaction args", func(t *testing.T) {
@@ -1479,7 +1479,7 @@ func TestTransactions(t *testing.T) {
 
 		var txID flow.Identifier
 		gw.SendSignedTransaction.Run(func(args mock.Arguments) {
-			tx := args.Get(0).(*flow.Transaction)
+			tx := args.Get(1).(*flow.Transaction)
 			arg, err := tx.Argument(0)
 			assert.NoError(t, err)
 			assert.Equal(t, "\"Bar\"", arg.String())
@@ -1492,7 +1492,7 @@ func TestTransactions(t *testing.T) {
 		})
 
 		gw.GetTransactionResult.Run(func(args mock.Arguments) {
-			assert.Equal(t, txID, args.Get(0).(flow.Identifier))
+			assert.Equal(t, txID, args.Get(1).(flow.Identifier))
 			gw.GetTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 		})
 
@@ -1527,9 +1527,9 @@ func setupAccount(state *State, flowkit Flowkit, account *accounts.Account) {
 		ctx,
 		srv,
 		[]accounts.PublicKey{{
-			Public: (*pk).PublicKey(),
-			Weight: flow.AccountKeyWeightThreshold,
-			SigAlgo: key.SigAlgo(),
+			Public:   (*pk).PublicKey(),
+			Weight:   flow.AccountKeyWeightThreshold,
+			SigAlgo:  key.SigAlgo(),
 			HashAlgo: key.HashAlgo(),
 		}},
 	)
@@ -1744,9 +1744,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: signer,
+				Proposer:    signer,
 				Authorizers: []flow.Address{signer},
-				Payer: signer,
+				Payer:       signer,
 			},
 			srvAcc.Key.Index(),
 			Script{
@@ -1778,9 +1778,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: nil,
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{
@@ -1817,9 +1817,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: []flow.Address{a.Address},
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{
@@ -1856,9 +1856,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: []flow.Address{a.Address},
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{

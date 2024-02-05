@@ -34,17 +34,16 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
-	"github.com/pkg/errors"
-	"github.com/tyler-smith/go-bip39"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
-
 	"github.com/onflow/flowkit/accounts"
 	"github.com/onflow/flowkit/config"
 	"github.com/onflow/flowkit/gateway"
 	"github.com/onflow/flowkit/output"
 	"github.com/onflow/flowkit/project"
 	"github.com/onflow/flowkit/transactions"
+	"github.com/pkg/errors"
+	"github.com/tyler-smith/go-bip39"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 // BlockQuery defines possible queries for block.
@@ -132,13 +131,13 @@ func (f *Flowkit) State() (*State, error) {
 	return f.state, nil
 }
 
-func (f *Flowkit) Ping() error {
-	return f.gateway.Ping()
+func (f *Flowkit) Ping(ctx context.Context) error {
+	return f.gateway.Ping(ctx)
 }
 
 // GetAccount fetches account on the Flow network.
-func (f *Flowkit) GetAccount(_ context.Context, address flow.Address) (*flow.Account, error) {
-	return f.gateway.GetAccount(address)
+func (f *Flowkit) GetAccount(ctx context.Context, address flow.Address) (*flow.Account, error) {
+	return f.gateway.GetAccount(ctx, address)
 }
 
 // CreateAccount on the Flow network with the provided keys and using the signer for creation transaction.
@@ -146,7 +145,7 @@ func (f *Flowkit) GetAccount(_ context.Context, address flow.Address) (*flow.Acc
 //
 // Keys is a slice but only one can be passed as well. If the transaction fails or there are other issues an error is returned.
 func (f *Flowkit) CreateAccount(
-	_ context.Context,
+	ctx context.Context,
 	signer *accounts.Account,
 	keys []accounts.PublicKey,
 ) (*flow.Account, flow.Identifier, error) {
@@ -176,7 +175,7 @@ func (f *Flowkit) CreateAccount(
 		return nil, flow.EmptyID, err
 	}
 
-	tx, err = f.prepareTransaction(tx, signer)
+	tx, err = f.prepareTransaction(ctx, tx, signer)
 	if err != nil {
 		return nil, flow.EmptyID, err
 	}
@@ -185,7 +184,7 @@ func (f *Flowkit) CreateAccount(
 	f.logger.StartProgress("Creating account...")
 	defer f.logger.StopProgress()
 
-	sentTx, err := f.gateway.SendSignedTransaction(tx.FlowTransaction())
+	sentTx, err := f.gateway.SendSignedTransaction(ctx, tx.FlowTransaction())
 	if err != nil {
 		return nil, flow.EmptyID, errors.Wrap(err, "account creation transaction failed")
 	}
@@ -193,7 +192,7 @@ func (f *Flowkit) CreateAccount(
 	f.logger.StartProgress("Waiting for transaction to be sealed...")
 	defer f.logger.StopProgress()
 
-	result, err := f.gateway.GetTransactionResult(sentTx.ID(), true)
+	result, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 	if err != nil {
 		return nil, flow.EmptyID, err
 	}
@@ -208,7 +207,7 @@ func (f *Flowkit) CreateAccount(
 		return nil, flow.EmptyID, fmt.Errorf("new account address couldn't be fetched")
 	}
 
-	account, err := f.gateway.GetAccount(*newAccountAddress[0]) // we know it's the only and first event
+	account, err := f.gateway.GetAccount(ctx, *newAccountAddress[0]) // we know it's the only and first event
 	if err != nil {
 		return nil, flow.EmptyID, err
 	}
@@ -218,15 +217,16 @@ func (f *Flowkit) CreateAccount(
 
 // prepareTransaction prepares transaction for sending with data from network
 func (f *Flowkit) prepareTransaction(
+	ctx context.Context,
 	tx *transactions.Transaction,
 	account *accounts.Account,
 ) (*transactions.Transaction, error) {
-	block, err := f.gateway.GetLatestBlock()
+	block, err := f.gateway.GetLatestBlock(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	proposer, err := f.gateway.GetAccount(account.Address)
+	proposer, err := f.gateway.GetAccount(ctx, account.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -311,7 +311,7 @@ func (f *Flowkit) AddContract(
 	defer f.logger.StopProgress()
 
 	// check if contract exists on account
-	flowAccount, err := f.gateway.GetAccount(account.Address)
+	flowAccount, err := f.gateway.GetAccount(ctx, account.Address)
 	if err != nil {
 		return flow.EmptyID, false, err
 	}
@@ -334,13 +334,13 @@ func (f *Flowkit) AddContract(
 		}
 	}
 
-	tx, err = f.prepareTransaction(tx, account)
+	tx, err = f.prepareTransaction(ctx, tx, account)
 	if err != nil {
 		return flow.EmptyID, false, err
 	}
 
 	// send transaction with contract
-	sentTx, err := f.gateway.SendSignedTransaction(tx.FlowTransaction())
+	sentTx, err := f.gateway.SendSignedTransaction(ctx, tx.FlowTransaction())
 	if err != nil {
 		return tx.FlowTransaction().ID(), false, fmt.Errorf("failed to send transaction to deploy a contract: %w", err)
 	}
@@ -352,7 +352,7 @@ func (f *Flowkit) AddContract(
 	}
 
 	// we wait for transaction to be sealed
-	trx, err := f.gateway.GetTransactionResult(sentTx.ID(), true)
+	trx, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 	if err != nil {
 		return tx.FlowTransaction().ID(), false, err
 	}
@@ -391,12 +391,12 @@ func (f *Flowkit) AddContract(
 //
 // If removal is successful transaction ID is returned.
 func (f *Flowkit) RemoveContract(
-	_ context.Context,
+	ctx context.Context,
 	account *accounts.Account,
 	contractName string,
 ) (flow.Identifier, error) {
 	// check if contracts exists on the account
-	flowAcc, err := f.gateway.GetAccount(account.Address)
+	flowAcc, err := f.gateway.GetAccount(ctx, account.Address)
 	if err != nil {
 		return flow.EmptyID, err
 	}
@@ -415,7 +415,7 @@ func (f *Flowkit) RemoveContract(
 		return flow.EmptyID, err
 	}
 
-	tx, err = f.prepareTransaction(tx, account)
+	tx, err = f.prepareTransaction(ctx, tx, account)
 	if err != nil {
 		return flow.EmptyID, err
 	}
@@ -425,12 +425,12 @@ func (f *Flowkit) RemoveContract(
 	)
 	defer f.logger.StopProgress()
 
-	sentTx, err := f.gateway.SendSignedTransaction(tx.FlowTransaction())
+	sentTx, err := f.gateway.SendSignedTransaction(ctx, tx.FlowTransaction())
 	if err != nil {
 		return flow.EmptyID, err
 	}
 
-	txr, err := f.gateway.GetTransactionResult(sentTx.ID(), true)
+	txr, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 	if err != nil {
 		return flow.EmptyID, err
 	}
@@ -444,15 +444,15 @@ func (f *Flowkit) RemoveContract(
 }
 
 // GetBlock by the query from Flow blockchain. Query can define a block by ID, block by height or require the latest block.
-func (f *Flowkit) GetBlock(_ context.Context, query BlockQuery) (*flow.Block, error) {
+func (f *Flowkit) GetBlock(ctx context.Context, query BlockQuery) (*flow.Block, error) {
 	var err error
 	var block *flow.Block
 	if query.Latest {
-		block, err = f.gateway.GetLatestBlock()
+		block, err = f.gateway.GetLatestBlock(ctx)
 	} else if query.ID != nil {
-		block, err = f.gateway.GetBlockByID(*query.ID)
+		block, err = f.gateway.GetBlockByID(ctx, *query.ID)
 	} else {
-		block, err = f.gateway.GetBlockByHeight(query.Height)
+		block, err = f.gateway.GetBlockByHeight(ctx, query.Height)
 	}
 
 	if err != nil {
@@ -467,8 +467,8 @@ func (f *Flowkit) GetBlock(_ context.Context, query BlockQuery) (*flow.Block, er
 }
 
 // GetCollection by the ID from Flow network.
-func (f *Flowkit) GetCollection(_ context.Context, ID flow.Identifier) (*flow.Collection, error) {
-	return f.gateway.GetCollection(ID)
+func (f *Flowkit) GetCollection(ctx context.Context, ID flow.Identifier) (*flow.Collection, error) {
+	return f.gateway.GetCollection(ctx, ID)
 }
 
 // GetEvents from Flow network by their event name in the specified height interval defined by start and end inclusive.
@@ -478,7 +478,7 @@ func (f *Flowkit) GetCollection(_ context.Context, ID flow.Identifier) (*flow.Co
 // Providing worker value will produce faster response as the interval will be scanned concurrently. This parameter is optional,
 // if not provided only a single worker will be used.
 func (f *Flowkit) GetEvents(
-	_ context.Context,
+	ctx context.Context,
 	names []string,
 	startHeight uint64,
 	endHeight uint64,
@@ -506,7 +506,7 @@ func (f *Flowkit) GetEvents(
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			f.eventWorker(jobChan, results)
+			f.eventWorker(ctx, jobChan, results)
 		}()
 	}
 
@@ -536,9 +536,9 @@ func (f *Flowkit) GetEvents(
 	return resultEvents, nil
 }
 
-func (f *Flowkit) eventWorker(jobChan <-chan grpc.EventRangeQuery, results chan<- eventWorkerResult) {
+func (f *Flowkit) eventWorker(ctx context.Context, jobChan <-chan grpc.EventRangeQuery, results chan<- eventWorkerResult) {
 	for q := range jobChan {
-		blockEvents, err := f.gateway.GetEvents(q.Type, q.StartHeight, q.EndHeight)
+		blockEvents, err := f.gateway.GetEvents(ctx, q.Type, q.StartHeight, q.EndHeight)
 		if err != nil {
 			results <- eventWorkerResult{nil, err}
 		}
@@ -800,7 +800,7 @@ type Script struct {
 
 // ExecuteScript on the Flow network and return the Cadence value as a result. The script is executed at the
 // block provided as part of the ScriptQuery value.
-func (f *Flowkit) ExecuteScript(_ context.Context, script Script, query ScriptQuery) (cadence.Value, error) {
+func (f *Flowkit) ExecuteScript(ctx context.Context, script Script, query ScriptQuery) (cadence.Value, error) {
 	state, err := f.State()
 	if err != nil {
 		return nil, err
@@ -839,24 +839,24 @@ func (f *Flowkit) ExecuteScript(_ context.Context, script Script, query ScriptQu
 	}
 
 	if query.Latest {
-		return f.gateway.ExecuteScript(program.Code(), script.Args)
+		return f.gateway.ExecuteScript(ctx, program.Code(), script.Args)
 	} else if query.ID != flow.EmptyID {
-		return f.gateway.ExecuteScriptAtID(program.Code(), script.Args, query.ID)
+		return f.gateway.ExecuteScriptAtID(ctx, program.Code(), script.Args, query.ID)
 	} else {
-		return f.gateway.ExecuteScriptAtHeight(program.Code(), script.Args, query.Height)
+		return f.gateway.ExecuteScriptAtHeight(ctx, program.Code(), script.Args, query.Height)
 	}
 }
 
 // GetTransactionByID from the Flow network including the transaction result. Using the waitSeal we can wait for the transaction to be sealed.
 func (f *Flowkit) GetTransactionByID(
-	_ context.Context,
+	ctx context.Context,
 	ID flow.Identifier,
 	waitSeal bool,
 ) (*flow.Transaction, *flow.TransactionResult, error) {
 	f.logger.StartProgress("Fetching Transaction...")
 	defer f.logger.StopProgress()
 
-	tx, err := f.gateway.GetTransaction(ID)
+	tx, err := f.gateway.GetTransaction(ctx, ID)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -866,20 +866,20 @@ func (f *Flowkit) GetTransactionByID(
 		defer f.logger.StopProgress()
 	}
 
-	result, err := f.gateway.GetTransactionResult(ID, waitSeal)
+	result, err := f.gateway.GetTransactionResult(ctx, ID, waitSeal)
 	return tx, result, err
 }
 
 func (f *Flowkit) GetTransactionsByBlockID(
-	_ context.Context,
+	ctx context.Context,
 	blockID flow.Identifier,
 ) ([]*flow.Transaction, []*flow.TransactionResult, error) {
-	tx, err := f.gateway.GetTransactionsByBlockID(blockID)
+	tx, err := f.gateway.GetTransactionsByBlockID(ctx, blockID)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	txRes, err := f.gateway.GetTransactionResultsByBlockID(blockID)
+	txRes, err := f.gateway.GetTransactionResultsByBlockID(ctx, blockID)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -890,7 +890,7 @@ func (f *Flowkit) GetTransactionsByBlockID(
 //
 // AddressesRoles type defines the address for each role (payer, proposer, authorizers) and the script defines the transaction content.
 func (f *Flowkit) BuildTransaction(
-	_ context.Context,
+	ctx context.Context,
 	addresses transactions.AddressesRoles,
 	proposerKeyIndex int,
 	script Script,
@@ -901,12 +901,12 @@ func (f *Flowkit) BuildTransaction(
 		return nil, err
 	}
 
-	latestBlock, err := f.gateway.GetLatestBlock()
+	latestBlock, err := f.gateway.GetLatestBlock(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest sealed block: %w", err)
 	}
 
-	proposerAccount, err := f.gateway.GetAccount(addresses.Proposer)
+	proposerAccount, err := f.gateway.GetAccount(ctx, addresses.Proposer)
 	if err != nil {
 		return nil, err
 	}
@@ -986,15 +986,15 @@ func (f *Flowkit) SignTransactionPayload(
 //
 // You can build the transaction using the BuildTransaction method and then sign it using the SignTranscation method.
 func (f *Flowkit) SendSignedTransaction(
-	_ context.Context,
+	ctx context.Context,
 	tx *transactions.Transaction,
 ) (*flow.Transaction, *flow.TransactionResult, error) {
-	sentTx, err := f.gateway.SendSignedTransaction(tx.FlowTransaction())
+	sentTx, err := f.gateway.SendSignedTransaction(ctx, tx.FlowTransaction())
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := f.gateway.GetTransactionResult(sentTx.ID(), true)
+	res, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1037,7 +1037,7 @@ func (f *Flowkit) SendTransaction(
 	f.logger.StartProgress("Sending transaction...")
 	defer f.logger.StopProgress()
 
-	sentTx, err := f.gateway.SendSignedTransaction(tx.FlowTransaction())
+	sentTx, err := f.gateway.SendSignedTransaction(ctx, tx.FlowTransaction())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1046,7 +1046,7 @@ func (f *Flowkit) SendTransaction(
 	f.logger.StartProgress("Waiting for transaction to be sealed...")
 	defer f.logger.StopProgress()
 
-	res, err := f.gateway.GetTransactionResult(sentTx.ID(), true)
+	res, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 
 	return sentTx, res, err
 }

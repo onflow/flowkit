@@ -37,7 +37,7 @@ import (
 
 type Services interface {
 	Network() config.Network
-	Ping() error
+	Ping(context.Context) error
 	Gateway() gateway.Gateway
 	SetLogger(output.Logger)
 
