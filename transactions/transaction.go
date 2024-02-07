@@ -30,7 +30,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/templates"
 
-	"github.com/onflow/flowkit/accounts"
+	"github.com/onflow/flowkit/v2/accounts"
 )
 
 // New create new instance of transaction.
@@ -104,7 +104,7 @@ func addAccountContractWithArgs(
 	// of multiple arguments with the last %s which is extended in the next step
 	const addAccountContractTemplate = `
 	transaction(name: String, code: String %s) {
-		prepare(signer: AuthAccount) {
+		prepare(signer: auth(AddContract) &Account) {
 			signer.contracts.add(name: name, code: code.utf8 %s)
 		}
 	}`
@@ -132,7 +132,7 @@ func addAccountContractWithArgs(
 
 	script := fmt.Sprintf(addAccountContractTemplate, txArgs, addArgs)
 	tx.SetScript([]byte(script))
-	tx.SetGasLimit(flow.DefaultTransactionGasLimit)
+	tx.SetComputeLimit(flow.DefaultTransactionGasLimit)
 
 	t := &Transaction{tx: tx}
 	err := t.SetSigner(signer)
@@ -272,7 +272,7 @@ func (t *Transaction) SetBlockReference(block *flow.Block) *Transaction {
 
 // SetComputeLimit sets the gas limit for transaction.
 func (t *Transaction) SetComputeLimit(limit uint64) *Transaction {
-	t.tx.SetGasLimit(limit)
+	t.tx.SetComputeLimit(limit)
 	return t
 }
 

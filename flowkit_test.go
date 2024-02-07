@@ -26,9 +26,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/onflow/flowkit/accounts"
-	"github.com/onflow/flowkit/transactions"
-
 	"github.com/onflow/cadence"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
 	"github.com/onflow/flow-emulator/emulator"
@@ -39,12 +36,14 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/gateway"
-	"github.com/onflow/flowkit/gateway/mocks"
-	"github.com/onflow/flowkit/output"
-	"github.com/onflow/flowkit/project"
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/gateway"
+	"github.com/onflow/flowkit/v2/gateway/mocks"
+	"github.com/onflow/flowkit/v2/output"
+	"github.com/onflow/flowkit/v2/project"
+	"github.com/onflow/flowkit/v2/tests"
+	"github.com/onflow/flowkit/v2/transactions"
 )
 
 func Alice() *accounts.Account {
@@ -511,7 +510,7 @@ func TestAccountsAddContract_Integration(t *testing.T) {
 		assert.NoError(t, err)
 
 		updated := tests.ContractSimple
-		updated.Source = []byte(`pub contract Simple { init() {} }`)
+		updated.Source = []byte(`access(all) contract Simple { init() {} }`)
 		_, _, err = flowkit.AddContract(
 			ctx,
 			srvAcc,
@@ -1332,8 +1331,9 @@ func TestScripts(t *testing.T) {
 		_, flowkit, gw := setup()
 
 		gw.ExecuteScript.Run(func(args mock.Arguments) {
-			assert.Len(t, string(args.Get(1).([]byte)), 78)
-			assert.Equal(t, "\"Foo\"", args.Get(2).([]cadence.Value)[0].String())
+			assert.Len(t, string(args.Get(1).([]byte)), 86)
+			assert.Equal(t, "\"Foo\"", args.Get(1).([]cadence.Value)[0].String())
+
 			gw.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
 		})
 
@@ -1484,7 +1484,7 @@ func TestTransactions(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, "\"Bar\"", arg.String())
 			assert.Equal(t, serviceAddress, tx.Payer)
-			assert.Len(t, string(tx.Script), 227)
+			assert.Len(t, string(tx.Script), 224)
 
 			t := tests.NewTransaction()
 			txID = t.ID()

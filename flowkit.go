@@ -34,16 +34,18 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
-	"github.com/onflow/flowkit/accounts"
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/gateway"
-	"github.com/onflow/flowkit/output"
-	"github.com/onflow/flowkit/project"
-	"github.com/onflow/flowkit/transactions"
+
 	"github.com/pkg/errors"
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/gateway"
+	"github.com/onflow/flowkit/v2/output"
+	"github.com/onflow/flowkit/v2/project"
+	"github.com/onflow/flowkit/v2/transactions"
+
 )
 
 // BlockQuery defines possible queries for block.
