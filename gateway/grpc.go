@@ -189,7 +189,8 @@ func (g *GrpcGateway) GetLatestProtocolStateSnapshot(ctx context.Context) ([]byt
 }
 
 // Ping is used to check if the access node is alive and healthy.
-func (g *GrpcGateway) Ping(ctx context.Context) error {
+func (g *GrpcGateway) Ping() error {
+	ctx := context.Background()
 	return g.client.Ping(ctx)
 }
 

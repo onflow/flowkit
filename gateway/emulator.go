@@ -150,7 +150,8 @@ func (g *EmulatorGateway) GetTransactionsByBlockID(ctx context.Context, id flow.
 	return txr, nil
 }
 
-func (g *EmulatorGateway) Ping(ctx context.Context) error {
+func (g *EmulatorGateway) Ping() error {
+	ctx := context.Background()
 	err := g.adapter.Ping(ctx)
 	if err != nil {
 		return UnwrapStatusError(err)

@@ -131,8 +131,8 @@ func (f *Flowkit) State() (*State, error) {
 	return f.state, nil
 }
 
-func (f *Flowkit) Ping(ctx context.Context) error {
-	return f.gateway.Ping(ctx)
+func (f *Flowkit) Ping() error {
+	return f.gateway.Ping()
 }
 
 // GetAccount fetches account on the Flow network.
