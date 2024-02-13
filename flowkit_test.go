@@ -144,9 +144,9 @@ func TestAccounts(t *testing.T) {
 			ctx,
 			serviceAcc,
 			[]accounts.PublicKey{{
-				Public: pubKey,
-				Weight: flow.AccountKeyWeightThreshold,
-				SigAlgo: crypto.ECDSA_P256,
+				Public:   pubKey,
+				Weight:   flow.AccountKeyWeightThreshold,
+				SigAlgo:  crypto.ECDSA_P256,
 				HashAlgo: crypto.SHA3_256,
 			}},
 		)
@@ -1526,9 +1526,9 @@ func setupAccount(state *State, flowkit Flowkit, account *accounts.Account) {
 		ctx,
 		srv,
 		[]accounts.PublicKey{{
-			Public: (*pk).PublicKey(),
-			Weight: flow.AccountKeyWeightThreshold,
-			SigAlgo: key.SigAlgo(),
+			Public:   (*pk).PublicKey(),
+			Weight:   flow.AccountKeyWeightThreshold,
+			SigAlgo:  key.SigAlgo(),
 			HashAlgo: key.HashAlgo(),
 		}},
 	)
@@ -1743,9 +1743,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: signer,
+				Proposer:    signer,
 				Authorizers: []flow.Address{signer},
-				Payer: signer,
+				Payer:       signer,
 			},
 			srvAcc.Key.Index(),
 			Script{
@@ -1777,9 +1777,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: nil,
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{
@@ -1816,9 +1816,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: []flow.Address{a.Address},
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{
@@ -1855,9 +1855,9 @@ func TestTransactions_Integration(t *testing.T) {
 		tx, err := flowkit.BuildTransaction(
 			ctx,
 			transactions.AddressesRoles{
-				Proposer: a.Address,
+				Proposer:    a.Address,
 				Authorizers: []flow.Address{a.Address},
-				Payer: a.Address,
+				Payer:       a.Address,
 			},
 			0,
 			Script{

@@ -53,7 +53,7 @@ func TestNetworks_AddOrUpdate(t *testing.T) {
 
 	// Test adding a new network.
 	networks.AddOrUpdate(Network{Name: "flow-testnet", Host: "localhost:3570", Key: "flow-testnet-key"})
-	assert.Equal(t, 2, len(networks))
+	assert.Len(t, networks, 2)
 
 	// Test updating an existing network.
 	networks.AddOrUpdate(Network{Name: "flow-local", Host: "localhost:3580", Key: "flow-local-key-updated"})
@@ -70,7 +70,7 @@ func TestNetworks_Remove(t *testing.T) {
 	// Test removing an existing network.
 	err := networks.Remove("flow-local")
 	assert.NoError(t, err)
-	assert.Equal(t, 1, len(networks))
+	assert.Len(t, networks, 1)
 
 	// Test removing a non-existent network.
 	err = networks.Remove("flow-mainnet")

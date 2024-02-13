@@ -398,7 +398,7 @@ func Test_GetContractsByNameComplex(t *testing.T) {
 
 	contracts, err := p.DeploymentContractsByNetwork(config.EmulatorNetwork)
 	require.NoError(t, err)
-	require.Equal(t, 7, len(contracts))
+	require.Len(t, contracts, 7)
 
 	//sort contracts by name so tests are deterministic
 	sort.Slice(contracts, func(i, j int) bool {
