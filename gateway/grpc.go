@@ -45,13 +45,17 @@ type GrpcGateway struct {
 }
 
 // NewGrpcGateway returns a new gRPC gateway.
-func NewGrpcGateway(network config.Network) (*GrpcGateway, error) {
-
-	gClient, err := grpcAccess.NewClient(
-		network.Host,
+func NewGrpcGateway(network config.Network, opts ...grpc.DialOption) (*GrpcGateway, error) {
+	options := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
+	}
+	options = append(options, opts...)
+	gClient, err := grpcAccess.NewClient(
+		network.Host,
+		options...,
 	)
+
 	ctx := context.Background()
 
 	if err != nil || gClient == nil {
@@ -66,17 +70,23 @@ func NewGrpcGateway(network config.Network) (*GrpcGateway, error) {
 }
 
 // NewSecureGrpcGateway returns a new gRPC gateway with a secure client connection.
-func NewSecureGrpcGateway(network config.Network) (*GrpcGateway, error) {
+func NewSecureGrpcGateway(network config.Network, opts ...grpc.DialOption) (*GrpcGateway, error) {
 	secureDialOpts, err := grpcutils.SecureGRPCDialOpt(strings.TrimPrefix(network.Key, "0x"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create secure GRPC dial options with network key \"%s\": %w", network.Key, err)
 	}
 
-	gClient, err := grpcAccess.NewClient(
-		network.Host,
+	options := []grpc.DialOption{
 		secureDialOpts,
 		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
+	}
+	options = append(options, opts...)
+
+	gClient, err := grpcAccess.NewClient(
+		network.Host,
+		options...,
 	)
+
 	ctx := context.Background()
 
 	if err != nil || gClient == nil {
@@ -174,7 +184,6 @@ func (g *GrpcGateway) GetEvents(
 	startHeight uint64,
 	endHeight uint64,
 ) ([]flow.BlockEvents, error) {
-
 	events, err := g.client.GetEventsForHeightRange(
 		g.ctx,
 		eventType,
