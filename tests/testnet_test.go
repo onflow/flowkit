@@ -147,13 +147,13 @@ func Test_Foo(t *testing.T) {
 	require.NoError(t, err)
 
 	out, _ := rw.ReadFile("test")
-	assert.Equal(t, out, []byte("foo"))
+	assert.Equal(t, []byte("foo"), out)
 
 	err = rw.WriteFile("test", []byte("bar"), 0644)
 	require.NoError(t, err)
 
 	out, _ = st.ReadFile("test")
-	assert.Equal(t, out, []byte("bar"))
+	assert.Equal(t, []byte("bar"), out)
 }
 
 func Test_Testnet_ProjectDeploy(t *testing.T) {
