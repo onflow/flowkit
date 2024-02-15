@@ -3,7 +3,10 @@
 package mocks
 
 import (
+	context "context"
+
 	cadence "github.com/onflow/cadence"
+
 	flow "github.com/onflow/flow-go-sdk"
 
 	mock "github.com/stretchr/testify/mock"
@@ -14,9 +17,9 @@ type Gateway struct {
 	mock.Mock
 }
 
-// ExecuteScript provides a mock function with given fields: _a0, _a1
-func (_m *Gateway) ExecuteScript(_a0 []byte, _a1 []cadence.Value) (cadence.Value, error) {
-	ret := _m.Called(_a0, _a1)
+// ExecuteScript provides a mock function with given fields: _a0, _a1, _a2
+func (_m *Gateway) ExecuteScript(_a0 context.Context, _a1 []byte, _a2 []cadence.Value) (cadence.Value, error) {
+	ret := _m.Called(_a0, _a1, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteScript")
@@ -24,19 +27,19 @@ func (_m *Gateway) ExecuteScript(_a0 []byte, _a1 []cadence.Value) (cadence.Value
 
 	var r0 cadence.Value
 	var r1 error
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value) (cadence.Value, error)); ok {
-		return rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value) (cadence.Value, error)); ok {
+		return rf(_a0, _a1, _a2)
 	}
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value) cadence.Value); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value) cadence.Value); ok {
+		r0 = rf(_a0, _a1, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(cadence.Value)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func([]byte, []cadence.Value) error); ok {
-		r1 = rf(_a0, _a1)
+	if rf, ok := ret.Get(1).(func(context.Context, []byte, []cadence.Value) error); ok {
+		r1 = rf(_a0, _a1, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -44,9 +47,9 @@ func (_m *Gateway) ExecuteScript(_a0 []byte, _a1 []cadence.Value) (cadence.Value
 	return r0, r1
 }
 
-// ExecuteScriptAtHeight provides a mock function with given fields: _a0, _a1, _a2
-func (_m *Gateway) ExecuteScriptAtHeight(_a0 []byte, _a1 []cadence.Value, _a2 uint64) (cadence.Value, error) {
-	ret := _m.Called(_a0, _a1, _a2)
+// ExecuteScriptAtHeight provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *Gateway) ExecuteScriptAtHeight(_a0 context.Context, _a1 []byte, _a2 []cadence.Value, _a3 uint64) (cadence.Value, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteScriptAtHeight")
@@ -54,19 +57,19 @@ func (_m *Gateway) ExecuteScriptAtHeight(_a0 []byte, _a1 []cadence.Value, _a2 ui
 
 	var r0 cadence.Value
 	var r1 error
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value, uint64) (cadence.Value, error)); ok {
-		return rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value, uint64) (cadence.Value, error)); ok {
+		return rf(_a0, _a1, _a2, _a3)
 	}
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value, uint64) cadence.Value); ok {
-		r0 = rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value, uint64) cadence.Value); ok {
+		r0 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(cadence.Value)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func([]byte, []cadence.Value, uint64) error); ok {
-		r1 = rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(1).(func(context.Context, []byte, []cadence.Value, uint64) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -74,9 +77,9 @@ func (_m *Gateway) ExecuteScriptAtHeight(_a0 []byte, _a1 []cadence.Value, _a2 ui
 	return r0, r1
 }
 
-// ExecuteScriptAtID provides a mock function with given fields: _a0, _a1, _a2
-func (_m *Gateway) ExecuteScriptAtID(_a0 []byte, _a1 []cadence.Value, _a2 flow.Identifier) (cadence.Value, error) {
-	ret := _m.Called(_a0, _a1, _a2)
+// ExecuteScriptAtID provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *Gateway) ExecuteScriptAtID(_a0 context.Context, _a1 []byte, _a2 []cadence.Value, _a3 flow.Identifier) (cadence.Value, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ExecuteScriptAtID")
@@ -84,19 +87,19 @@ func (_m *Gateway) ExecuteScriptAtID(_a0 []byte, _a1 []cadence.Value, _a2 flow.I
 
 	var r0 cadence.Value
 	var r1 error
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value, flow.Identifier) (cadence.Value, error)); ok {
-		return rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value, flow.Identifier) (cadence.Value, error)); ok {
+		return rf(_a0, _a1, _a2, _a3)
 	}
-	if rf, ok := ret.Get(0).(func([]byte, []cadence.Value, flow.Identifier) cadence.Value); ok {
-		r0 = rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(0).(func(context.Context, []byte, []cadence.Value, flow.Identifier) cadence.Value); ok {
+		r0 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(cadence.Value)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func([]byte, []cadence.Value, flow.Identifier) error); ok {
-		r1 = rf(_a0, _a1, _a2)
+	if rf, ok := ret.Get(1).(func(context.Context, []byte, []cadence.Value, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -104,9 +107,9 @@ func (_m *Gateway) ExecuteScriptAtID(_a0 []byte, _a1 []cadence.Value, _a2 flow.I
 	return r0, r1
 }
 
-// GetAccount provides a mock function with given fields: _a0
-func (_m *Gateway) GetAccount(_a0 flow.Address) (*flow.Account, error) {
-	ret := _m.Called(_a0)
+// GetAccount provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetAccount(_a0 context.Context, _a1 flow.Address) (*flow.Account, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAccount")
@@ -114,258 +117,18 @@ func (_m *Gateway) GetAccount(_a0 flow.Address) (*flow.Account, error) {
 
 	var r0 *flow.Account
 	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Address) (*flow.Account, error)); ok {
-		return rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Address) (*flow.Account, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(flow.Address) *flow.Account); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Address) *flow.Account); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*flow.Account)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(flow.Address) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetBlockByHeight provides a mock function with given fields: _a0
-func (_m *Gateway) GetBlockByHeight(_a0 uint64) (*flow.Block, error) {
-	ret := _m.Called(_a0)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetBlockByHeight")
-	}
-
-	var r0 *flow.Block
-	var r1 error
-	if rf, ok := ret.Get(0).(func(uint64) (*flow.Block, error)); ok {
-		return rf(_a0)
-	}
-	if rf, ok := ret.Get(0).(func(uint64) *flow.Block); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.Block)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(uint64) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetBlockByID provides a mock function with given fields: _a0
-func (_m *Gateway) GetBlockByID(_a0 flow.Identifier) (*flow.Block, error) {
-	ret := _m.Called(_a0)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetBlockByID")
-	}
-
-	var r0 *flow.Block
-	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier) (*flow.Block, error)); ok {
-		return rf(_a0)
-	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier) *flow.Block); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.Block)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(flow.Identifier) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetCollection provides a mock function with given fields: _a0
-func (_m *Gateway) GetCollection(_a0 flow.Identifier) (*flow.Collection, error) {
-	ret := _m.Called(_a0)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetCollection")
-	}
-
-	var r0 *flow.Collection
-	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier) (*flow.Collection, error)); ok {
-		return rf(_a0)
-	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier) *flow.Collection); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.Collection)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(flow.Identifier) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetEvents provides a mock function with given fields: _a0, _a1, _a2
-func (_m *Gateway) GetEvents(_a0 string, _a1 uint64, _a2 uint64) ([]flow.BlockEvents, error) {
-	ret := _m.Called(_a0, _a1, _a2)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetEvents")
-	}
-
-	var r0 []flow.BlockEvents
-	var r1 error
-	if rf, ok := ret.Get(0).(func(string, uint64, uint64) ([]flow.BlockEvents, error)); ok {
-		return rf(_a0, _a1, _a2)
-	}
-	if rf, ok := ret.Get(0).(func(string, uint64, uint64) []flow.BlockEvents); ok {
-		r0 = rf(_a0, _a1, _a2)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]flow.BlockEvents)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(string, uint64, uint64) error); ok {
-		r1 = rf(_a0, _a1, _a2)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetLatestBlock provides a mock function with given fields:
-func (_m *Gateway) GetLatestBlock() (*flow.Block, error) {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetLatestBlock")
-	}
-
-	var r0 *flow.Block
-	var r1 error
-	if rf, ok := ret.Get(0).(func() (*flow.Block, error)); ok {
-		return rf()
-	}
-	if rf, ok := ret.Get(0).(func() *flow.Block); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.Block)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetLatestProtocolStateSnapshot provides a mock function with given fields:
-func (_m *Gateway) GetLatestProtocolStateSnapshot() ([]byte, error) {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetLatestProtocolStateSnapshot")
-	}
-
-	var r0 []byte
-	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]byte, error)); ok {
-		return rf()
-	}
-	if rf, ok := ret.Get(0).(func() []byte); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]byte)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetTransaction provides a mock function with given fields: _a0
-func (_m *Gateway) GetTransaction(_a0 flow.Identifier) (*flow.Transaction, error) {
-	ret := _m.Called(_a0)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetTransaction")
-	}
-
-	var r0 *flow.Transaction
-	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier) (*flow.Transaction, error)); ok {
-		return rf(_a0)
-	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier) *flow.Transaction); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.Transaction)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(flow.Identifier) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetTransactionResult provides a mock function with given fields: _a0, _a1
-func (_m *Gateway) GetTransactionResult(_a0 flow.Identifier, _a1 bool) (*flow.TransactionResult, error) {
-	ret := _m.Called(_a0, _a1)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetTransactionResult")
-	}
-
-	var r0 *flow.TransactionResult
-	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier, bool) (*flow.TransactionResult, error)); ok {
-		return rf(_a0, _a1)
-	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier, bool) *flow.TransactionResult); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*flow.TransactionResult)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(flow.Identifier, bool) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Address) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -374,29 +137,29 @@ func (_m *Gateway) GetTransactionResult(_a0 flow.Identifier, _a1 bool) (*flow.Tr
 	return r0, r1
 }
 
-// GetTransactionResultsByBlockID provides a mock function with given fields: blockID
-func (_m *Gateway) GetTransactionResultsByBlockID(blockID flow.Identifier) ([]*flow.TransactionResult, error) {
-	ret := _m.Called(blockID)
+// GetBlockByHeight provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetBlockByHeight(_a0 context.Context, _a1 uint64) (*flow.Block, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetTransactionResultsByBlockID")
+		panic("no return value specified for GetBlockByHeight")
 	}
 
-	var r0 []*flow.TransactionResult
+	var r0 *flow.Block
 	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier) ([]*flow.TransactionResult, error)); ok {
-		return rf(blockID)
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) (*flow.Block, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier) []*flow.TransactionResult); ok {
-		r0 = rf(blockID)
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *flow.Block); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*flow.TransactionResult)
+			r0 = ret.Get(0).(*flow.Block)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(flow.Identifier) error); ok {
-		r1 = rf(blockID)
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -404,9 +167,249 @@ func (_m *Gateway) GetTransactionResultsByBlockID(blockID flow.Identifier) ([]*f
 	return r0, r1
 }
 
-// GetTransactionsByBlockID provides a mock function with given fields: blockID
-func (_m *Gateway) GetTransactionsByBlockID(blockID flow.Identifier) ([]*flow.Transaction, error) {
-	ret := _m.Called(blockID)
+// GetBlockByID provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetBlockByID(_a0 context.Context, _a1 flow.Identifier) (*flow.Block, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBlockByID")
+	}
+
+	var r0 *flow.Block
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) (*flow.Block, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) *flow.Block); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.Block)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetCollection provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetCollection(_a0 context.Context, _a1 flow.Identifier) (*flow.Collection, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCollection")
+	}
+
+	var r0 *flow.Collection
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) (*flow.Collection, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) *flow.Collection); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.Collection)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetEvents provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *Gateway) GetEvents(_a0 context.Context, _a1 string, _a2 uint64, _a3 uint64) ([]flow.BlockEvents, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetEvents")
+	}
+
+	var r0 []flow.BlockEvents
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint64, uint64) ([]flow.BlockEvents, error)); ok {
+		return rf(_a0, _a1, _a2, _a3)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint64, uint64) []flow.BlockEvents); ok {
+		r0 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]flow.BlockEvents)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, uint64, uint64) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetLatestBlock provides a mock function with given fields: _a0
+func (_m *Gateway) GetLatestBlock(_a0 context.Context) (*flow.Block, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLatestBlock")
+	}
+
+	var r0 *flow.Block
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) (*flow.Block, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) *flow.Block); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.Block)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetLatestProtocolStateSnapshot provides a mock function with given fields: _a0
+func (_m *Gateway) GetLatestProtocolStateSnapshot(_a0 context.Context) ([]byte, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLatestProtocolStateSnapshot")
+	}
+
+	var r0 []byte
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]byte, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []byte); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTransaction provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetTransaction(_a0 context.Context, _a1 flow.Identifier) (*flow.Transaction, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTransaction")
+	}
+
+	var r0 *flow.Transaction
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) (*flow.Transaction, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) *flow.Transaction); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.Transaction)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTransactionResult provides a mock function with given fields: _a0, _a1, _a2
+func (_m *Gateway) GetTransactionResult(_a0 context.Context, _a1 flow.Identifier, _a2 bool) (*flow.TransactionResult, error) {
+	ret := _m.Called(_a0, _a1, _a2)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTransactionResult")
+	}
+
+	var r0 *flow.TransactionResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, bool) (*flow.TransactionResult, error)); ok {
+		return rf(_a0, _a1, _a2)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, bool) *flow.TransactionResult); ok {
+		r0 = rf(_a0, _a1, _a2)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.TransactionResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier, bool) error); ok {
+		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTransactionResultsByBlockID provides a mock function with given fields: ctx, blockID
+func (_m *Gateway) GetTransactionResultsByBlockID(ctx context.Context, blockID flow.Identifier) ([]*flow.TransactionResult, error) {
+	ret := _m.Called(ctx, blockID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTransactionResultsByBlockID")
+	}
+
+	var r0 []*flow.TransactionResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) ([]*flow.TransactionResult, error)); ok {
+		return rf(ctx, blockID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) []*flow.TransactionResult); ok {
+		r0 = rf(ctx, blockID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*flow.TransactionResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(ctx, blockID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTransactionsByBlockID provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) GetTransactionsByBlockID(_a0 context.Context, _a1 flow.Identifier) ([]*flow.Transaction, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetTransactionsByBlockID")
@@ -414,19 +417,19 @@ func (_m *Gateway) GetTransactionsByBlockID(blockID flow.Identifier) ([]*flow.Tr
 
 	var r0 []*flow.Transaction
 	var r1 error
-	if rf, ok := ret.Get(0).(func(flow.Identifier) ([]*flow.Transaction, error)); ok {
-		return rf(blockID)
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) ([]*flow.Transaction, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(flow.Identifier) []*flow.Transaction); ok {
-		r0 = rf(blockID)
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) []*flow.Transaction); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*flow.Transaction)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(flow.Identifier) error); ok {
-		r1 = rf(blockID)
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -470,9 +473,9 @@ func (_m *Gateway) SecureConnection() bool {
 	return r0
 }
 
-// SendSignedTransaction provides a mock function with given fields: _a0
-func (_m *Gateway) SendSignedTransaction(_a0 *flow.Transaction) (*flow.Transaction, error) {
-	ret := _m.Called(_a0)
+// SendSignedTransaction provides a mock function with given fields: _a0, _a1
+func (_m *Gateway) SendSignedTransaction(_a0 context.Context, _a1 *flow.Transaction) (*flow.Transaction, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendSignedTransaction")
@@ -480,19 +483,19 @@ func (_m *Gateway) SendSignedTransaction(_a0 *flow.Transaction) (*flow.Transacti
 
 	var r0 *flow.Transaction
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*flow.Transaction) (*flow.Transaction, error)); ok {
-		return rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, *flow.Transaction) (*flow.Transaction, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(*flow.Transaction) *flow.Transaction); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, *flow.Transaction) *flow.Transaction); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*flow.Transaction)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*flow.Transaction) error); ok {
-		r1 = rf(_a0)
+	if rf, ok := ret.Get(1).(func(context.Context, *flow.Transaction) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}

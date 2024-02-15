@@ -19,6 +19,8 @@
 package mocks
 
 import (
+	"context"
+
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/mock"
@@ -60,43 +62,51 @@ type TestGateway struct {
 
 func DefaultMockGateway() *TestGateway {
 	m := &Gateway{}
+	ctxMock := context.Background()
 	t := &TestGateway{
 		Mock: m,
 		SendSignedTransaction: m.On(
 			SendSignedTransactionFunc,
+			ctxMock,
 			mock.AnythingOfType("*flow.Transaction"),
 		),
 		GetAccount: m.On(
 			GetAccountFunc,
+			ctxMock,
 			mock.AnythingOfType("flow.Address"),
 		),
 		GetCollection: m.On(
 			GetCollectionFunc,
+			ctxMock,
 			mock.AnythingOfType("flow.Identifier"),
 		),
 		GetTransactionResult: m.On(
 			GetTransactionResultFunc,
+			ctxMock,
 			mock.AnythingOfType("flow.Identifier"),
 			mock.AnythingOfType("bool"),
 		),
 		GetTransaction: m.On(
 			GetTransactionFunc,
+			ctxMock,
 			mock.AnythingOfType("flow.Identifier"),
 		),
 		GetEvents: m.On(
 			GetEventsFunc,
+			ctxMock,
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("uint64"),
 			mock.AnythingOfType("uint64"),
 		),
 		ExecuteScript: m.On(
 			ExecuteScriptFunc,
+			ctxMock,
 			mock.AnythingOfType("[]uint8"),
 			mock.AnythingOfType("[]cadence.Value"),
 		),
-		GetBlockByHeight: m.On(GetBlockByHeightFunc, mock.Anything),
-		GetBlockByID:     m.On(GetBlockByIDFunc, mock.Anything),
-		GetLatestBlock:   m.On(GetLatestBlockFunc),
+		GetBlockByHeight: m.On(GetBlockByHeightFunc, ctxMock, mock.Anything),
+		GetBlockByID:     m.On(GetBlockByIDFunc, ctxMock, mock.Anything),
+		GetLatestBlock:   m.On(GetLatestBlockFunc, ctxMock),
 	}
 
 	// default return values
@@ -105,7 +115,7 @@ func DefaultMockGateway() *TestGateway {
 	})
 
 	t.GetAccount.Run(func(args mock.Arguments) {
-		addr := args.Get(0).(flow.Address)
+		addr := args.Get(1).(flow.Address)
 		t.GetAccount.Return(tests.NewAccountWithAddress(addr.String()), nil)
 	})
 
