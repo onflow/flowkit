@@ -24,6 +24,7 @@ import (
 	"path/filepath"
 
 	"github.com/onflow/cadence/runtime"
+	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/pkg/errors"
 	"golang.org/x/exp/slices"
@@ -228,7 +229,7 @@ func (p *State) AccountsForNetwork(network config.Network) *accounts.Accounts {
 
 // AccountByContractName returns the account for a contract by contract name.
 func (p *State) AccountByContractName(contractName string, network config.Network) (*accounts.Account, error) {
-	deployments := p.Deployments().ByNetwork(network.Name)
+	deployments := p.conf.Deployments.ByNetwork(network.Name)
 	var accountName string
 	for _, d := range deployments {
 		for _, c := range d.Contracts {
@@ -248,7 +249,7 @@ func (p *State) AccountByContractName(contractName string, network config.Networ
 	}
 
 	var account *accounts.Account
-	for _, a := range *accs {
+	for _, a := range *p.accounts {
 		if accountName == a.Name {
 			account = &a
 			break
@@ -261,9 +262,14 @@ func (p *State) AccountByContractName(contractName string, network config.Networ
 	return account, nil
 }
 
-// AccountByContract returns the account for a contract.
-func (p *State) AccountByContract(contract *config.Contract, network config.Network) (*accounts.Account, error) {
-	return p.AccountByContractName(contract.Name, network)
+// ContractAddress returns the flow address for a contract given th network
+func (p *State) ContractAddress(contract *config.Contract, network config.Network) (*flow.Address, error) {
+	acc, err := p.AccountByContractName(contract.Name, network)
+	if err != nil {
+		return nil, err
+	}
+
+	return &acc.Address, nil
 }
 
 // AliasesForNetwork returns all deployment aliases for a network.
