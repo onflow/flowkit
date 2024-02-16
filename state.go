@@ -240,7 +240,7 @@ func (p *State) AccountByContractName(contractName string, network config.Networ
 		}
 	}
 	if accountName == "" {
-		return nil, fmt.Errorf("contract not found in state")
+		return nil, fmt.Errorf("deployment of %s not found for network %s", contractName, network.Name)
 	}
 
 	accs := p.Accounts()
