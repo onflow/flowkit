@@ -85,7 +85,6 @@ func NewSecureGrpcGateway(network config.Network, opts ...grpc.DialOption) (*Grp
 		options...,
 	)
 
-
 	if err != nil || gClient == nil {
 		return nil, fmt.Errorf("failed to connect to host %s", network.Host)
 	}

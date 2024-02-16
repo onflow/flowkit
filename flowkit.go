@@ -34,16 +34,17 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
+	"github.com/pkg/errors"
+	"github.com/tyler-smith/go-bip39"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
+
 	"github.com/onflow/flowkit/accounts"
 	"github.com/onflow/flowkit/config"
 	"github.com/onflow/flowkit/gateway"
 	"github.com/onflow/flowkit/output"
 	"github.com/onflow/flowkit/project"
 	"github.com/onflow/flowkit/transactions"
-	"github.com/pkg/errors"
-	"github.com/tyler-smith/go-bip39"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 )
 
 // BlockQuery defines possible queries for block.
@@ -1049,6 +1050,45 @@ func (f *Flowkit) SendTransaction(
 	res, err := f.gateway.GetTransactionResult(ctx, sentTx.ID(), true)
 
 	return sentTx, res, err
+}
+
+// ReplaceImportsInScript will replace the imports in the script code with the contracts from the network.
+func (f *Flowkit) ReplaceImportsInScript(
+	ctx context.Context,
+	script Script,
+) (Script, error) {
+	state, err := f.State()
+	if err != nil {
+		return Script{}, err
+	}
+
+	contracts, err := state.DeploymentContractsByNetwork(f.network)
+	if err != nil {
+		return Script{}, err
+	}
+
+	importReplacer := project.NewImportReplacer(
+		contracts,
+		state.AliasesForNetwork(f.network),
+	)
+
+	program, err := project.NewProgram(script.Code, script.Args, script.Location)
+	if err != nil {
+		return Script{}, err
+	}
+
+	if program.HasImports() {
+		program, err = importReplacer.Replace(program)
+		if err != nil {
+			return Script{}, err
+		}
+	}
+
+	return Script{
+		Code:     program.Code(),
+		Args:     script.Args,
+		Location: script.Location,
+	}, nil
 }
 
 // this is added to resolve the issue with chainhash ambiguous import,

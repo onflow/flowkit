@@ -226,6 +226,46 @@ func (p *State) AccountsForNetwork(network config.Network) *accounts.Accounts {
 	return &accs
 }
 
+// AccountByContractName returns the account for a contract by contract name.
+func (p *State) AccountByContractName(contractName string, network config.Network) (*accounts.Account, error) {
+	deployments := p.Deployments().ByNetwork(network.Name)
+	var accountName string
+	for _, d := range deployments {
+		for _, c := range d.Contracts {
+			if c.Name == contractName {
+				accountName = d.Account
+				break
+			}
+		}
+	}
+	if accountName == "" {
+		return nil, fmt.Errorf("contract not found in state")
+	}
+
+	accs := p.Accounts()
+	if accs == nil {
+		return nil, fmt.Errorf("no accounts found in state")
+	}
+
+	var account *accounts.Account
+	for _, a := range *accs {
+		if accountName == a.Name {
+			account = &a
+			break
+		}
+	}
+	if account == nil {
+		return nil, fmt.Errorf("account %s not found in state", accountName)
+	}
+
+	return account, nil
+}
+
+// AccountByContract returns the account for a contract.
+func (p *State) AccountByContract(contract *config.Contract, network config.Network) (*accounts.Account, error) {
+	return p.AccountByContractName(contract.Name, network)
+}
+
 // AliasesForNetwork returns all deployment aliases for a network.
 func (p *State) AliasesForNetwork(network config.Network) project.LocationAliases {
 	aliases := make(project.LocationAliases)
