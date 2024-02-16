@@ -4,6 +4,7 @@ package mocks
 
 import (
 	cadence "github.com/onflow/cadence"
+
 	accounts "github.com/onflow/flowkit/accounts"
 
 	config "github.com/onflow/flowkit/config"
@@ -572,6 +573,34 @@ func (_m *Services) RemoveContract(_a0 context.Context, _a1 *accounts.Account, _
 
 	if rf, ok := ret.Get(1).(func(context.Context, *accounts.Account, string) error); ok {
 		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ReplaceImportsInScript provides a mock function with given fields: _a0, _a1
+func (_m *Services) ReplaceImportsInScript(_a0 context.Context, _a1 flowkit.Script) (flowkit.Script, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReplaceImportsInScript")
+	}
+
+	var r0 flowkit.Script
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flowkit.Script) (flowkit.Script, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flowkit.Script) flowkit.Script); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(flowkit.Script)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flowkit.Script) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
