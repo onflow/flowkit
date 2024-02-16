@@ -19,8 +19,6 @@
 package mocks
 
 import (
-	"context"
-
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/mock"
@@ -79,32 +77,27 @@ type MockServices struct {
 }
 
 func DefaultMockServices() *MockServices {
-	ctx := context.Background()
 	m := &Services{}
 	t := &MockServices{
 		Mock: m,
 		GetAccount: m.On(
 			mocks.GetAccountFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flow.Address"),
 		),
 		ExecuteScript: m.On(
 			mocks.ExecuteScriptFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flowkit.Script"),
 			mock.AnythingOfType("flowkit.ScriptQuery"),
 		),
 		SendSignedTransaction: m.On(
 			mocks.SendSignedTransactionFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("*transactions.Transaction"),
 		),
 		AddContract: m.On(
 			addContractFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("*accounts.Account"),
 			mock.AnythingOfType("flowkit.Script"),
@@ -112,13 +105,11 @@ func DefaultMockServices() *MockServices {
 		),
 		GetCollection: m.On(
 			mocks.GetCollectionFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flow.Identifier"),
 		),
 		GetEvents: m.On(
 			mocks.GetEventsFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("[]string"),
 			mock.AnythingOfType("uint64"),
@@ -127,7 +118,6 @@ func DefaultMockServices() *MockServices {
 		),
 		BuildTransaction: m.On(
 			buildTransactionFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("transactions.AddressesRoles"),
 			mock.AnythingOfType("int"),
@@ -136,14 +126,12 @@ func DefaultMockServices() *MockServices {
 		),
 		CreateAccount: m.On(
 			createAccountFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("*accounts.Account"),
 			mock.AnythingOfType("[]accounts.PublicKey"),
 		),
 		DeployProject: m.On(
 			deployProjectFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flowkit.UpdateContract"),
 		),
@@ -169,33 +157,28 @@ func DefaultMockServices() *MockServices {
 		),
 		GetBlock: m.On(
 			getBlockFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flowkit.BlockQuery"),
 		),
 		GetTransactionByID: m.On(
 			getTransactionByIDFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flow.Identifier"),
 			mock.AnythingOfType("bool"),
 		),
 		GetTransactionsByBlockID: m.On(
 			getTransactionsByBlockIDFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("flow.Identifier"),
 		),
 		RemoveContract: m.On(
 			removeContractFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("*accounts.Account"),
 			mock.AnythingOfType("string"),
 		),
 		SendTransaction: m.On(
 			sendTransactionFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("transactions.AccountRoles"),
 			mock.AnythingOfType("flowkit.Script"),
@@ -203,7 +186,6 @@ func DefaultMockServices() *MockServices {
 		),
 		SignTransactionPayload: m.On(
 			signTransactionPayloadFunc,
-			ctx,
 			mock.Anything,
 			mock.AnythingOfType("*accounts.Account"),
 			mock.AnythingOfType("[]uint8"),
@@ -220,7 +202,7 @@ func DefaultMockServices() *MockServices {
 	}
 
 	t.GetAccount.Run(func(args mock.Arguments) {
-		addr := args.Get(2).(flow.Address)
+		addr := args.Get(1).(flow.Address)
 		t.GetAccount.Return(tests.NewAccountWithAddress(addr.String()), nil)
 	})
 

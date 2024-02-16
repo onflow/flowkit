@@ -1052,6 +1052,45 @@ func (f *Flowkit) SendTransaction(
 	return sentTx, res, err
 }
 
+// ReplaceImportsInScript will replace the imports in the script code with the contracts from the network.
+func (f *Flowkit) ReplaceImportsInScript(
+	ctx context.Context,
+	script Script,
+) (Script, error) {
+	state, err := f.State()
+	if err != nil {
+		return Script{}, err
+	}
+
+	contracts, err := state.DeploymentContractsByNetwork(f.network)
+	if err != nil {
+		return Script{}, err
+	}
+
+	importReplacer := project.NewImportReplacer(
+		contracts,
+		state.AliasesForNetwork(f.network),
+	)
+
+	program, err := project.NewProgram(script.Code, script.Args, script.Location)
+	if err != nil {
+		return Script{}, err
+	}
+
+	if program.HasImports() {
+		program, err = importReplacer.Replace(program)
+		if err != nil {
+			return Script{}, err
+		}
+	}
+
+	return Script{
+		Code:     program.Code(),
+		Args:     script.Args,
+		Location: script.Location,
+	}, nil
+}
+
 // this is added to resolve the issue with chainhash ambiguous import,
 // the code is not used, but it's needed to force go.mod specify and retain chainhash version
 // workaround for issue: https://github.com/golang/go/issues/27899
