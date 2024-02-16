@@ -120,4 +120,7 @@ type Services interface {
 	// SendTransaction will build and send a transaction to the Flow network, using the accounts provided for each role and
 	// contain the script. Transaction as well as transaction result will be returned in case the transaction is successfully submitted.
 	SendTransaction(context.Context, transactions.AccountRoles, Script, uint64) (*flow.Transaction, *flow.TransactionResult, error)
+
+	// ReplaceImportsInScript will replace the imports in the script code with the contracts from the network.
+	ReplaceImportsInScript(context.Context, Script) (Script, error)
 }

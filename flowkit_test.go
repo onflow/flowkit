@@ -99,6 +99,45 @@ func resourceToContract(res tests.Resource) Script {
 
 var ctx = context.Background()
 
+func TestReplaceImports(t *testing.T) {
+	t.Run("Replace Imports", func(t *testing.T) {
+		t.Parallel()
+
+		state, flowkit := setupIntegration()
+		srvAcc, _ := state.EmulatorServiceAccount()
+
+		// setup
+		c := config.Contract{
+			Name:     tests.ContractHelloString.Name,
+			Location: tests.ContractHelloString.Filename,
+		}
+		state.Contracts().AddOrUpdate(c)
+		state.Networks().AddOrUpdate(config.EmulatorNetwork)
+
+		d := config.Deployment{
+			Network: config.EmulatorNetwork.Name,
+			Account: srvAcc.Name,
+			Contracts: []config.ContractDeployment{{
+				Name: c.Name,
+				Args: nil,
+			}},
+		}
+		state.Deployments().AddOrUpdate(d)
+		_, _, _ = flowkit.AddContract(
+			ctx,
+			srvAcc,
+			resourceToContract(tests.ContractHelloString),
+			UpdateExistingContract(false),
+		)
+
+		contract := resourceToContract(tests.ScriptImport)
+		contract, err := flowkit.ReplaceImportsInScript(ctx, contract)
+
+		assert.NoError(t, err)
+		assert.True(t, strings.Contains(string(contract.Code), "import Hello from 0x"))
+	})
+}
+
 func TestAccounts(t *testing.T) {
 	state, _, _ := setup()
 	pubKey, _ := crypto.DecodePublicKeyHex(crypto.ECDSA_P256, "858a7d978b25d61f348841a343f79131f4b9fab341dd8a476a6f4367c25510570bf69b795fc9c3d2b7191327d869bcf848508526a3c1cafd1af34f71c7765117")
