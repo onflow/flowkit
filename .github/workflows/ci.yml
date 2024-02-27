@@ -3,11 +3,11 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
       - 'feature/**'
   pull_request:
     branches:
-      - master
+      - main
       - 'feature/**'
 
 env:
