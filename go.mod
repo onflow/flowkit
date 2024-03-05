@@ -10,8 +10,8 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.0.0-M9
 	github.com/onflow/crypto v0.25.0
-	github.com/onflow/flow-emulator v1.0.0-M7
-	github.com/onflow/flow-go v0.34.0-crescendo-preview.5
+	github.com/onflow/flow-emulator v1.0.0-M8
+	github.com/onflow/flow-go v0.34.0-crescendo-preview.5.0.20240228222755-c41bc8a25122
 	github.com/onflow/flow-go-sdk v1.0.0-M8
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.0
