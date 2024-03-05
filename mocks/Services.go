@@ -4,7 +4,6 @@ package mocks
 
 import (
 	cadence "github.com/onflow/cadence"
-
 	accounts "github.com/onflow/flowkit/accounts"
 
 	config "github.com/onflow/flowkit/config"
@@ -719,6 +718,24 @@ func (_m *Services) SignTransactionPayload(_a0 context.Context, _a1 *accounts.Ac
 	}
 
 	return r0, r1
+}
+
+// WaitServer provides a mock function with given fields: _a0
+func (_m *Services) WaitServer(_a0 context.Context) error {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WaitServer")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // NewServices creates a new instance of Services. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

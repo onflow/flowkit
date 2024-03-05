@@ -206,6 +206,10 @@ func (g *GrpcGateway) Ping() error {
 	return g.client.Ping(ctx)
 }
 
+func (g *GrpcGateway) WaitServer(ctx context.Context) error {
+	return g.client.WaitServer(ctx)
+}
+
 // SecureConnection is used to log warning if a service should be using a secure client but is not
 func (g *GrpcGateway) SecureConnection() bool {
 	return g.secureClient
