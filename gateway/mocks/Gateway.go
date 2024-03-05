@@ -503,6 +503,24 @@ func (_m *Gateway) SendSignedTransaction(_a0 context.Context, _a1 *flow.Transact
 	return r0, r1
 }
 
+// WaitServer provides a mock function with given fields:
+func (_m *Gateway) WaitServer() error {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for WaitServer")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // NewGateway creates a new instance of Gateway. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewGateway(t interface {

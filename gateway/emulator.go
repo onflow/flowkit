@@ -159,6 +159,10 @@ func (g *EmulatorGateway) Ping() error {
 	return nil
 }
 
+func (g *EmulatorGateway) WaitServer() error {
+	return nil
+}
+
 type scriptQuery struct {
 	id     flow.Identifier
 	height uint64

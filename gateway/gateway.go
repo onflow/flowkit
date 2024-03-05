@@ -45,5 +45,6 @@ type Gateway interface {
 	GetCollection(context.Context, flow.Identifier) (*flow.Collection, error)
 	GetLatestProtocolStateSnapshot(context.Context) ([]byte, error)
 	Ping() error
+	WaitServer() error
 	SecureConnection() bool
 }
