@@ -206,8 +206,7 @@ func (g *GrpcGateway) Ping() error {
 	return g.client.Ping(ctx)
 }
 
-func (g *GrpcGateway) WaitServer() error {
-	ctx := context.Background()
+func (g *GrpcGateway) WaitServer(ctx context.Context) error {
 	return g.client.WaitServer(ctx)
 }
 

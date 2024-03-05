@@ -159,7 +159,7 @@ func (g *EmulatorGateway) Ping() error {
 	return nil
 }
 
-func (g *EmulatorGateway) WaitServer() error {
+func (g *EmulatorGateway) WaitServer(ctx context.Context) error {
 	return nil
 }
 

@@ -136,8 +136,8 @@ func (f *Flowkit) Ping() error {
 	return f.gateway.Ping()
 }
 
-func (f *Flowkit) WaitServer() error {
-	return f.gateway.WaitServer()
+func (f *Flowkit) WaitServer(ctx context.Context) error {
+	return f.gateway.WaitServer(ctx)
 }
 
 // GetAccount fetches account on the Flow network.
