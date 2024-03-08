@@ -353,14 +353,14 @@ func TestAccountsCreate_Integration(t *testing.T) {
 		}}
 
 		accOut := []accountsOut{{
-			address: "01cf0e2f2f715450",
+			address: "179b6b1cb6755e31",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
 			},
 			weights: []int{flow.AccountKeyWeightThreshold},
 		}, {
-			address: "179b6b1cb6755e31",
+			address: "f3fcd2c1a78f5eee",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
@@ -368,7 +368,7 @@ func TestAccountsCreate_Integration(t *testing.T) {
 			},
 			weights: []int{500, 500},
 		}, {
-			address: "f3fcd2c1a78f5eee",
+			address: "e03daebed8ca0615",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
@@ -1917,7 +1917,7 @@ func TestTransactions_Integration(t *testing.T) {
 			a,
 			[]byte(fmt.Sprintf("%x", tx.FlowTransaction().Encode())),
 		)
-		assert.EqualError(t, err, "not a valid signer 179b6b1cb6755e31, proposer: 01cf0e2f2f715450, payer: 01cf0e2f2f715450, authorizers: [01cf0e2f2f715450]")
+		assert.EqualError(t, err, "not a valid signer f3fcd2c1a78f5eee, proposer: 179b6b1cb6755e31, payer: 179b6b1cb6755e31, authorizers: [179b6b1cb6755e31]")
 		assert.Nil(t, txSigned)
 	})
 
