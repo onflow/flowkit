@@ -40,11 +40,16 @@ var (
 		Name: "mainnet",
 		Host: "access.mainnet.nodes.onflow.org:9000",
 	}
+	PreviewnetNetwork = Network{
+		Name: "previewnet",
+		Host: "access.previewnet.nodes.onflow.org:9000",
+	}
 	DefaultNetworks = Networks{
 		EmulatorNetwork,
 		TestingNetwork,
 		TestnetNetwork,
 		MainnetNetwork,
+		PreviewnetNetwork,
 	}
 )
 

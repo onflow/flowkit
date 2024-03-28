@@ -109,11 +109,11 @@ func TestAccounts_Remove(t *testing.T) {
 	accounts := Accounts{acc1, acc2, acc3}
 
 	accounts.Remove("account2")
-	assert.Equal(t, len(accounts), 2)
+	assert.Len(t, accounts, 2)
 
 	_, err := accounts.ByName("account2")
 	assert.Error(t, err)
 
 	accounts.Remove("account4")
-	assert.Equal(t, len(accounts), 2)
+	assert.Len(t, accounts, 2)
 }

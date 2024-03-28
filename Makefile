@@ -18,7 +18,7 @@ MIXPANEL_PROJECT_TOKEN := 3fae49de272be1ceb8cf34119f747073
 
 .PHONY: test
 test:
-	GO111MODULE=on go test -coverprofile=$(COVER_PROFILE) $(if $(JSON_OUTPUT),-json,) ./...
+	GO111MODULE=on go test -v -coverprofile=$(COVER_PROFILE) $(if $(JSON_OUTPUT),-json,) ./...
 
 .PHONY: install-tools
 install-tools:
@@ -35,7 +35,7 @@ generate-schema:
 
 .PHONY: check-schema
 check-schema:
-	go run ./cmd/flow-schema/flow-schema.go --verify=true ./schema.json 
+	go run ./cmd/flow-schema/flow-schema.go --verify=true ./schema.json
 
 .PHONY: check-tidy
 check-tidy:

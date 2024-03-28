@@ -26,9 +26,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/onflow/flowkit/accounts"
-	"github.com/onflow/flowkit/transactions"
-
 	"github.com/onflow/cadence"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
 	"github.com/onflow/flow-emulator/emulator"
@@ -39,12 +36,14 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/gateway"
-	"github.com/onflow/flowkit/gateway/mocks"
-	"github.com/onflow/flowkit/output"
-	"github.com/onflow/flowkit/project"
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/gateway"
+	"github.com/onflow/flowkit/v2/gateway/mocks"
+	"github.com/onflow/flowkit/v2/output"
+	"github.com/onflow/flowkit/v2/project"
+	"github.com/onflow/flowkit/v2/tests"
+	"github.com/onflow/flowkit/v2/transactions"
 )
 
 func Alice() *accounts.Account {
@@ -354,14 +353,14 @@ func TestAccountsCreate_Integration(t *testing.T) {
 		}}
 
 		accOut := []accountsOut{{
-			address: "01cf0e2f2f715450",
+			address: "179b6b1cb6755e31",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
 			},
 			weights: []int{flow.AccountKeyWeightThreshold},
 		}, {
-			address: "179b6b1cb6755e31",
+			address: "f3fcd2c1a78f5eee",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
@@ -369,7 +368,7 @@ func TestAccountsCreate_Integration(t *testing.T) {
 			},
 			weights: []int{500, 500},
 		}, {
-			address: "f3fcd2c1a78f5eee",
+			address: "e03daebed8ca0615",
 			balance: uint64(100000),
 			pubKeys: []crypto.PublicKey{
 				tests.PubKeys()[0],
@@ -550,7 +549,7 @@ func TestAccountsAddContract_Integration(t *testing.T) {
 		assert.NoError(t, err)
 
 		updated := tests.ContractSimple
-		updated.Source = []byte(`pub contract Simple { init() {} }`)
+		updated.Source = []byte(`access(all) contract Simple { init() {} }`)
 		_, _, err = flowkit.AddContract(
 			ctx,
 			srvAcc,
@@ -746,8 +745,8 @@ func TestBlocksGet_Integration(t *testing.T) {
 		block, err := flowkit.GetBlock(ctx, BlockQuery{Latest: true})
 
 		assert.NoError(t, err)
-		assert.Equal(t, block.Height, uint64(0))
-		assert.Equal(t, block.ID.String(), "a20c602fbee6fe4491e116403e3258e7b7924609696ab2edb9a93eed2c29e445")
+		assert.Equal(t, uint64(0), block.Height)
+		assert.Equal(t, "a20c602fbee6fe4491e116403e3258e7b7924609696ab2edb9a93eed2c29e445", block.ID.String())
 	})
 }
 
@@ -1371,7 +1370,7 @@ func TestScripts(t *testing.T) {
 		_, flowkit, gw := setup()
 
 		gw.ExecuteScript.Run(func(args mock.Arguments) {
-			assert.Len(t, string(args.Get(1).([]byte)), 78)
+			assert.Len(t, string(args.Get(1).([]byte)), 86)
 			assert.Equal(t, "\"Foo\"", args.Get(2).([]cadence.Value)[0].String())
 			gw.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
 		})
@@ -1523,7 +1522,7 @@ func TestTransactions(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, "\"Bar\"", arg.String())
 			assert.Equal(t, serviceAddress, tx.Payer)
-			assert.Len(t, string(tx.Script), 227)
+			assert.Len(t, string(tx.Script), 224)
 
 			t := tests.NewTransaction()
 			txID = t.ID()
@@ -1918,7 +1917,7 @@ func TestTransactions_Integration(t *testing.T) {
 			a,
 			[]byte(fmt.Sprintf("%x", tx.FlowTransaction().Encode())),
 		)
-		assert.EqualError(t, err, "not a valid signer 179b6b1cb6755e31, proposer: 01cf0e2f2f715450, payer: 01cf0e2f2f715450, authorizers: [01cf0e2f2f715450]")
+		assert.EqualError(t, err, "not a valid signer f3fcd2c1a78f5eee, proposer: 179b6b1cb6755e31, payer: 179b6b1cb6755e31, authorizers: [179b6b1cb6755e31]")
 		assert.Nil(t, txSigned)
 	})
 

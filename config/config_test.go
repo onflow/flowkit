@@ -25,7 +25,7 @@ import (
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 )
 
 func generateComplexConfig() config.Config {
@@ -186,8 +186,8 @@ func Test_GetNetworkByNameComplex(t *testing.T) {
 
 	network, err = conf.Networks.ByName("testnet")
 	assert.NoError(t, err)
-	assert.Equal(t, network.Host, "access.devnet.nodes.onflow.org:9000")
-	assert.Equal(t, network.Key, "5000676131ad3e22d853a3f75a5b5d0db4236d08dd6612e2baad771014b5266a242bccecc3522ff7207ac357dbe4f225c709d9b273ac484fed5d13976a39bdcd")
+	assert.Equal(t, "access.devnet.nodes.onflow.org:9000", network.Host)
+	assert.Equal(t, "5000676131ad3e22d853a3f75a5b5d0db4236d08dd6612e2baad771014b5266a242bccecc3522ff7207ac357dbe4f225c709d9b273ac484fed5d13976a39bdcd", network.Key)
 }
 
 func TestConfig_Validate(t *testing.T) {
@@ -323,13 +323,14 @@ func TestConfig_Validate(t *testing.T) {
 func Test_DefaultConfig(t *testing.T) {
 	cfg := config.Default()
 	assert.Len(t, cfg.Emulators, 1)
-	assert.Equal(t, cfg.Emulators[0].Name, "default")
-	assert.Equal(t, cfg.Emulators[0].ServiceAccount, "emulator-account")
-	assert.Len(t, cfg.Networks, 4)
+	assert.Equal(t, "default", cfg.Emulators[0].Name)
+	assert.Equal(t, "emulator-account", cfg.Emulators[0].ServiceAccount)
+	assert.Len(t, cfg.Networks, 5)
 	assert.Equal(t, "emulator", cfg.Networks[0].Name)
 	assert.Equal(t, "testing", cfg.Networks[1].Name)
 	assert.Equal(t, "testnet", cfg.Networks[2].Name)
 	assert.Equal(t, "mainnet", cfg.Networks[3].Name)
+	assert.Equal(t, "previewnet", cfg.Networks[4].Name)
 }
 
 func Test_DefaultPath(t *testing.T) {

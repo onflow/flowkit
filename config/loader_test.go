@@ -23,13 +23,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/flowkit/config/json"
+	"github.com/onflow/flowkit/v2/config/json"
 )
 
 var mockFS = afero.NewMemMapFs()
@@ -385,7 +385,7 @@ func Test_JSONEnv(t *testing.T) {
 		conf, loadErr := composer.Load([]string{"test2-flow.json"})
 
 		assert.NoError(t, loadErr)
-		assert.Equal(t, 2, len(conf.Accounts))
+		assert.Len(t, conf.Accounts, 2)
 
 		acc1, _ := conf.Accounts.ByName("advanced")
 		assert.Equal(t, fmt.Sprintf("0x%s", key2), acc1.Key.PrivateKey.String())

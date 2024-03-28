@@ -30,7 +30,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/templates"
 
-	"github.com/onflow/flowkit/accounts"
+	"github.com/onflow/flowkit/v2/accounts"
 )
 
 // New create new instance of transaction.
@@ -104,7 +104,7 @@ func addAccountContractWithArgs(
 	// of multiple arguments with the last %s which is extended in the next step
 	const addAccountContractTemplate = `
 	transaction(name: String, code: String %s) {
-		prepare(signer: AuthAccount) {
+		prepare(signer: auth(AddContract) &Account) {
 			signer.contracts.add(name: name, code: code.utf8 %s)
 		}
 	}`

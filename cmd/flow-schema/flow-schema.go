@@ -25,7 +25,7 @@ import (
 	"os"
 	"strings"
 
-	configJson "github.com/onflow/flowkit/config/json"
+	configJson "github.com/onflow/flowkit/v2/config/json"
 )
 
 func main() {

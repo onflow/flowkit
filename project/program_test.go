@@ -40,7 +40,7 @@ func TestProgram(t *testing.T) {
                 import FooSpace from 0x124
                 import "BarSpace"
 
-                pub contract Foo {}
+                access(all) contract Foo {}
             `),
 				expectedCount: 2,
 			},
@@ -59,28 +59,28 @@ func TestProgram(t *testing.T) {
 			code    []byte
 			imports []string
 		}{{
-			code:    []byte(`pub contract Foo {}`),
+			code:    []byte(`access(all) contract Foo {}`),
 			imports: []string{},
 		}, {
-			code:    []byte(`pub fun main() {}`),
+			code:    []byte(`access(all) fun main() {}`),
 			imports: []string{},
 		}, {
 			code: []byte(`
 				import Bar from "./Bar.cdc"
-				pub contract Foo {}
+				access(all) contract Foo {}
 			`),
 			imports: []string{"./Bar.cdc"},
 		}, {
 			code: []byte(`
 				import Bar from "./Bar.cdc"
 				import Zoo from "./zoo/Zoo.cdc"
-				pub contract Foo {}
+				access(all) contract Foo {}
 			`),
 			imports: []string{"./Bar.cdc", "./zoo/Zoo.cdc"},
 		}, { // new schema import
 			code: []byte(`
 				import "Bar"
-				pub contract Foo {}
+				access(all) contract Foo {}
 			`),
 			imports: []string{"Bar"},
 		}, {
@@ -90,7 +90,7 @@ func TestProgram(t *testing.T) {
 				import Crypto
 				import Foo from 0x01
 
-				pub contract Foo {}
+				access(all) contract Foo {}
 			`),
 			imports: []string{"Bar", "./Zoo.cdc"},
 		}}
@@ -108,12 +108,12 @@ func TestProgram(t *testing.T) {
 			code []byte
 			name string
 		}{{
-			code: []byte(`pub contract Foo {}`),
+			code: []byte(`access(all) contract Foo {}`),
 			name: "Foo",
 		}, {
 			code: []byte(`
 				import Bar from "./Bar.cdc"
-				pub contract Foo {}
+				access(all) contract Foo {}
 			`),
 			name: "Foo",
 		}}
@@ -128,15 +128,15 @@ func TestProgram(t *testing.T) {
 
 		failed := [][]byte{
 			[]byte(`
-				pub contract Foo {}
-				pub contract Bar {}
+				access(all) contract Foo {}
+				access(all) contract Bar {}
 			`),
 			[]byte(`
-				pub contract Foo {}
-				pub resource interface Test {}
+				access(all) contract Foo {}
+				access(all) resource interface Test {}
 			`),
 			[]byte(`
-				pub contract Foo {}
+				access(all) contract Foo {}
 				struct Bar {}
 			`),
 		}
@@ -149,7 +149,7 @@ func TestProgram(t *testing.T) {
 			assert.EqualError(t, err, "the code must declare exactly one contract or contract interface")
 		}
 
-		program, err := NewProgram([]byte(`pub fun main() {}`), nil, "")
+		program, err := NewProgram([]byte(`access(all) fun main() {}`), nil, "")
 		require.NoError(t, err)
 		_, err = program.Name()
 		assert.EqualError(t, err, "unable to determine contract name")
@@ -162,7 +162,7 @@ func TestProgram(t *testing.T) {
 			import  FooSpace  from  "./FooSpace.cdc"
 			import   "BarSpace"
 
-			pub contract Foo {}
+			access(all) contract Foo {}
 		`)
 
 		replaced := []byte(`
@@ -171,7 +171,7 @@ func TestProgram(t *testing.T) {
 			import FooSpace from 0x3
 			import BarSpace from 0x4
 
-			pub contract Foo {}
+			access(all) contract Foo {}
 		`)
 
 		program, err := NewProgram(code, nil, "")
@@ -193,7 +193,7 @@ func TestProgram(t *testing.T) {
 		import FooSpace from 0x124
 		import "BarSpace"
 
-		pub contract Foo {}
+		access(all) contract Foo {}
 	`)
 
 		expected := []byte(`
@@ -202,7 +202,7 @@ func TestProgram(t *testing.T) {
 		import "FooSpace"
 		import "BarSpace"
 
-		pub contract Foo {}
+		access(all) contract Foo {}
 	`)
 
 		program, err := NewProgram(code, nil, "")

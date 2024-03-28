@@ -1,4 +1,4 @@
-module github.com/onflow/flowkit
+module github.com/onflow/flowkit/v2
 
 go 1.20
 
@@ -8,11 +8,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v0.42.9
+	github.com/onflow/cadence v1.0.0-preview.18
 	github.com/onflow/crypto v0.25.0
-	github.com/onflow/flow-emulator v0.61.1
-	github.com/onflow/flow-go v0.33.2-0.20240306234901-64ab8d27ea30
-	github.com/onflow/flow-go-sdk v0.46.0
+	github.com/onflow/flow-emulator v1.0.0-preview.15
+	github.com/onflow/flow-go v0.34.0-crescendo-preview.8.0.20240328003708-11040f76d0cd
+	github.com/onflow/flow-go-sdk v1.0.0-preview.16
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/afero v1.10.0
@@ -33,6 +33,7 @@ require (
 	github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e // indirect
 	github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
+	github.com/SaveTheRbtz/mph v0.1.1-0.20240117162131-4166ec7869bc // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/VictoriaMetrics/fastcache v1.12.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -66,7 +67,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.4.1-0.20230228173756-c0c9f774e40c // indirect
 	github.com/fxamacker/circlehash v0.3.0 // indirect
 	github.com/getsentry/sentry-go v0.18.0 // indirect
-	github.com/glebarez/go-sqlite v1.21.1 // indirect
+	github.com/glebarez/go-sqlite v1.22.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -106,8 +107,8 @@ require (
 	github.com/ipfs/go-metrics-interface v0.0.1 // indirect
 	github.com/jbenet/go-temp-err-catcher v0.1.0 // indirect
 	github.com/jbenet/goprocess v0.1.4 // indirect
-	github.com/k0kubun/pp/v3 v3.2.0 // indirect
-	github.com/kevinburke/go-bindata v3.23.0+incompatible // indirect
+	github.com/k0kubun/pp v3.0.1+incompatible // indirect
+	github.com/kevinburke/go-bindata v3.24.0+incompatible // indirect
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
@@ -134,14 +135,15 @@ require (
 	github.com/multiformats/go-multistream v0.5.0 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/onflow/atree v0.6.0 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v1.2.4-0.20231016154253-a00dbf7c061f // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v1.2.4-0.20231016154253-a00dbf7c061f // indirect
-	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20230711213910-baad011d2b13 // indirect
-	github.com/onflow/flow-nft/lib/go/contracts v1.1.0 // indirect
+	github.com/onflow/atree v0.6.1-0.20240308163425-dc825c20b1a2 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v0.15.2-0.20240327170024-10241fffd864 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v0.15.2-0.20240327170024-10241fffd864 // indirect
+	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20240327162334-bd133114f87a // indirect
+	github.com/onflow/flow-ft/lib/go/templates v0.7.1-0.20240327162334-bd133114f87a // indirect
+	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20240326155818-c01c72c091c0 // indirect
+	github.com/onflow/flow-nft/lib/go/templates v0.0.0-20240326155818-c01c72c091c0 // indirect
 	github.com/onflow/flow/protobuf/go/flow v0.3.7 // indirect
-	github.com/onflow/nft-storefront/lib/go/contracts v0.0.0-20221222181731-14b90207cead // indirect
-	github.com/onflow/sdks v0.5.0 // indirect
+	github.com/onflow/sdks v0.5.1-0.20230912225508-b35402f12bba // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
@@ -209,9 +211,9 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 	lukechampine.com/blake3 v1.2.1 // indirect
-	modernc.org/libc v1.22.3 // indirect
-	modernc.org/mathutil v1.5.0 // indirect
-	modernc.org/memory v1.5.0 // indirect
-	modernc.org/sqlite v1.21.1 // indirect
+	modernc.org/libc v1.37.6 // indirect
+	modernc.org/mathutil v1.6.0 // indirect
+	modernc.org/memory v1.7.2 // indirect
+	modernc.org/sqlite v1.28.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )

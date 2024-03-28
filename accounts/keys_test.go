@@ -24,9 +24,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2/tests"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 )
 
 func Test_KMS_Keys(t *testing.T) {

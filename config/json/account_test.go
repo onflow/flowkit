@@ -28,7 +28,7 @@ import (
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 )
 
 func Test_ConfigAccountKeysSimple(t *testing.T) {
