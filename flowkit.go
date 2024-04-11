@@ -28,12 +28,12 @@ import (
 	"sync"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	goeth "github.com/ethereum/go-ethereum/accounts"
 	"github.com/lmars/go-slip10"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
+	goeth "github.com/onflow/go-ethereum/accounts"
 	"github.com/pkg/errors"
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/exp/maps"
