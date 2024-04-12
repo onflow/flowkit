@@ -7,11 +7,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v0.42.9
+	github.com/onflow/cadence v0.42.10
 	github.com/onflow/crypto v0.25.1
-	github.com/onflow/flow-emulator v0.62.0
-	github.com/onflow/flow-go v0.33.2-0.20240411115514-7b9997bb6c14
-	github.com/onflow/flow-go-sdk v0.46.0
+	github.com/onflow/flow-emulator v0.62.1
+	github.com/onflow/flow-go v0.33.2-0.20240412174857-015156b297b5
+	github.com/onflow/flow-go-sdk v0.46.2
 	github.com/onflow/go-ethereum v1.13.4
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.0
