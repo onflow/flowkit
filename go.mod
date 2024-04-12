@@ -4,15 +4,15 @@ go 1.20
 
 require (
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2
-	github.com/ethereum/go-ethereum v1.13.5
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.0.0-preview.19
 	github.com/onflow/crypto v0.25.1
-	github.com/onflow/flow-emulator v1.0.0-preview.16
-	github.com/onflow/flow-go v0.34.0-crescendo-preview.9.0.20240403221216-33c1de004dc1
-	github.com/onflow/flow-go-sdk v1.0.0-preview.17
+	github.com/onflow/flow-emulator v1.0.0-preview.18
+	github.com/onflow/flow-go v0.34.0-crescendo-preview.10.0.20240412141002-8081bde9d8a7
+	github.com/onflow/flow-go-sdk v1.0.0-preview.18
+	github.com/onflow/go-ethereum v1.13.4
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/afero v1.10.0
@@ -37,7 +37,7 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/VictoriaMetrics/fastcache v1.12.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bits-and-blooms/bitset v1.7.0 // indirect
+	github.com/bits-and-blooms/bitset v1.10.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
@@ -63,6 +63,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ef-ds/deque v1.0.4 // indirect
 	github.com/ethereum/c-kzg-4844 v0.4.0 // indirect
+	github.com/ethereum/go-ethereum v1.13.10 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.4.1-0.20230228173756-c0c9f774e40c // indirect
 	github.com/fxamacker/circlehash v0.3.0 // indirect
@@ -84,6 +85,8 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2 v2.0.0-rc.2 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -91,7 +94,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/holiman/bloomfilter/v2 v2.0.3 // indirect
-	github.com/holiman/uint256 v1.2.3 // indirect
+	github.com/holiman/uint256 v1.2.4 // indirect
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/ipfs/bbloom v0.0.4 // indirect
@@ -142,7 +145,7 @@ require (
 	github.com/onflow/flow-ft/lib/go/templates v0.7.1-0.20240402160548-a9c331660956 // indirect
 	github.com/onflow/flow-nft/lib/go/contracts v1.1.1-0.20240402163945-74687e7a5b9d // indirect
 	github.com/onflow/flow-nft/lib/go/templates v0.0.0-20240402163945-74687e7a5b9d // indirect
-	github.com/onflow/flow/protobuf/go/flow v0.3.7 // indirect
+	github.com/onflow/flow/protobuf/go/flow v0.4.0 // indirect
 	github.com/onflow/sdks v0.5.1-0.20230912225508-b35402f12bba // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
