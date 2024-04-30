@@ -2,8 +2,6 @@ module github.com/onflow/flowkit/v2
 
 go 1.21
 
-toolchain go1.21.1
-
 require (
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2
 	github.com/gosuri/uilive v0.0.4
