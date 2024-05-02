@@ -120,7 +120,7 @@ func DefaultMockGateway() *TestGateway {
 	})
 
 	t.ExecuteScript.Run(func(args mock.Arguments) {
-		t.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
+		t.ExecuteScript.Return(cadence.String(""), nil)
 	})
 
 	t.GetTransaction.Return(tests.NewTransaction(), nil)
