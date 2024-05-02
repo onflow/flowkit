@@ -207,7 +207,7 @@ func DefaultMockServices() *MockServices {
 	})
 
 	t.ExecuteScript.Run(func(args mock.Arguments) {
-		t.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
+		t.ExecuteScript.Return(cadence.String(""), nil)
 	})
 
 	t.GetTransactionByID.Return(tests.NewTransaction(), nil)

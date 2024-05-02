@@ -20,7 +20,6 @@ package json
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/invopop/jsonschema"
 	"github.com/onflow/cadence"
@@ -103,18 +102,18 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 			} else {
 				args := make([]map[string]any, 0)
 				for _, arg := range c.Args {
-					switch arg.Type().ID() {
-					case "Bool":
-						args = append(args, map[string]any{
-							"type":  arg.Type().ID(),
-							"value": arg.ToGoValue(),
-						})
-					default:
-						args = append(args, map[string]any{
-							"type":  arg.Type().ID(),
-							"value": fmt.Sprintf("%v", arg.ToGoValue()),
-						})
+					jsonEncoded, err := jsoncdc.Encode(arg)
+					if err != nil {
+						panic(err)
 					}
+
+					jsonMap := make(map[string]any)
+					err = json.Unmarshal(jsonEncoded, &jsonMap)
+					if err != nil {
+						panic(err)
+					}
+
+					args = append(args, jsonMap)
 				}
 
 				deployments = append(deployments, deployment{

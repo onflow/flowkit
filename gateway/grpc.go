@@ -54,7 +54,9 @@ func NewGrpcGateway(network config.Network, opts ...grpc.DialOption) (*GrpcGatew
 	options = append(options, opts...)
 	gClient, err := grpcAccess.NewClient(
 		network.Host,
-		options...,
+		grpcAccess.WithGRPCDialOptions(
+			options...,
+		),
 	)
 
 	if err != nil || gClient == nil {
@@ -82,7 +84,9 @@ func NewSecureGrpcGateway(network config.Network, opts ...grpc.DialOption) (*Grp
 
 	gClient, err := grpcAccess.NewClient(
 		network.Host,
-		options...,
+		grpcAccess.WithGRPCDialOptions(
+			options...,
+		),
 	)
 
 	if err != nil || gClient == nil {
