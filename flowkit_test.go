@@ -1096,12 +1096,12 @@ func TestProject(t *testing.T) {
 
 			argCode := tx.Arguments[1]
 			decodeCode, _ := jsoncdc.Decode(nil, argCode)
-			code := decodeCode.ToGoValue().(string)
+			code := string(decodeCode.(cadence.String))
 
 			argName := tx.Arguments[0]
 			decodeName, _ := jsoncdc.Decode(nil, argName)
 
-			testCode, found := resolved[decodeName.ToGoValue().(string)]
+			testCode, found := resolved[string(decodeName.(cadence.String))]
 			require.True(t, found)
 			assert.True(t, strings.Contains(string(code), testCode))
 
@@ -1173,12 +1173,12 @@ func TestProject(t *testing.T) {
 
 			argCode := tx.Arguments[1]
 			decodeCode, _ := jsoncdc.Decode(nil, argCode)
-			code, _ := decodeCode.ToGoValue().(string)
+			code := string(decodeCode.(cadence.String))
 
 			argName := tx.Arguments[0]
 			decodeName, _ := jsoncdc.Decode(nil, argName)
 
-			testCode, found := resolved[decodeName.ToGoValue().(string)]
+			testCode, found := resolved[string(decodeName.(cadence.String))]
 			require.True(t, found)
 			assert.True(t, strings.Contains(string(code), testCode))
 
@@ -1372,7 +1372,9 @@ func TestScripts(t *testing.T) {
 		gw.ExecuteScript.Run(func(args mock.Arguments) {
 			assert.Len(t, string(args.Get(1).([]byte)), 86)
 			assert.Equal(t, "\"Foo\"", args.Get(2).([]cadence.Value)[0].String())
-			gw.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
+			retVal, err := cadence.NewString("")
+			require.NoError(t, err)
+			gw.ExecuteScript.Return(retVal, nil)
 		})
 
 		args := []cadence.Value{cadence.String("Foo")}
