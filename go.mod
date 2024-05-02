@@ -7,11 +7,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v1.0.0-preview.23
+	github.com/onflow/cadence v1.0.0-preview.25
 	github.com/onflow/crypto v0.25.1
-	github.com/onflow/flow-emulator v1.0.0-preview.21
-	github.com/onflow/flow-go v0.34.0-crescendo-preview.17
-	github.com/onflow/flow-go-sdk v1.0.0-preview.22
+	github.com/onflow/flow-emulator v1.0.0-preview.22
+	github.com/onflow/flow-go v0.34.0-crescendo-preview.18
+	github.com/onflow/flow-go-sdk v1.0.0-preview.25
 	github.com/onflow/go-ethereum v1.13.4
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.29.0
@@ -136,7 +136,7 @@ require (
 	github.com/multiformats/go-multistream v0.5.0 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/onflow/atree v0.6.1-0.20240416233652-f4568c0c03df // indirect
+	github.com/onflow/atree v0.7.0-rc.1 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/contracts v0.15.2-0.20240429192223-e696a8e439b5 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/templates v0.15.2-0.20240429192223-e696a8e439b5 // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v0.7.1-0.20240424211859-3ff4c0fe2a1e // indirect
