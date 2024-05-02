@@ -1372,9 +1372,7 @@ func TestScripts(t *testing.T) {
 		gw.ExecuteScript.Run(func(args mock.Arguments) {
 			assert.Len(t, string(args.Get(1).([]byte)), 86)
 			assert.Equal(t, "\"Foo\"", args.Get(2).([]cadence.Value)[0].String())
-			retVal, err := cadence.NewString("")
-			require.NoError(t, err)
-			gw.ExecuteScript.Return(retVal, nil)
+			gw.ExecuteScript.Return(cadence.String(""), nil)
 		})
 
 		args := []cadence.Value{cadence.String("Foo")}
