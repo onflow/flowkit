@@ -103,17 +103,23 @@ func Test_TransformDeployToJSON(t *testing.T) {
 		}
 	}`)
 
-	var jsonDeployments jsonDeployments
-	err := json.Unmarshal(b, &jsonDeployments)
+	var original jsonDeployments
+	err := json.Unmarshal(b, &original)
 	assert.NoError(t, err)
 
-	deployments, err := jsonDeployments.transformToConfig()
+	deployments, err := original.transformToConfig()
 	assert.NoError(t, err)
 
 	j := transformDeploymentsToJSON(deployments)
 	x, _ := json.Marshal(j)
 
-	assert.Equal(t, cleanSpecialChars(b), cleanSpecialChars(x))
+	// Unmarshal the config again to compare against the original
+	var result jsonDeployments
+	err = json.Unmarshal(x, &result)
+	assert.NoError(t, err)
+
+	// Check that result is same as original after transformation
+	assert.Equal(t, original, result)
 }
 
 func Test_DeploymentAdvanced(t *testing.T) {

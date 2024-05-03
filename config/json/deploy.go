@@ -100,20 +100,9 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 					simple: c.Name,
 				})
 			} else {
-				args := make([]map[string]any, 0)
+				args := make([]any, 0)
 				for _, arg := range c.Args {
-					jsonEncoded, err := jsoncdc.Encode(arg)
-					if err != nil {
-						panic(err)
-					}
-
-					jsonMap := make(map[string]any)
-					err = json.Unmarshal(jsonEncoded, &jsonMap)
-					if err != nil {
-						panic(err)
-					}
-
-					args = append(args, jsonMap)
+					args = append(args, jsoncdc.Prepare(arg))
 				}
 
 				deployments = append(deployments, deployment{
@@ -139,8 +128,8 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 }
 
 type contractDeployment struct {
-	Name string           `json:"name"`
-	Args []map[string]any `json:"args"`
+	Name string `json:"name"`
+	Args []any  `json:"args"`
 }
 
 type deployment struct {
