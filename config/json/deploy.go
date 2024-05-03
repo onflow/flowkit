@@ -100,9 +100,9 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 					simple: c.Name,
 				})
 			} else {
-				args := make([]map[string]any, 0)
+				args := make([]any, 0)
 				for _, arg := range c.Args {
-					args = append(args, jsoncdc.Prepare(arg).(map[string]any))
+					args = append(args, jsoncdc.Prepare(arg))
 				}
 
 				deployments = append(deployments, deployment{
@@ -128,8 +128,8 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 }
 
 type contractDeployment struct {
-	Name string           `json:"name"`
-	Args []map[string]any `json:"args"`
+	Name string `json:"name"`
+	Args []any  `json:"args"`
 }
 
 type deployment struct {
