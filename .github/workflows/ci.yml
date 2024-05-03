@@ -32,6 +32,7 @@ jobs:
         with:
           file: ./coverage.txt
           flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
