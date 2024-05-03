@@ -120,9 +120,7 @@
           "type": "string"
         },
         "args": {
-          "items": {
-            "type": "object"
-          },
+          "items": true,
           "type": "array"
         }
       },
