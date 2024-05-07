@@ -45,16 +45,18 @@ type GrpcGateway struct {
 // NewGrpcGateway returns a new gRPC gateway.
 
 func NewGrpcGateway(network config.Network, opts ...grpcAccess.ClientOption) (*GrpcGateway, error) {
-	opts = append(
-		opts, 
+	options := append(
+		[]grpcAccess.ClientOption{
 		grpcAccess.WithGRPCDialOptions(
-			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize),
+			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
 		),
-	))
+		},
+		opts...,
+	)
 
 	gClient, err := grpcAccess.NewClient(
 		network.Host,
-		opts...,
+		options...,
 	)
 
 	if err != nil || gClient == nil {
