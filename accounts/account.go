@@ -39,7 +39,7 @@ type Account struct {
 
 // PrivateKeyFile returns the private key file name for an account.
 func PrivateKeyFile(name, path string) string {
-	return fmt.Sprintf(filepath.Join(path, "%s.pkey", name))
+	return filepath.Join(path, fmt.Sprintf("%s.pkey", name))
 }
 
 func FromConfig(conf *config.Config) (Accounts, error) {
