@@ -75,7 +75,7 @@ func newAccount(name string, address string, seed string) *accounts.Account {
 
 func setup() (*State, Flowkit, *mocks.TestGateway) {
 	readerWriter, _ := tests.ReaderWriter()
-	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256)
+	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
 	if err != nil {
 		panic(err)
 	}
@@ -265,7 +265,7 @@ func TestAccounts(t *testing.T) {
 
 func setupIntegration() (*State, Flowkit) {
 	readerWriter, _ := tests.ReaderWriter()
-	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256)
+	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
 	if err != nil {
 		panic(err)
 	}
