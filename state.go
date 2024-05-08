@@ -316,9 +316,9 @@ func Init(
 	rw ReaderWriter,
 	sigAlgo crypto.SignatureAlgorithm,
 	hashAlgo crypto.HashAlgorithm,
-	path string,
+	targetDir string,
 ) (*State, error) {
-	emulatorServiceAccount, err := accounts.NewEmulatorAccount(rw, sigAlgo, hashAlgo, path)
+	emulatorServiceAccount, err := accounts.NewEmulatorAccount(rw, sigAlgo, hashAlgo, targetDir)
 	if err != nil {
 		return nil, err
 	}
