@@ -80,7 +80,7 @@ func setup() (*State, Flowkit, *mocks.TestGateway) {
 		panic(err)
 	}
 
-	emulatorServiceAccount, err := accounts.NewEmulatorAccount(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	emulatorServiceAccount, _ := accounts.NewEmulatorAccount(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
 	state.Accounts().AddOrUpdate(emulatorServiceAccount)
 
 	gw := mocks.DefaultMockGateway()
