@@ -74,10 +74,13 @@ func newAccount(name string, address string, seed string) *accounts.Account {
 
 func setup() (*State, Flowkit, *mocks.TestGateway) {
 	readerWriter, _ := tests.ReaderWriter()
-	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256)
+	state, err := Init(readerWriter)
 	if err != nil {
 		panic(err)
 	}
+
+	emulatorServiceAccount, _ := accounts.NewEmulatorAccount(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	state.Accounts().AddOrUpdate(emulatorServiceAccount)
 
 	gw := mocks.DefaultMockGateway()
 	flowkit := Flowkit{
@@ -264,10 +267,13 @@ func TestAccounts(t *testing.T) {
 
 func setupIntegration() (*State, Flowkit) {
 	readerWriter, _ := tests.ReaderWriter()
-	state, err := Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256)
+	state, err := Init(readerWriter)
 	if err != nil {
 		panic(err)
 	}
+
+	emulatorAccount, _ := accounts.NewEmulatorAccount(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	state.Accounts().AddOrUpdate(emulatorAccount)
 
 	acc, _ := state.EmulatorServiceAccount()
 	pk, _ := acc.Key.PrivateKey()

@@ -76,7 +76,7 @@ func TestNew(t *testing.T) {
 	assert.Equal(t, proposer.Keys[index].Index, tx.FlowTransaction().ProposalKey.KeyIndex)
 
 	rw, _ := tests.ReaderWriter()
-	sig, _ := accounts.NewEmulatorAccount(rw, crypto.ECDSA_P256, crypto.SHA3_256)
+	sig, _ := accounts.NewEmulatorAccount(rw, crypto.ECDSA_P256, crypto.SHA3_256, "")
 	sig.Address = flow.HexToAddress("0x01")
 	err = tx.SetSigner(sig)
 	assert.NoError(t, err)
