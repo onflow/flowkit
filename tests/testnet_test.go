@@ -43,8 +43,12 @@ const testAccountName = "test-account"
 func initTestnet(t *testing.T) (gateway.Gateway, *flowkit.State, flowkit.Services, flowkit.ReaderWriter, afero.Fs) {
 	readerWriter, mockFs := ReaderWriter()
 
-	state, err := flowkit.Init(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256)
+	state, err := flowkit.Init(readerWriter)
 	require.NoError(t, err)
+
+	emulatorServiceAccount, err := accounts2.NewEmulatorAccount(readerWriter, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	require.NoError(t, err)
+	state.Accounts().AddOrUpdate(emulatorServiceAccount)
 
 	gw, err := gateway.NewGrpcGateway(config.TestnetNetwork)
 	require.NoError(t, err)
