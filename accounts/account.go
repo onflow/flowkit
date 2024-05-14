@@ -21,6 +21,7 @@ package accounts
 import (
 	"crypto/rand"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/onflow/flow-go-sdk"
@@ -37,8 +38,8 @@ type Account struct {
 }
 
 // PrivateKeyFile returns the private key file name for an account.
-func PrivateKeyFile(name string) string {
-	return fmt.Sprintf("%s.pkey", name)
+func PrivateKeyFile(name, targetDirectory string) string {
+	return filepath.Join(targetDirectory, fmt.Sprintf("%s.pkey", name))
 }
 
 func FromConfig(conf *config.Config) (Accounts, error) {
@@ -91,14 +92,15 @@ func toConfig(account Account) config.Account {
 }
 
 // defaultEmulatorPrivateKeyFile returns the default emulator private key file name.
-func defaultEmulatorPrivateKeyFile() string {
-	return PrivateKeyFile("emulator-account")
+func defaultEmulatorPrivateKeyFile(targetDirectory string) string {
+	return PrivateKeyFile("emulator-account", targetDirectory)
 }
 
 func NewEmulatorAccount(
 	rw config.ReaderWriter,
 	sigAlgo crypto.SignatureAlgorithm,
 	hashAlgo crypto.HashAlgorithm,
+	targetDirectory string,
 ) (*Account, error) {
 	seed := make([]byte, crypto.MinSeedLength)
 	_, err := rand.Read(seed)
@@ -111,14 +113,14 @@ func NewEmulatorAccount(
 		return nil, fmt.Errorf("failed to generate emulator service key: %w", err)
 	}
 
-	if err := rw.WriteFile(defaultEmulatorPrivateKeyFile(), []byte(privateKey.String()), 0644); err != nil {
+	if err := rw.WriteFile(defaultEmulatorPrivateKeyFile(targetDirectory), []byte(privateKey.String()), 0644); err != nil {
 		return nil, fmt.Errorf("failed to write private key file: %w", err)
 	}
 
 	return &Account{
 		Name:    config.DefaultEmulator.ServiceAccount,
 		Address: flow.ServiceAddress(flow.Emulator),
-		Key:     NewFileKey(defaultEmulatorPrivateKeyFile(), 0, sigAlgo, hashAlgo, rw),
+		Key:     NewFileKey(defaultEmulatorPrivateKeyFile(""), 0, sigAlgo, hashAlgo, rw),
 	}, nil
 }
 
