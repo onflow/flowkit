@@ -87,18 +87,20 @@ func Test_Accounts(t *testing.T) {
 			Account{Name: "bob"},
 		}
 
-		accs.AddOrUpdate(&Account{Name: "mike"})
+		initialMike := &Account{Name: "mike"}
+		accs.AddOrUpdate(initialMike)
 		assert.Equal(t, "alice,bob,mike", accs.String())
 
-		m1, err := accs.ByName("mike")
+		initialMikeFromState, err := accs.ByName("mike")
 		assert.NoError(t, err)
-		assert.Equal(t, "0000000000000000", m1.Address.String())
+		assert.Equal(t, "0000000000000000", initialMikeFromState.Address.String())
 
-		m1.Address = flow.HexToAddress("0x02")
-		accs.AddOrUpdate(m1)
-		m2, err := accs.ByName("mike")
+		updatedMike := &Account{Name: "mike", Address: flow.HexToAddress("0x02")}
+		accs.AddOrUpdate(updatedMike)
+
+		updatedMikeFromState, err := accs.ByName("mike")
 		assert.NoError(t, err)
-		assert.Equal(t, "0000000000000002", m2.Address.String())
+		assert.Equal(t, "0000000000000002", updatedMikeFromState.Address.String())
 	})
 
 	t.Run("Remove", func(t *testing.T) {
