@@ -103,6 +103,27 @@ func resourceToContract(res tests.Resource) Script {
 
 var ctx = context.Background()
 
+func TestState(t *testing.T) {
+	t.Run("Account update", func(t *testing.T) {
+		accs := accounts.Accounts{}
+
+		initialAlice := Alice()
+		accs.AddOrUpdate(initialAlice)
+
+		initialAliceFromState, err := accs.ByName(initialAlice.Name)
+		assert.NoError(t, err)
+		assert.Equal(t, initialAliceFromState, initialAlice)
+
+		updatedAlice := Bob()
+		updatedAlice.Name = initialAlice.Name
+		accs.AddOrUpdate(updatedAlice)
+
+		updatedAliceFromState, err := accs.ByName(initialAlice.Name)
+		assert.NoError(t, err)
+		assert.Equal(t, updatedAliceFromState, updatedAlice)
+	})
+}
+
 func TestReplaceImports(t *testing.T) {
 	t.Run("Replace Imports", func(t *testing.T) {
 		t.Parallel()
