@@ -185,7 +185,7 @@ func (a Accounts) ByName(name string) (*Account, error) {
 func (a *Accounts) AddOrUpdate(account *Account) {
 	for i, acc := range *a {
 		if acc.Name == account.Name {
-			(*a)[i] = acc
+			(*a)[i] = *account
 			return
 		}
 	}
