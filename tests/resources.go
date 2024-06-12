@@ -26,6 +26,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/onflow/flow-go-sdk/test"
+	"github.com/onflow/flow/protobuf/go/flow/entities"
 	"github.com/spf13/afero"
 )
 
@@ -574,7 +575,7 @@ var accounts = test.AccountGenerator()
 
 var transactions = test.TransactionGenerator()
 
-var transactionResults = test.TransactionResultGenerator()
+var transactionResults = test.TransactionResultGenerator(entities.EventEncodingVersion_CCF_V0)
 
 func NewAccountWithAddress(address string) *flow.Account {
 	account := accounts.New()
