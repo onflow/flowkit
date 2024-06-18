@@ -22,8 +22,8 @@ import (
 	"context"
 	"testing"
 
-	accounts2 "github.com/onflow/flowkit/accounts"
-	transactions2 "github.com/onflow/flowkit/transactions"
+	accounts2 "github.com/onflow/flowkit/v2/accounts"
+	transactions2 "github.com/onflow/flowkit/v2/transactions"
 
 	"github.com/onflow/cadence"
 	flowsdk "github.com/onflow/flow-go-sdk"
@@ -32,10 +32,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onflow/flowkit"
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/gateway"
-	"github.com/onflow/flowkit/output"
+	"github.com/onflow/flowkit/v2"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/gateway"
+	"github.com/onflow/flowkit/v2/output"
 )
 
 const testAccountName = "test-account"
@@ -99,10 +99,10 @@ func initTestnet(t *testing.T) (gateway.Gateway, *flowkit.State, flowkit.Service
 		// The Vault resource that holds the tokens that are being transferred
 		let sentVault: @FungibleToken.Vault
 	
-		prepare(signer: AuthAccount) {
+		prepare(signer: auth(BorrowValue) &Account) {
 	
 			// Get a reference to the signer's stored vault
-			let vaultRef = signer.borrow<&FlowToken.Vault>(from: /storage/flowTokenVault)
+			let vaultRef = signer.storage.borrow<auth(FungibleToken.Withdrawable) &FlowToken.Vault>(from: /storage/flowTokenVault)
 				?? panic("Could not borrow reference to the owner's Vault!")
 	
 			// Withdraw tokens from the signer's stored vault
@@ -113,8 +113,7 @@ func initTestnet(t *testing.T) (gateway.Gateway, *flowkit.State, flowkit.Service
 	
 			// Get a reference to the recipient's Receiver
 			let receiverRef =  getAccount(to)
-				.getCapability(/public/flowTokenReceiver)
-				.borrow<&{FungibleToken.Receiver}>()
+				.capabilities..borrow<&{FungibleToken.Receiver}>(/public/flowTokenReceiver)
 				?? panic("Could not borrow receiver reference to the recipient's Vault")
 	
 			// Deposit the withdrawn tokens in the recipient's receiver
@@ -140,22 +139,34 @@ func initTestnet(t *testing.T) (gateway.Gateway, *flowkit.State, flowkit.Service
 var testnet = config.TestnetNetwork.Name
 
 func Test_Foo(t *testing.T) {
+
+	// This test relies on a contract deployed on testnet,
+	// written in old cadence version, which no longer valid.
+	// TODO: enable once the testnet contract is updated.
+	t.SkipNow()
+
 	_, st, _, rw, _ := initTestnet(t)
 
 	err := rw.WriteFile("test", []byte("foo"), 0644)
 	require.NoError(t, err)
 
 	out, _ := rw.ReadFile("test")
-	assert.Equal(t, out, []byte("foo"))
+	assert.Equal(t, []byte("foo"), out)
 
 	err = rw.WriteFile("test", []byte("bar"), 0644)
 	require.NoError(t, err)
 
 	out, _ = st.ReadFile("test")
-	assert.Equal(t, out, []byte("bar"))
+	assert.Equal(t, []byte("bar"), out)
 }
 
 func Test_Testnet_ProjectDeploy(t *testing.T) {
+
+	// This test relies on a contract deployed on testnet,
+	// written in old cadence version, which no longer valid.
+	// TODO: enable once the testnet contract is updated.
+	t.SkipNow()
+
 	_, state, flow, rw, _ := initTestnet(t)
 
 	state.Contracts().AddOrUpdate(config.Contract{
@@ -194,8 +205,8 @@ func Test_Testnet_ProjectDeploy(t *testing.T) {
 	// make a change
 	updated := []byte(`
 		import "ContractA"
-		pub contract ContractB {
-			pub init() {}
+		access(all) contract ContractB {
+			access(all) init() {}
 		}
 	`)
 	ContractB.Source = updated

@@ -29,9 +29,8 @@ import (
 	grpcAccess "github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go/utils/grpcutils"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 )
 
 // maxGRPCMessageSize 60mb
@@ -45,13 +44,16 @@ type GrpcGateway struct {
 
 // NewGrpcGateway returns a new gRPC gateway.
 
-func NewGrpcGateway(network config.Network, opts ...grpc.DialOption) (*GrpcGateway, error) {
-	options := []grpc.DialOption{
+func NewGrpcGateway(network config.Network, opts ...grpcAccess.ClientOption) (*GrpcGateway, error) {
+	options := append(
+		[]grpcAccess.ClientOption{
+		grpcAccess.WithGRPCDialOptions(
+			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
+		),
+		},
+		opts...,
+	)
 
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
-	}
-	options = append(options, opts...)
 	gClient, err := grpcAccess.NewClient(
 		network.Host,
 		options...,
@@ -82,7 +84,9 @@ func NewSecureGrpcGateway(network config.Network, opts ...grpc.DialOption) (*Grp
 
 	gClient, err := grpcAccess.NewClient(
 		network.Host,
-		options...,
+		grpcAccess.WithGRPCDialOptions(
+			options...,
+		),
 	)
 
 	if err != nil || gClient == nil {

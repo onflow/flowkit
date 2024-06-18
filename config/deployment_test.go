@@ -120,8 +120,8 @@ func Test_Deployment(t *testing.T) {
 
 		network := deployments.ByNetwork("net")
 		assert.Len(t, network, 2)
-		assert.Equal(t, network[0].Account, "acc")
-		assert.Equal(t, network[1].Account, "acc2")
+		assert.Equal(t, "acc", network[0].Account)
+		assert.Equal(t, "acc2", network[1].Account)
 	})
 
 	t.Run("Remove non-existing deployment", func(t *testing.T) {

@@ -25,8 +25,6 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/onflow/flowkit/accounts"
-
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/spf13/afero"
@@ -34,9 +32,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/thoas/go-funk"
 
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/config/json"
-	"github.com/onflow/flowkit/project"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/config/json"
+	"github.com/onflow/flowkit/v2/project"
 )
 
 var af = afero.Afero{Fs: afero.NewMemMapFs()}
@@ -345,7 +344,7 @@ func generateAliasesComplexProject() State {
 func Test_GetContractsByNameSimple(t *testing.T) {
 	p := generateSimpleProject()
 	path := filepath.FromSlash("../hungry-kitties/cadence/contracts/NonFungibleToken.cdc")
-	err := af.WriteFile(path, []byte("pub contract{}"), os.ModePerm)
+	err := af.WriteFile(path, []byte("access(all) contract{}"), os.ModePerm)
 	require.NoError(t, err)
 
 	contracts, err := p.DeploymentContractsByNetwork(config.EmulatorNetwork)
@@ -394,12 +393,12 @@ func Test_GetContractsByNameComplex(t *testing.T) {
 	p := generateComplexProject()
 
 	for _, c := range p.conf.Contracts {
-		_ = af.WriteFile(c.Location, []byte("pub contract{}"), os.ModePerm)
+		_ = af.WriteFile(c.Location, []byte("access(all) contract{}"), os.ModePerm)
 	}
 
 	contracts, err := p.DeploymentContractsByNetwork(config.EmulatorNetwork)
 	require.NoError(t, err)
-	require.Equal(t, 7, len(contracts))
+	require.Len(t, contracts, 7)
 
 	//sort contracts by name so tests are deterministic
 	sort.Slice(contracts, func(i, j int) bool {

@@ -33,7 +33,7 @@ import (
 	goeth "github.com/onflow/go-ethereum/accounts"
 	"github.com/tyler-smith/go-bip39"
 
-	"github.com/onflow/flowkit/config"
+	"github.com/onflow/flowkit/v2/config"
 )
 
 // PublicKey contains public account key information.

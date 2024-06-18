@@ -25,8 +25,8 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/onflow/flowkit"
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2"
+	"github.com/onflow/flowkit/v2/tests"
 )
 
 func Test_AccountCreatedEvent(t *testing.T) {
@@ -35,7 +35,7 @@ func Test_AccountCreatedEvent(t *testing.T) {
 		flow.EventAccountCreated,
 		[]cadence.Field{{
 			Identifier: "address",
-			Type:       cadence.AddressType{},
+			Type:       cadence.AddressType,
 		}},
 		[]cadence.Value{cadence.NewAddress(address)},
 	)

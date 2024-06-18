@@ -49,19 +49,9 @@ func EventsFromTransaction(tx *flow.TransactionResult) Events {
 }
 
 func NewEvent(event flow.Event) Event {
-	var names []string
-
-	for _, eventType := range event.Value.EventType.Fields {
-		names = append(names, eventType.Identifier)
-	}
-	values := make(map[string]cadence.Value)
-	for id, field := range event.Value.Fields {
-		values[names[id]] = field
-	}
-
 	return Event{
 		Type:   event.Type,
-		Values: values,
+		Values: cadence.FieldsMappedByName(event.Value),
 	}
 }
 

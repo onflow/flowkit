@@ -23,9 +23,9 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/onflow/flowkit/config"
-	"github.com/onflow/flowkit/gateway/mocks"
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2/config"
+	"github.com/onflow/flowkit/v2/gateway/mocks"
+	"github.com/onflow/flowkit/v2/tests"
 )
 
 const (
@@ -207,7 +207,7 @@ func DefaultMockServices() *MockServices {
 	})
 
 	t.ExecuteScript.Run(func(args mock.Arguments) {
-		t.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
+		t.ExecuteScript.Return(cadence.String(""), nil)
 	})
 
 	t.GetTransactionByID.Return(tests.NewTransaction(), nil)

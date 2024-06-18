@@ -25,7 +25,7 @@ import (
 	"github.com/onflow/flow-go-sdk"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/onflow/flowkit/tests"
+	"github.com/onflow/flowkit/v2/tests"
 )
 
 const (
@@ -120,7 +120,7 @@ func DefaultMockGateway() *TestGateway {
 	})
 
 	t.ExecuteScript.Run(func(args mock.Arguments) {
-		t.ExecuteScript.Return(cadence.MustConvertValue(""), nil)
+		t.ExecuteScript.Return(cadence.String(""), nil)
 	})
 
 	t.GetTransaction.Return(tests.NewTransaction(), nil)
