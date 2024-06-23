@@ -47,7 +47,7 @@ type categorizedLogs struct {
 	issues            []string
 }
 
-func (cl *categorizedLogs) LogAll(logger output.Logger) {
+func (cl *categorizedLogs) logAll(logger output.Logger) {
 	logger.Info(output.MessageWithEmojiPrefix("📝", "Dependency Manager Actions Summary"))
 	logger.Info("") // Add a line break after the section
 
@@ -177,7 +177,7 @@ func (di *DependencyInstaller) Install() error {
 		return fmt.Errorf("error saving state: %w", err)
 	}
 
-	di.logs.LogAll(di.Logger)
+	di.logs.logAll(di.Logger)
 
 	return nil
 }
@@ -214,7 +214,7 @@ func (di *DependencyInstaller) AddBySourceString(depSource, customName string) e
 		return err
 	}
 
-	di.logs.LogAll(di.Logger)
+	di.logs.logAll(di.Logger)
 
 	return nil
 }
@@ -229,7 +229,7 @@ func (di *DependencyInstaller) Add(dep config.Dependency) error {
 		return err
 	}
 
-	di.logs.LogAll(di.Logger)
+	di.logs.logAll(di.Logger)
 
 	return nil
 }
@@ -246,7 +246,7 @@ func (di *DependencyInstaller) AddMany(dependencies []config.Dependency) error {
 		return err
 	}
 
-	di.logs.LogAll(di.Logger)
+	di.logs.logAll(di.Logger)
 
 	return nil
 }
