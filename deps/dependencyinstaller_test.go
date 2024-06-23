@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package project
+package deps
 
 import (
 	"fmt"
@@ -31,14 +31,12 @@ import (
 	"github.com/onflow/flowkit/v2/gateway/mocks"
 	"github.com/onflow/flowkit/v2/output"
 	"github.com/onflow/flowkit/v2/tests"
-
-	"github.com/onflow/flow-cli/internal/util"
 )
 
 func TestDependencyInstallerInstall(t *testing.T) {
 
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := util.TestMocks(t)
+	_, state, _ := tests.TestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address
@@ -97,7 +95,7 @@ func TestDependencyInstallerInstall(t *testing.T) {
 func TestDependencyInstallerAdd(t *testing.T) {
 
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := util.TestMocks(t)
+	_, state, _ := tests.TestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address
@@ -191,7 +189,7 @@ func TestDependencyInstallerAdd(t *testing.T) {
 
 func TestDependencyInstallerAddMany(t *testing.T) {
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := util.TestMocks(t)
+	_, state, _ := tests.TestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address.String()

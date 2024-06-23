@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package project
+package deps
 
 import (
 	"context"
@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/onflow/flowkit/v2"
 	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/project"
 
 	"path/filepath"
 
@@ -307,7 +308,7 @@ func (di *DependencyInstaller) fetchDependencies(networkName string, address flo
 	found := false
 
 	for _, contract := range account.Contracts {
-		program, err := NewProgram(contract, nil, "")
+		program, err := project.NewProgram(contract, nil, "")
 		if err != nil {
 			return fmt.Errorf("failed to parse program: %w", err)
 		}
@@ -394,7 +395,7 @@ func isCoreContract(contractName string) bool {
 	return false
 }
 
-func (di *DependencyInstaller) handleFoundContract(networkName, contractAddr, assignedName, contractName string, program *Program) error {
+func (di *DependencyInstaller) handleFoundContract(networkName, contractAddr, assignedName, contractName string, program *project.Program) error {
 	hash := sha256.New()
 	hash.Write(program.CodeWithUnprocessedImports())
 	originalContractDataHash := hex.EncodeToString(hash.Sum(nil))

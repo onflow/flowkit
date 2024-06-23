@@ -20,6 +20,11 @@ package tests
 
 import (
 	"fmt"
+	"github.com/onflow/flowkit/v2"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/onflow/flowkit/v2/mocks"
+	"github.com/stretchr/testify/require"
+	"testing"
 
 	"github.com/onflow/cadence"
 	"github.com/onflow/cadence/runtime/common"
@@ -571,20 +576,20 @@ func HashAlgos() []crypto.HashAlgorithm {
 	return hashAlgos
 }
 
-var accounts = test.AccountGenerator()
+var accountGenerator = test.AccountGenerator()
 
 var transactions = test.TransactionGenerator()
 
 var transactionResults = test.TransactionResultGenerator(entities.EventEncodingVersion_CCF_V0)
 
 func NewAccountWithAddress(address string) *flow.Account {
-	account := accounts.New()
+	account := accountGenerator.New()
 	account.Address = flow.HexToAddress(address)
 	return account
 }
 
 func NewAccountWithContracts(address string, contracts ...Resource) *flow.Account {
-	account := accounts.New()
+	account := accountGenerator.New()
 	account.Address = flow.HexToAddress(address)
 
 	if account.Contracts == nil {
@@ -662,4 +667,17 @@ func NewAccountCreateResult(address flow.Address) *flow.TransactionResult {
 	}}
 
 	return NewTransactionResult(events)
+}
+
+// TestMocks creates mock flowkit services, an empty state and a mock reader writer
+func TestMocks(t *testing.T) (*mocks.MockServices, *flowkit.State, flowkit.ReaderWriter) {
+	services := mocks.DefaultMockServices()
+	rw, _ := ReaderWriter()
+	state, err := flowkit.Init(rw)
+	require.NoError(t, err)
+
+	emulatorAccount, _ := accounts.NewEmulatorAccount(rw, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	state.Accounts().AddOrUpdate(emulatorAccount)
+
+	return services, state, rw
 }
