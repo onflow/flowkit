@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package dependencymanager
+package project
 
 import (
 	"fmt"

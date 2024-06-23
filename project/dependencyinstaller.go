@@ -16,35 +16,27 @@
  * limitations under the License.
  */
 
-package dependencymanager
+package project
 
 import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"os"
+	"github.com/onflow/flowkit/v2"
+	"github.com/onflow/flowkit/v2/accounts"
+
 	"path/filepath"
-
-	"github.com/psiemens/sconfig"
-
-	"github.com/onflow/flow-cli/internal/prompt"
-	"github.com/onflow/flow-cli/internal/util"
-
-	"github.com/spf13/cobra"
 
 	"github.com/onflow/flow-go/fvm/systemcontracts"
 	flowGo "github.com/onflow/flow-go/model/flow"
 
 	"github.com/onflow/flowkit/v2/gateway"
 
-	"github.com/onflow/flowkit/v2/project"
-
 	flowsdk "github.com/onflow/flow-go-sdk"
 
 	"github.com/onflow/flowkit/v2/config"
 
-	"github.com/onflow/flowkit/v2"
 	"github.com/onflow/flowkit/v2/output"
 )
 
@@ -55,11 +47,11 @@ type categorizedLogs struct {
 }
 
 func (cl *categorizedLogs) LogAll(logger output.Logger) {
-	logger.Info(util.MessageWithEmojiPrefix("📝", "Dependency Manager Actions Summary"))
+	logger.Info(output.MessageWithEmojiPrefix("📝", "Dependency Manager Actions Summary"))
 	logger.Info("") // Add a line break after the section
 
 	if len(cl.fileSystemActions) > 0 {
-		logger.Info(util.MessageWithEmojiPrefix("🗃️", "File System Actions:"))
+		logger.Info(output.MessageWithEmojiPrefix("🗃️", "File System Actions:"))
 		for _, msg := range cl.fileSystemActions {
 			logger.Info(msg)
 		}
@@ -67,7 +59,7 @@ func (cl *categorizedLogs) LogAll(logger output.Logger) {
 	}
 
 	if len(cl.stateUpdates) > 0 {
-		logger.Info(util.MessageWithEmojiPrefix("💾", "State Updates:"))
+		logger.Info(output.MessageWithEmojiPrefix("💾", "State Updates:"))
 		for _, msg := range cl.stateUpdates {
 			logger.Info(msg)
 		}
@@ -75,7 +67,7 @@ func (cl *categorizedLogs) LogAll(logger output.Logger) {
 	}
 
 	if len(cl.issues) > 0 {
-		logger.Info(util.MessageWithEmojiPrefix("⚠️", "Issues:"))
+		logger.Info(output.MessageWithEmojiPrefix("⚠️", "Issues:"))
 		for _, msg := range cl.issues {
 			logger.Info(msg)
 		}
@@ -83,23 +75,7 @@ func (cl *categorizedLogs) LogAll(logger output.Logger) {
 	}
 
 	if len(cl.fileSystemActions) == 0 && len(cl.stateUpdates) == 0 {
-		logger.Info(util.MessageWithEmojiPrefix("👍", "Zero changes were made. Everything looks good."))
-	}
-}
-
-type Flags struct {
-	skipDeployments bool `default:"false" flag:"skip-deployments" info:"Skip adding the dependency to deployments"`
-	skipAlias       bool `default:"false" flag:"skip-alias" info:"Skip prompting for an alias"`
-}
-
-func (f *Flags) AddToCommand(cmd *cobra.Command) {
-	err := sconfig.New(f).
-		FromEnvironment(util.EnvPrefix).
-		BindFlags(cmd.Flags()).
-		Parse()
-
-	if err != nil {
-		panic(err)
+		logger.Info(output.MessageWithEmojiPrefix("👍", "Zero changes were made. Everything looks good."))
 	}
 }
 
@@ -113,6 +89,24 @@ type DependencyInstaller struct {
 	SkipAlias       bool
 	logs            categorizedLogs
 	dependencies    map[string]config.Dependency
+	prompter        Prompter
+}
+
+type DeploymentData struct {
+	Network   string
+	Account   string
+	Contracts []string
+}
+
+type Prompter interface {
+	ShouldUpdateDependency(contractName string) bool
+	AddContractToDeployment(networkName string, accounts accounts.Accounts, contractName string) *DeploymentData
+	AddressPromptOrEmpty(label, errorMessage string) string
+}
+
+type Flags struct {
+	skipDeployments bool
+	skipAlias       bool
 }
 
 // NewDependencyInstaller creates a new instance of DependencyInstaller
@@ -273,7 +267,7 @@ func (di *DependencyInstaller) checkForConflictingContracts() {
 	for _, dependency := range di.dependencies {
 		foundContract, _ := di.State.Contracts().ByName(dependency.Name)
 		if foundContract != nil && !foundContract.IsDependency {
-			msg := util.MessageWithEmojiPrefix("❌", fmt.Sprintf("Contract named %s already exists in flow.json", dependency.Name))
+			msg := output.MessageWithEmojiPrefix("❌", fmt.Sprintf("Contract named %s already exists in flow.json", dependency.Name))
 			di.logs.issues = append(di.logs.issues, msg)
 		}
 	}
@@ -313,7 +307,7 @@ func (di *DependencyInstaller) fetchDependencies(networkName string, address flo
 	found := false
 
 	for _, contract := range account.Contracts {
-		program, err := project.NewProgram(contract, nil, "")
+		program, err := NewProgram(contract, nil, "")
 		if err != nil {
 			return fmt.Errorf("failed to parse program: %w", err)
 		}
@@ -382,7 +376,7 @@ func (di *DependencyInstaller) handleFileSystem(contractAddr, contractName, cont
 			return fmt.Errorf("failed to create contract file: %w", err)
 		}
 
-		msg := util.MessageWithEmojiPrefix("✅️", fmt.Sprintf("Contract %s from %s on %s installed", contractName, contractAddr, networkName))
+		msg := output.MessageWithEmojiPrefix("✅️", fmt.Sprintf("Contract %s from %s on %s installed", contractName, contractAddr, networkName))
 		di.logs.fileSystemActions = append(di.logs.fileSystemActions, msg)
 	}
 
@@ -400,7 +394,7 @@ func isCoreContract(contractName string) bool {
 	return false
 }
 
-func (di *DependencyInstaller) handleFoundContract(networkName, contractAddr, assignedName, contractName string, program *project.Program) error {
+func (di *DependencyInstaller) handleFoundContract(networkName, contractAddr, assignedName, contractName string, program *Program) error {
 	hash := sha256.New()
 	hash.Write(program.CodeWithUnprocessedImports())
 	originalContractDataHash := hex.EncodeToString(hash.Sum(nil))
@@ -412,17 +406,14 @@ func (di *DependencyInstaller) handleFoundContract(networkName, contractAddr, as
 
 	// If a dependency by this name already exists and its remote source network or address does not match, then give option to stop or continue
 	if dependency != nil && (dependency.Source.NetworkName != networkName || dependency.Source.Address.String() != contractAddr) {
-		di.Logger.Info(fmt.Sprintf("%s A dependency named %s already exists with a different remote source. Please fix the conflict and retry.", util.PrintEmoji("🚫"), assignedName))
-		os.Exit(0)
-		return nil
+		return fmt.Errorf("dependency named %s already exists with a different remote source, please fix the conflict and retry", assignedName)
 	}
 
 	// Check if remote source version is different from local version
 	// If it is, ask if they want to update
 	// If no hash, ignore
 	if dependency != nil && dependency.Hash != "" && dependency.Hash != originalContractDataHash {
-		msg := fmt.Sprintf("The latest version of %s is different from the one you have locally. Do you want to update it?", contractName)
-		if !prompt.GenericBoolPrompt(msg) {
+		if !di.prompter.ShouldUpdateDependency(contractName) {
 			return nil
 		}
 	}
@@ -459,7 +450,7 @@ func (di *DependencyInstaller) handleAdditionalDependencyTasks(networkName, cont
 			return err
 		}
 
-		msg := util.MessageWithEmojiPrefix("✅", fmt.Sprintf("%s added to emulator deployments", contractName))
+		msg := output.MessageWithEmojiPrefix("✅", fmt.Sprintf("%s added to emulator deployments", contractName))
 		di.logs.stateUpdates = append(di.logs.stateUpdates, msg)
 	}
 
@@ -471,7 +462,7 @@ func (di *DependencyInstaller) handleAdditionalDependencyTasks(networkName, cont
 			return err
 		}
 
-		msg := util.MessageWithEmojiPrefix("✅", fmt.Sprintf("Alias added for %s on %s", contractName, networkName))
+		msg := output.MessageWithEmojiPrefix("✅", fmt.Sprintf("Alias added for %s on %s", contractName, networkName))
 		di.logs.stateUpdates = append(di.logs.stateUpdates, msg)
 	}
 
@@ -481,7 +472,7 @@ func (di *DependencyInstaller) handleAdditionalDependencyTasks(networkName, cont
 func (di *DependencyInstaller) updateDependencyDeployment(contractName string) error {
 	// Add to deployments
 	// If a deployment already exists for that account, contract, and network, then ignore
-	raw := prompt.AddContractToDeploymentPrompt("emulator", *di.State.Accounts(), contractName)
+	raw := di.prompter.AddContractToDeployment("emulator", *di.State.Accounts(), contractName)
 
 	if raw != nil {
 		deployment := di.State.Deployments().ByAccountAndNetwork(raw.Account, raw.Network)
@@ -511,7 +502,7 @@ func (di *DependencyInstaller) updateDependencyAlias(contractName, aliasNetwork 
 	}
 
 	label := fmt.Sprintf("Enter an alias address for %s on %s if you have one, otherwise leave blank", contractName, missingNetwork)
-	raw := prompt.AddressPromptOrEmpty(label, "Invalid alias address")
+	raw := di.prompter.AddressPromptOrEmpty(label, "Invalid alias address")
 
 	if raw != "" {
 		contract, err := di.State.Contracts().ByName(contractName)
@@ -542,7 +533,7 @@ func (di *DependencyInstaller) updateDependencyState(networkName, contractAddres
 	di.State.Contracts().AddDependencyAsContract(dep, networkName)
 
 	if isNewDep {
-		msg := util.MessageWithEmojiPrefix("✅", fmt.Sprintf("%s added to flow.json", dep.Name))
+		msg := output.MessageWithEmojiPrefix("✅", fmt.Sprintf("%s added to flow.json", dep.Name))
 		di.logs.stateUpdates = append(di.logs.stateUpdates, msg)
 	}
 
