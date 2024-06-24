@@ -106,12 +106,44 @@ type Prompter interface {
 }
 
 type Flags struct {
-	skipDeployments bool
-	skipAlias       bool
+	SkipDeployments bool
+	SkipAlias       bool
+}
+
+type Option func(*DependencyInstaller)
+
+func WithLogger(logger output.Logger) Option {
+	return func(installer *DependencyInstaller) {
+		installer.Logger = logger
+	}
+}
+
+func WithSaveState() Option {
+	return func(installer *DependencyInstaller) {
+		installer.SaveState = true
+	}
+}
+
+func WithTargetDir(targetDir string) Option {
+	return func(installer *DependencyInstaller) {
+		installer.TargetDir = targetDir
+	}
+}
+
+func WithSkippedDeployments() Option {
+	return func(installer *DependencyInstaller) {
+		installer.SkipDeployments = true
+	}
+}
+
+func WithSkippedAlias() Option {
+	return func(installer *DependencyInstaller) {
+		installer.SkipAlias = true
+	}
 }
 
 // NewDependencyInstaller creates a new instance of DependencyInstaller
-func NewDependencyInstaller(logger output.Logger, state *flowkit.State, saveState bool, targetDir string, flags Flags) (*DependencyInstaller, error) {
+func NewDependencyInstaller(state *flowkit.State, prompter Prompter, options ...Option) (*DependencyInstaller, error) {
 	emulatorGateway, err := gateway.NewGrpcGateway(config.EmulatorNetwork)
 	if err != nil {
 		return nil, fmt.Errorf("error creating emulator gateway: %v", err)
@@ -139,16 +171,23 @@ func NewDependencyInstaller(logger output.Logger, state *flowkit.State, saveStat
 		config.PreviewnetNetwork.Name: previewnetGateway,
 	}
 
-	return &DependencyInstaller{
+	installer := &DependencyInstaller{
 		Gateways:        gateways,
-		Logger:          logger,
+		Logger:          output.NewStdoutLogger(output.InfoLog),
 		State:           state,
-		SaveState:       saveState,
-		TargetDir:       targetDir,
-		SkipDeployments: flags.skipDeployments,
-		SkipAlias:       flags.skipAlias,
+		SaveState:       false,
+		TargetDir:       "",
+		SkipDeployments: false,
+		SkipAlias:       false,
 		dependencies:    make(map[string]config.Dependency),
-	}, nil
+		prompter:        prompter,
+	}
+
+	for _, opt := range options {
+		opt(installer)
+	}
+
+	return installer, nil
 }
 
 // saveState checks the SaveState flag and saves the state if set to true.

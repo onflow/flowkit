@@ -20,6 +20,10 @@ package deps
 
 import (
 	"fmt"
+	"github.com/onflow/flow-go-sdk/crypto"
+	"github.com/onflow/flowkit/v2"
+	"github.com/onflow/flowkit/v2/accounts"
+	"github.com/stretchr/testify/require"
 	"testing"
 
 	"github.com/onflow/flow-go-sdk"
@@ -28,7 +32,8 @@ import (
 
 	"github.com/onflow/flowkit/v2/config"
 	"github.com/onflow/flowkit/v2/gateway"
-	"github.com/onflow/flowkit/v2/gateway/mocks"
+	gatewayMocks "github.com/onflow/flowkit/v2/gateway/mocks"
+	"github.com/onflow/flowkit/v2/mocks"
 	"github.com/onflow/flowkit/v2/output"
 	"github.com/onflow/flowkit/v2/tests"
 )
@@ -36,7 +41,7 @@ import (
 func TestDependencyInstallerInstall(t *testing.T) {
 
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := tests.TestMocks(t)
+	_, state, _ := newTestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address
@@ -53,7 +58,7 @@ func TestDependencyInstallerInstall(t *testing.T) {
 	state.Dependencies().AddOrUpdate(dep)
 
 	t.Run("Success", func(t *testing.T) {
-		gw := mocks.DefaultMockGateway()
+		gw := gatewayMocks.DefaultMockGateway()
 
 		gw.GetAccount.Run(func(args mock.Arguments) {
 			addr := args.Get(1).(flow.Address)
@@ -95,13 +100,13 @@ func TestDependencyInstallerInstall(t *testing.T) {
 func TestDependencyInstallerAdd(t *testing.T) {
 
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := tests.TestMocks(t)
+	_, state, _ := newTestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address
 
 	t.Run("Success", func(t *testing.T) {
-		gw := mocks.DefaultMockGateway()
+		gw := gatewayMocks.DefaultMockGateway()
 
 		gw.GetAccount.Run(func(args mock.Arguments) {
 			addr := args.Get(1).(flow.Address)
@@ -141,7 +146,7 @@ func TestDependencyInstallerAdd(t *testing.T) {
 	})
 
 	t.Run("Success", func(t *testing.T) {
-		gw := mocks.DefaultMockGateway()
+		gw := gatewayMocks.DefaultMockGateway()
 
 		gw.GetAccount.Run(func(args mock.Arguments) {
 			addr := args.Get(1).(flow.Address)
@@ -189,7 +194,7 @@ func TestDependencyInstallerAdd(t *testing.T) {
 
 func TestDependencyInstallerAddMany(t *testing.T) {
 	logger := output.NewStdoutLogger(output.NoneLog)
-	_, state, _ := tests.TestMocks(t)
+	_, state, _ := newTestMocks(t)
 
 	serviceAcc, _ := state.EmulatorServiceAccount()
 	serviceAddress := serviceAcc.Address.String()
@@ -214,7 +219,7 @@ func TestDependencyInstallerAddMany(t *testing.T) {
 	}
 
 	t.Run("AddMultipleDependencies", func(t *testing.T) {
-		gw := mocks.DefaultMockGateway()
+		gw := gatewayMocks.DefaultMockGateway()
 		gw.GetAccount.Run(func(args mock.Arguments) {
 			addr := args.Get(1).(flow.Address)
 			assert.Equal(t, addr.String(), serviceAddress)
@@ -250,4 +255,17 @@ func TestDependencyInstallerAddMany(t *testing.T) {
 			assert.NoError(t, err, fmt.Sprintf("Failed to read generated file for %s", dep.Name))
 		}
 	})
+}
+
+// newTestMocks creates mock flowkit services, an empty state and a mock reader writer
+func newTestMocks(t *testing.T) (*mocks.MockServices, *flowkit.State, flowkit.ReaderWriter) {
+	services := mocks.DefaultMockServices()
+	rw, _ := tests.ReaderWriter()
+	state, err := flowkit.Init(rw)
+	require.NoError(t, err)
+
+	emulatorAccount, _ := accounts.NewEmulatorAccount(rw, crypto.ECDSA_P256, crypto.SHA3_256, "")
+	state.Accounts().AddOrUpdate(emulatorAccount)
+
+	return services, state, rw
 }

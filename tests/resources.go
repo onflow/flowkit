@@ -20,12 +20,6 @@ package tests
 
 import (
 	"fmt"
-	"github.com/onflow/flowkit/v2"
-	"github.com/onflow/flowkit/v2/accounts"
-	"github.com/onflow/flowkit/v2/mocks"
-	"github.com/stretchr/testify/require"
-	"testing"
-
 	"github.com/onflow/cadence"
 	"github.com/onflow/cadence/runtime/common"
 	"github.com/onflow/flow-go-sdk"
@@ -667,17 +661,4 @@ func NewAccountCreateResult(address flow.Address) *flow.TransactionResult {
 	}}
 
 	return NewTransactionResult(events)
-}
-
-// TestMocks creates mock flowkit services, an empty state and a mock reader writer
-func TestMocks(t *testing.T) (*mocks.MockServices, *flowkit.State, flowkit.ReaderWriter) {
-	services := mocks.DefaultMockServices()
-	rw, _ := ReaderWriter()
-	state, err := flowkit.Init(rw)
-	require.NoError(t, err)
-
-	emulatorAccount, _ := accounts.NewEmulatorAccount(rw, crypto.ECDSA_P256, crypto.SHA3_256, "")
-	state.Accounts().AddOrUpdate(emulatorAccount)
-
-	return services, state, rw
 }
