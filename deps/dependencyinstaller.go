@@ -142,8 +142,43 @@ func WithSkippedAlias() Option {
 	}
 }
 
+func WithGateways(gateways map[string]gateway.Gateway) Option {
+	return func(installer *DependencyInstaller) {
+		installer.Gateways = gateways
+	}
+}
+
 // NewDependencyInstaller creates a new instance of DependencyInstaller
 func NewDependencyInstaller(state *flowkit.State, prompter Prompter, options ...Option) (*DependencyInstaller, error) {
+	installer := &DependencyInstaller{
+		Gateways:        nil,
+		Logger:          output.NewStdoutLogger(output.InfoLog),
+		State:           state,
+		SaveState:       false,
+		TargetDir:       "",
+		SkipDeployments: false,
+		SkipAlias:       false,
+		dependencies:    make(map[string]config.Dependency),
+		prompter:        prompter,
+	}
+
+	for _, opt := range options {
+		opt(installer)
+	}
+
+	// If custom gateway option wasn't provided, use default gateways
+	if installer.Gateways == nil {
+		gateways, err := getDefaultGateways()
+		if err != nil {
+			return nil, err
+		}
+		installer.Gateways = gateways
+	}
+
+	return installer, nil
+}
+
+func getDefaultGateways() (map[string]gateway.Gateway, error) {
 	emulatorGateway, err := gateway.NewGrpcGateway(config.EmulatorNetwork)
 	if err != nil {
 		return nil, fmt.Errorf("error creating emulator gateway: %v", err)
@@ -164,30 +199,12 @@ func NewDependencyInstaller(state *flowkit.State, prompter Prompter, options ...
 		return nil, fmt.Errorf("error creating previewnet gateway: %v", err)
 	}
 
-	gateways := map[string]gateway.Gateway{
+	return map[string]gateway.Gateway{
 		config.EmulatorNetwork.Name:   emulatorGateway,
 		config.TestnetNetwork.Name:    testnetGateway,
 		config.MainnetNetwork.Name:    mainnetGateway,
 		config.PreviewnetNetwork.Name: previewnetGateway,
-	}
-
-	installer := &DependencyInstaller{
-		Gateways:        gateways,
-		Logger:          output.NewStdoutLogger(output.InfoLog),
-		State:           state,
-		SaveState:       false,
-		TargetDir:       "",
-		SkipDeployments: false,
-		SkipAlias:       false,
-		dependencies:    make(map[string]config.Dependency),
-		prompter:        prompter,
-	}
-
-	for _, opt := range options {
-		opt(installer)
-	}
-
-	return installer, nil
+	}, nil
 }
 
 // saveState checks the SaveState flag and saves the state if set to true.
