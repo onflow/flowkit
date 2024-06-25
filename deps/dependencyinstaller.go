@@ -168,7 +168,7 @@ func NewDependencyInstaller(state *flowkit.State, prompter Prompter, options ...
 
 	// If custom gateway option wasn't provided, use default gateways
 	if installer.Gateways == nil {
-		gateways, err := getDefaultGateways()
+		gateways, err := defaultGateways()
 		if err != nil {
 			return nil, err
 		}
@@ -178,7 +178,7 @@ func NewDependencyInstaller(state *flowkit.State, prompter Prompter, options ...
 	return installer, nil
 }
 
-func getDefaultGateways() (map[string]gateway.Gateway, error) {
+func defaultGateways() (map[string]gateway.Gateway, error) {
 	emulatorGateway, err := gateway.NewGrpcGateway(config.EmulatorNetwork)
 	if err != nil {
 		return nil, fmt.Errorf("error creating emulator gateway: %v", err)
