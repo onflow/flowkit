@@ -611,11 +611,12 @@ func NewCollection() *flow.Collection {
 }
 
 func NewEvent(index int, eventId string, fields []cadence.Field, values []cadence.Value) *flow.Event {
-	testEventType := &cadence.EventType{
-		Location:            nil,
-		QualifiedIdentifier: eventId,
-		Fields:              fields,
-	}
+	testEventType := cadence.NewEventType(
+		nil,
+		eventId,
+		fields,
+		nil,
+	)
 
 	testEvent := cadence.
 		NewEvent(values).
