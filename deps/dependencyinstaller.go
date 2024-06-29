@@ -100,10 +100,15 @@ type DeploymentData struct {
 }
 
 type Prompter interface {
+	// ShouldUpdateDependency prompts the user if the dependency should be updated in flow configuration
 	ShouldUpdateDependency(contractName string) bool
+	// AddContractToDeployment prompts the user to select an account to deploy a given contract on a given network
 	AddContractToDeployment(networkName string, accounts accounts.Accounts, contractName string) *DeploymentData
-	AddressPromptOrEmpty(label, errorMessage string) string
+	// AddressPromptOrEmpty prompts the user to enter a flow address
+	AddressPromptOrEmpty(label string, validate InputValidator) string
 }
+
+type InputValidator func(string) error
 
 type Flags struct {
 	SkipDeployments bool
@@ -529,7 +534,7 @@ func (di *DependencyInstaller) handleAdditionalDependencyTasks(networkName, cont
 func (di *DependencyInstaller) updateDependencyDeployment(contractName string) error {
 	// Add to deployments
 	// If a deployment already exists for that account, contract, and network, then ignore
-	raw := di.prompter.AddContractToDeployment("emulator", *di.State.Accounts(), contractName)
+	raw := di.prompter.AddContractToDeployment(config.EmulatorNetwork.Name, *di.State.Accounts(), contractName)
 
 	if raw != nil {
 		deployment := di.State.Deployments().ByAccountAndNetwork(raw.Account, raw.Network)
@@ -559,7 +564,7 @@ func (di *DependencyInstaller) updateDependencyAlias(contractName, aliasNetwork 
 	}
 
 	label := fmt.Sprintf("Enter an alias address for %s on %s if you have one, otherwise leave blank", contractName, missingNetwork)
-	raw := di.prompter.AddressPromptOrEmpty(label, "Invalid alias address")
+	raw := di.prompter.AddressPromptOrEmpty(label, addressValidator)
 
 	if raw != "" {
 		contract, err := di.State.Contracts().ByName(contractName)
@@ -570,6 +575,16 @@ func (di *DependencyInstaller) updateDependencyAlias(contractName, aliasNetwork 
 		contract.Aliases.Add(missingNetwork, flowsdk.HexToAddress(raw))
 	}
 
+	return nil
+}
+
+func addressValidator(address string) error {
+	if address == "" {
+		return nil
+	}
+	if flowsdk.HexToAddress(address) == flowsdk.EmptyAddress {
+		return fmt.Errorf("invalid alias address")
+	}
 	return nil
 }
 
