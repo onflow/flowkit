@@ -43,7 +43,7 @@ type Accounts []Account
 // AccountKey represents account key and all their possible configuration formats.
 type AccountKey struct {
 	Type           KeyType
-	Index          int
+	Index          uint32
 	SigAlgo        crypto.SignatureAlgorithm
 	HashAlgo       crypto.HashAlgorithm
 	ResourceID     string

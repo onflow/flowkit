@@ -1690,16 +1690,16 @@ func TestTransactions_Integration(t *testing.T) {
 		setupAccounts(state, f)
 
 		type txIn struct {
-			prop    flow.Address
-			auth    []flow.Address
-			payer   flow.Address
-			index   int
-			code    []byte
-			file    string
-			gas     uint64
-			args    []cadence.Value
-			network string
-			yes     bool
+			prop     flow.Address
+			auth     []flow.Address
+			payer    flow.Address
+			keyIndex uint32
+			code     []byte
+			file     string
+			gas      uint64
+			args     []cadence.Value
+			network  string
+			yes      bool
 		}
 
 		a, _ := state.Accounts().ByName("Alice")
@@ -1738,7 +1738,7 @@ func TestTransactions_Integration(t *testing.T) {
 					Authorizers: txIn.auth,
 					Payer:       txIn.payer,
 				},
-				txIn.index,
+				txIn.keyIndex,
 				Script{txIn.code, txIn.args, txIn.file},
 				txIn.gas,
 			)
@@ -1749,7 +1749,7 @@ func TestTransactions_Integration(t *testing.T) {
 			assert.Equal(t, ftx.Payer, txIn.payer)
 			assert.Equal(t, len(ftx.Authorizers), 0) // make sure authorizers weren't added as tx input doesn't require them
 			assert.Equal(t, ftx.ProposalKey.Address, txIn.prop)
-			assert.Equal(t, ftx.ProposalKey.KeyIndex, txIn.index)
+			assert.Equal(t, ftx.ProposalKey.KeyIndex, txIn.keyIndex)
 		}
 	})
 
@@ -1844,11 +1844,11 @@ func TestTransactions_Integration(t *testing.T) {
 		)
 		assert.Nil(t, err)
 		assert.NotNil(t, txSigned)
-		assert.Equal(t, len(txSigned.FlowTransaction().Authorizers), 0)
-		assert.Equal(t, txSigned.FlowTransaction().Payer, a.Address)
-		assert.Equal(t, txSigned.FlowTransaction().ProposalKey.Address, a.Address)
-		assert.Equal(t, txSigned.FlowTransaction().ProposalKey.KeyIndex, 0)
-		assert.Equal(t, txSigned.FlowTransaction().Script, tests.TransactionSimple.Source)
+		assert.Len(t, txSigned.FlowTransaction().Authorizers, 0)
+		assert.Equal(t, a.Address, txSigned.FlowTransaction().Payer)
+		assert.Equal(t, a.Address, txSigned.FlowTransaction().ProposalKey.Address)
+		assert.Equal(t, uint32(0), txSigned.FlowTransaction().ProposalKey.KeyIndex)
+		assert.Equal(t, tests.TransactionSimple.Source, txSigned.FlowTransaction().Script)
 	})
 
 	t.Run("Build, Sign and Send Transaction", func(t *testing.T) {

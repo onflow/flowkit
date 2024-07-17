@@ -350,7 +350,7 @@ type advancedAccount struct {
 
 type advanceKey struct {
 	Type     config.KeyType `json:"type"`
-	Index    int            `json:"index,omitempty"`
+	Index    uint32         `json:"index,omitempty"`
 	SigAlgo  string         `json:"signatureAlgorithm,omitempty"`
 	HashAlgo string         `json:"hashAlgorithm,omitempty"`
 	// hex key type

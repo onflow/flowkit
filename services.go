@@ -106,7 +106,7 @@ type Services interface {
 	// BuildTransaction builds a new transaction type for later signing and submitting to the network.
 	//
 	// AddressesRoles type defines the address for each role (payer, proposer, authorizers) and the script defines the transaction content.
-	BuildTransaction(context.Context, transactions.AddressesRoles, int, Script, uint64) (*transactions.Transaction, error)
+	BuildTransaction(context.Context, transactions.AddressesRoles, uint32, Script, uint64) (*transactions.Transaction, error)
 
 	// SignTransactionPayload will use the signer account provided and the payload raw byte content to sign it.
 	//

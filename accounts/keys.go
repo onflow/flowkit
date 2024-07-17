@@ -49,7 +49,7 @@ type Key interface {
 	// Type returns the key type (hex, kms, file...)
 	Type() config.KeyType
 	// Index returns the key index on the account
-	Index() int
+	Index() uint32
 	// SigAlgo returns signature algorithm used for signing
 	SigAlgo() crypto.SignatureAlgorithm
 	// HashAlgo returns hash algorithm used for signing
@@ -88,7 +88,7 @@ func keyFromConfig(accountKeyConf config.AccountKey) (Key, error) {
 
 type baseKey struct {
 	keyType  config.KeyType
-	index    int
+	index    uint32
 	sigAlgo  crypto.SignatureAlgorithm
 	hashAlgo crypto.HashAlgorithm
 }
@@ -120,7 +120,7 @@ func (a *baseKey) HashAlgo() crypto.HashAlgorithm {
 	return a.hashAlgo
 }
 
-func (a *baseKey) Index() int {
+func (a *baseKey) Index() uint32 {
 	return a.index // default to 0
 }
 
@@ -232,7 +232,7 @@ type HexKey struct {
 }
 
 func NewHexKeyFromPrivateKey(
-	index int,
+	index uint32,
 	hashAlgo crypto.HashAlgorithm,
 	privateKey crypto.PrivateKey,
 ) *HexKey {
@@ -298,7 +298,7 @@ func fileKeyFromConfig(accountKey config.AccountKey) (*FileKey, error) {
 // This type of the key is a more secure way of storing accounts. The config only includes the location and not the key.
 func NewFileKey(
 	location string,
-	index int,
+	index uint32,
 	sigAlgo crypto.SignatureAlgorithm,
 	hashAlgo crypto.HashAlgorithm,
 	rw config.ReaderWriter,
