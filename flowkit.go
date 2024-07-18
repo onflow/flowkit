@@ -897,7 +897,7 @@ func (f *Flowkit) GetTransactionsByBlockID(
 func (f *Flowkit) BuildTransaction(
 	ctx context.Context,
 	addresses transactions.AddressesRoles,
-	proposerKeyIndex int,
+	proposerKeyIndex uint32,
 	script Script,
 	gasLimit uint64,
 ) (*transactions.Transaction, error) {

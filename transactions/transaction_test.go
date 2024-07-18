@@ -68,7 +68,7 @@ func TestNew(t *testing.T) {
 	assert.Equal(t, auths, tx.FlowTransaction().Authorizers)
 
 	addr := flow.HexToAddress("0x03")
-	index := 1
+	index := uint32(1)
 	proposer := tests.NewAccountWithAddress(addr.String())
 	err = tx.SetProposer(proposer, index)
 	assert.NoError(t, err)

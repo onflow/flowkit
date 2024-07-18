@@ -241,8 +241,8 @@ func (t *Transaction) authorizersContains(address flow.Address) bool {
 }
 
 // SetProposer sets the proposer for transaction.
-func (t *Transaction) SetProposer(proposer *flow.Account, keyIndex int) error {
-	if len(proposer.Keys) <= keyIndex {
+func (t *Transaction) SetProposer(proposer *flow.Account, keyIndex uint32) error {
+	if len(proposer.Keys) <= int(keyIndex) {
 		return fmt.Errorf("failed to retrieve proposer key at index %d", keyIndex)
 	}
 
