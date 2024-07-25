@@ -70,7 +70,7 @@ func (_m *Services) AddContract(_a0 context.Context, _a1 *accounts.Account, _a2 
 }
 
 // BuildTransaction provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4
-func (_m *Services) BuildTransaction(_a0 context.Context, _a1 transactions.AddressesRoles, _a2 int, _a3 flowkit.Script, _a4 uint64) (*transactions.Transaction, error) {
+func (_m *Services) BuildTransaction(_a0 context.Context, _a1 transactions.AddressesRoles, _a2 uint32, _a3 flowkit.Script, _a4 uint64) (*transactions.Transaction, error) {
 	ret := _m.Called(_a0, _a1, _a2, _a3, _a4)
 
 	if len(ret) == 0 {
@@ -79,10 +79,10 @@ func (_m *Services) BuildTransaction(_a0 context.Context, _a1 transactions.Addre
 
 	var r0 *transactions.Transaction
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, transactions.AddressesRoles, int, flowkit.Script, uint64) (*transactions.Transaction, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, transactions.AddressesRoles, uint32, flowkit.Script, uint64) (*transactions.Transaction, error)); ok {
 		return rf(_a0, _a1, _a2, _a3, _a4)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, transactions.AddressesRoles, int, flowkit.Script, uint64) *transactions.Transaction); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, transactions.AddressesRoles, uint32, flowkit.Script, uint64) *transactions.Transaction); ok {
 		r0 = rf(_a0, _a1, _a2, _a3, _a4)
 	} else {
 		if ret.Get(0) != nil {
@@ -90,7 +90,7 @@ func (_m *Services) BuildTransaction(_a0 context.Context, _a1 transactions.Addre
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, transactions.AddressesRoles, int, flowkit.Script, uint64) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, transactions.AddressesRoles, uint32, flowkit.Script, uint64) error); ok {
 		r1 = rf(_a0, _a1, _a2, _a3, _a4)
 	} else {
 		r1 = ret.Error(1)
