@@ -27,6 +27,7 @@ import (
 	"github.com/onflow/cadence/runtime"
 	"github.com/onflow/flow-emulator/adapters"
 	"github.com/onflow/flow-emulator/emulator"
+	"github.com/pkg/errors"
 
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
@@ -49,7 +50,7 @@ type EmulatorGateway struct {
 }
 
 func UnwrapStatusError(err error) error {
-	return fmt.Errorf(status.Convert(err).Message())
+	return errors.New(status.Convert(err).Message())
 }
 
 func NewEmulatorGateway(key *EmulatorKey) *EmulatorGateway {

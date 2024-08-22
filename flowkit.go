@@ -329,7 +329,7 @@ func (f *Flowkit) AddContract(
 
 	updateExisting := update(existingContract, program.Code())
 	if exists && !updateExisting {
-		return flow.EmptyID, false, fmt.Errorf(fmt.Sprintf("contract %s exists in account %s", name, account.Name))
+		return flow.EmptyID, false, fmt.Errorf("contract %s exists in account %s", name, account.Name)
 	}
 
 	if exists && updateExisting {
