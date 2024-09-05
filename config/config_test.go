@@ -325,12 +325,11 @@ func Test_DefaultConfig(t *testing.T) {
 	assert.Len(t, cfg.Emulators, 1)
 	assert.Equal(t, "default", cfg.Emulators[0].Name)
 	assert.Equal(t, "emulator-account", cfg.Emulators[0].ServiceAccount)
-	assert.Len(t, cfg.Networks, 5)
+	assert.Len(t, cfg.Networks, 4)
 	assert.Equal(t, "emulator", cfg.Networks[0].Name)
 	assert.Equal(t, "testing", cfg.Networks[1].Name)
 	assert.Equal(t, "testnet", cfg.Networks[2].Name)
 	assert.Equal(t, "mainnet", cfg.Networks[3].Name)
-	assert.Equal(t, "previewnet", cfg.Networks[4].Name)
 }
 
 func Test_DefaultPath(t *testing.T) {
