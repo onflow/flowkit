@@ -115,26 +115,23 @@ func (c *Contracts) Remove(name string) error {
 const dependencyManagerDirectory = "imports"
 
 const (
-	networkEmulator   = "emulator"
-	networkTestnet    = "testnet"
-	networkPreviewnet = "previewnet"
-	networkMainnet    = "mainnet"
+	networkEmulator = "emulator"
+	networkTestnet  = "testnet"
+	networkMainnet  = "mainnet"
 )
 
 func supportedNetworks() []string {
 	return []string{
 		networkEmulator,
 		networkTestnet,
-		networkPreviewnet,
 		networkMainnet,
 	}
 }
 
 var networkToChainID = map[string]flowGo.ChainID{
-	networkEmulator:   flowGo.Emulator,
-	networkTestnet:    flowGo.Testnet,
-	networkPreviewnet: flowGo.Previewnet,
-	networkMainnet:    flowGo.Mainnet,
+	networkEmulator: flowGo.Emulator,
+	networkTestnet:  flowGo.Testnet,
+	networkMainnet:  flowGo.Mainnet,
 }
 
 func isCoreContract(networkName, contractName, contractAddress string) bool {

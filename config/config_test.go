@@ -330,7 +330,6 @@ func Test_DefaultConfig(t *testing.T) {
 	assert.Equal(t, "testing", cfg.Networks[1].Name)
 	assert.Equal(t, "testnet", cfg.Networks[2].Name)
 	assert.Equal(t, "mainnet", cfg.Networks[3].Name)
-	assert.Equal(t, "previewnet", cfg.Networks[4].Name)
 }
 
 func Test_DefaultPath(t *testing.T) {
