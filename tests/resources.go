@@ -607,7 +607,7 @@ func NewBlock() *flow.Block {
 }
 
 func NewCollection() *flow.Collection {
-	return test.CollectionGenerator().New()
+	return test.LightCollectionGenerator().New()
 }
 
 func NewEvent(index int, eventId string, fields []cadence.Field, values []cadence.Value) *flow.Event {
