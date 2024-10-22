@@ -24,13 +24,13 @@ import (
 	"strings"
 
 	"github.com/onflow/cadence"
+	"github.com/onflow/cadence/ast"
+	"github.com/onflow/cadence/cmd"
+	"github.com/onflow/cadence/common"
 	jsoncdc "github.com/onflow/cadence/encoding/json"
+	"github.com/onflow/cadence/interpreter"
 	"github.com/onflow/cadence/runtime"
-	"github.com/onflow/cadence/runtime/ast"
-	"github.com/onflow/cadence/runtime/cmd"
-	"github.com/onflow/cadence/runtime/common"
-	"github.com/onflow/cadence/runtime/interpreter"
-	"github.com/onflow/cadence/runtime/sema"
+	"github.com/onflow/cadence/sema"
 )
 
 type cadenceArgument struct {
