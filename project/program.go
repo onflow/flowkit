@@ -23,9 +23,9 @@ import (
 	"regexp"
 
 	"github.com/onflow/cadence"
-	"github.com/onflow/cadence/runtime/ast"
-	"github.com/onflow/cadence/runtime/common"
-	"github.com/onflow/cadence/runtime/parser"
+	"github.com/onflow/cadence/ast"
+	"github.com/onflow/cadence/common"
+	"github.com/onflow/cadence/parser"
 )
 
 type Program struct {

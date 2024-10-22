@@ -9,11 +9,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v1.0.0
+	github.com/onflow/cadence v1.2.1
 	github.com/onflow/crypto v0.25.2
-	github.com/onflow/flow-emulator v1.0.1
-	github.com/onflow/flow-go v0.38.0-preview.0.0.20241002124048-21cfe5aea5a8
-	github.com/onflow/flow-go-sdk v1.0.0
+	github.com/onflow/flow-emulator v1.1.0
+	github.com/onflow/flow-go v0.38.0-preview.0.0.20241022154145-6a254edbec23
+	github.com/onflow/flow-go-sdk v1.2.2
 	github.com/onflow/flow/protobuf/go/flow v0.4.7
 	github.com/onflow/go-ethereum v1.14.7
 	github.com/pkg/errors v0.9.1
@@ -154,13 +154,14 @@ require (
 	github.com/multiformats/go-multistream v0.5.0 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/onflow/atree v0.8.0-rc.6 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v1.3.1 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v1.3.1 // indirect
-	github.com/onflow/flow-ft/lib/go/contracts v1.0.0 // indirect
-	github.com/onflow/flow-ft/lib/go/templates v1.0.0 // indirect
-	github.com/onflow/flow-nft/lib/go/contracts v1.2.1 // indirect
-	github.com/onflow/flow-nft/lib/go/templates v1.2.0 // indirect
+	github.com/onflow/atree v0.8.0 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v1.4.0 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v1.4.0 // indirect
+	github.com/onflow/flow-ft/lib/go/contracts v1.0.1 // indirect
+	github.com/onflow/flow-ft/lib/go/templates v1.0.1 // indirect
+	github.com/onflow/flow-nft/lib/go/contracts v1.2.2 // indirect
+	github.com/onflow/flow-nft/lib/go/templates v1.2.1 // indirect
+	github.com/onflow/nft-storefront/lib/go/contracts v1.0.0 // indirect
 	github.com/onflow/sdks v0.6.0-preview.1 // indirect
 	github.com/onflow/wal v1.0.2 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
