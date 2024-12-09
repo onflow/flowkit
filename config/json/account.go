@@ -101,25 +101,6 @@ func transformSimpleToConfig(accountName string, a simpleAccount) (*config.Accou
 	}, nil
 }
 
-func isEnvKey(key string) bool {
-	envRegex, err := regexp.Compile(`^\$\{(\w+)\}|\$(\w+)$`)
-	if err != nil {
-		return false
-	}
-
-	found := envRegex.FindAllStringSubmatch(key, -1)
-	if len(found) == 0 {
-		return false
-	}
-
-	envVar := found[0][1]
-	if found[0][2] != "" {
-		envVar = found[0][2]
-	}
-
-	return os.Getenv(envVar) != ""
-}
-
 // tryReplaceEnv checks if value matches env regex, if it does it check whether the value was set in env,
 // if not set then it errors, otherwise it replaces the value with set env variable, and also returns the original key.
 func tryReplaceEnv(value string) (replaced string, original string, err error) {
@@ -296,7 +277,6 @@ func transformAccountsToJSON(accounts config.Accounts) jsonAccounts {
 
 func transformSimpleAccountToJSON(a config.Account) account {
 	key := strings.TrimPrefix(a.Key.PrivateKey.String(), "0x")
-
 	if a.Key.Env != "" {
 		key = a.Key.Env // if we used env vars then use it when saving
 	}
@@ -384,8 +364,6 @@ type advanceKey struct {
 	Location string `json:"location,omitempty"`
 	// old key format
 	Context map[string]string `json:"context,omitempty"`
-	// env var
-	Env string `json:"env,omitempty"`
 }
 
 // support for pre v0.22 formats
