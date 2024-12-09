@@ -71,9 +71,14 @@ var _ Key = &KMSKey{}
 
 var _ Key = &BIP44Key{}
 
+var _ Key = &EnvKey{}
+
 func keyFromConfig(accountKeyConf config.AccountKey) (Key, error) {
 	switch accountKeyConf.Type {
 	case config.KeyTypeHex:
+		if accountKeyConf.Env != "" {
+			return envKeyFromConfig(accountKeyConf)
+		}
 		return hexKeyFromConfig(accountKeyConf)
 	case config.KeyTypeBip44:
 		return bip44KeyFromConfig(accountKeyConf)
@@ -312,6 +317,44 @@ func NewFileKey(
 		},
 		rw:       rw,
 		location: location,
+	}
+}
+
+// EnvKey represents a key that is saved in an environment variable.
+type EnvKey struct {
+	*baseKey
+	privateKey crypto.PrivateKey
+	env        string
+}
+
+func envKeyFromConfig(accountKey config.AccountKey) (*EnvKey, error) {
+	return &EnvKey{
+		baseKey:    baseKeyFromConfig(accountKey),
+		privateKey: accountKey.PrivateKey,
+		env:        accountKey.Env,
+	}, nil
+}
+
+func (f *EnvKey) Signer(ctx context.Context) (crypto.Signer, error) {
+	key, err := f.PrivateKey()
+	if err != nil {
+		return nil, err
+	}
+
+	return crypto.NewInMemorySigner(*key, f.HashAlgo())
+}
+
+func (f *EnvKey) PrivateKey() (*crypto.PrivateKey, error) {
+	return &f.privateKey, nil
+}
+
+func (f *EnvKey) ToConfig() config.AccountKey {
+	return config.AccountKey{
+		Type:       config.KeyTypeHex,
+		SigAlgo:    f.sigAlgo,
+		HashAlgo:   f.hashAlgo,
+		PrivateKey: f.privateKey,
+		Env:        f.env,
 	}
 }
 
