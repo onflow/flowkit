@@ -74,6 +74,9 @@ var _ Key = &BIP44Key{}
 func keyFromConfig(accountKeyConf config.AccountKey) (Key, error) {
 	switch accountKeyConf.Type {
 	case config.KeyTypeHex:
+		if accountKeyConf.Env != "" {
+			return envKeyFromConfig(accountKeyConf)
+		}
 		return hexKeyFromConfig(accountKeyConf)
 	case config.KeyTypeBip44:
 		return bip44KeyFromConfig(accountKeyConf)
@@ -312,6 +315,59 @@ func NewFileKey(
 		},
 		rw:       rw,
 		location: location,
+	}
+}
+
+// EnvKey represents a key that is saved in an environment variable.
+type EnvKey struct {
+	*baseKey
+	privateKey crypto.PrivateKey
+	env        string
+}
+
+func envKeyFromConfig(accountKey config.AccountKey) (*EnvKey, error) {
+	return &EnvKey{
+		baseKey:    baseKeyFromConfig(accountKey),
+		privateKey: accountKey.PrivateKey,
+		env:        accountKey.Env,
+	}, nil
+}
+
+func (f *EnvKey) Signer(ctx context.Context) (crypto.Signer, error) {
+	key, err := f.PrivateKey()
+	if err != nil {
+		return nil, err
+	}
+
+	return crypto.NewInMemorySigner(*key, f.HashAlgo())
+}
+
+func (f *EnvKey) PrivateKey() (*crypto.PrivateKey, error) {
+	pkHex := os.ExpandEnv(f.env)
+	if pkHex == "" {
+		return nil, fmt.Errorf("environment variable %s is not set", f.env)
+	}
+
+	pkey, err := crypto.DecodePrivateKeyHex(f.sigAlgo, strings.TrimPrefix(string(pkHex), "0x"))
+	if err != nil {
+		return nil, fmt.Errorf("could not decode the key from environment variable %s: %w", f.env, err)
+	}
+
+	return &pkey, nil
+}
+
+func (f *EnvKey) ToConfig() config.AccountKey {
+	pk, err := f.PrivateKey()
+	if err != nil {
+		panic(err)
+	}
+
+	return config.AccountKey{
+		Type:       config.KeyTypeHex,
+		SigAlgo:    f.sigAlgo,
+		HashAlgo:   f.hashAlgo,
+		PrivateKey: *pk,
+		Env:        f.env,
 	}
 }
 
