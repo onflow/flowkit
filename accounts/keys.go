@@ -71,6 +71,8 @@ var _ Key = &KMSKey{}
 
 var _ Key = &BIP44Key{}
 
+var _ Key = &EnvKey{}
+
 func keyFromConfig(accountKeyConf config.AccountKey) (Key, error) {
 	switch accountKeyConf.Type {
 	case config.KeyTypeHex:
