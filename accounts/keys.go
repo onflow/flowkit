@@ -349,16 +349,11 @@ func (f *EnvKey) PrivateKey() (*crypto.PrivateKey, error) {
 }
 
 func (f *EnvKey) ToConfig() config.AccountKey {
-	pk, err := f.PrivateKey()
-	if err != nil {
-		panic(err)
-	}
-
 	return config.AccountKey{
 		Type:       config.KeyTypeHex,
 		SigAlgo:    f.sigAlgo,
 		HashAlgo:   f.hashAlgo,
-		PrivateKey: *pk,
+		PrivateKey: f.privateKey,
 		Env:        f.env,
 	}
 }
