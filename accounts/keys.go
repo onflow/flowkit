@@ -345,17 +345,7 @@ func (f *EnvKey) Signer(ctx context.Context) (crypto.Signer, error) {
 }
 
 func (f *EnvKey) PrivateKey() (*crypto.PrivateKey, error) {
-	pkHex := os.ExpandEnv(f.env)
-	if pkHex == "" {
-		return nil, fmt.Errorf("environment variable %s is not set", f.env)
-	}
-
-	pkey, err := crypto.DecodePrivateKeyHex(f.sigAlgo, strings.TrimPrefix(string(pkHex), "0x"))
-	if err != nil {
-		return nil, fmt.Errorf("could not decode the key from environment variable %s: %w", f.env, err)
-	}
-
-	return &pkey, nil
+	return &f.privateKey, nil
 }
 
 func (f *EnvKey) ToConfig() config.AccountKey {
