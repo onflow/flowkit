@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "12:00"
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "12:00"
+    allow:
+      - dependency-type: "direct"
+    ignore:
+      # Exclude major updates for all dependencies
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "github.com/onflow/flow-go"
+      - dependency-name: "github.com/onflow/cadence"
+      - dependency-name: "github.com/onflow/crypto"
+      - dependency-name: "github.com/onflow/flow-go-sdk"
