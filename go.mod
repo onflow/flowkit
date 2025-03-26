@@ -17,7 +17,7 @@ require (
 	github.com/onflow/flow/protobuf/go/flow v0.4.7
 	github.com/onflow/go-ethereum v1.14.7
 	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.29.0
+	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.10.0
 	github.com/stretchr/testify v1.10.0
 	github.com/thoas/go-funk v0.9.2
