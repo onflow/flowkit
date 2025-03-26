@@ -15,7 +15,7 @@ require (
 	github.com/onflow/flow-go v0.38.0-util.0.20250130182921-c8d283b60d12
 	github.com/onflow/flow-go-sdk v1.3.1
 	github.com/onflow/flow/protobuf/go/flow v0.4.7
-	github.com/onflow/go-ethereum v1.14.7
+	github.com/onflow/go-ethereum v1.14.8
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.10.0
@@ -103,7 +103,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/holiman/bloomfilter/v2 v2.0.3 // indirect
-	github.com/holiman/uint256 v1.3.0 // indirect
+	github.com/holiman/uint256 v1.3.1 // indirect
 	github.com/huandu/go-clone v1.6.0 // indirect
 	github.com/huandu/go-clone/generic v1.7.2 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
