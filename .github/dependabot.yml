@@ -21,3 +21,5 @@ updates:
     ignore:
       - dependency-name: "github.com/onflow/flow-go"
       - dependency-name: "github.com/onflow/cadence"
+      - dependency-name: "github.com/onflow/crypto"
+      - dependency-name: "github.com/onflow/flow-go-sdk"
