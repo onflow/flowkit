@@ -2,8 +2,6 @@ module github.com/onflow/flowkit/v2
 
 go 1.23
 
-toolchain go1.23.4
-
 require (
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2
 	github.com/gosuri/uilive v0.0.4
@@ -20,7 +18,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.10.0
 	github.com/stretchr/testify v1.10.0
-	github.com/thoas/go-funk v0.9.2
+	github.com/thoas/go-funk v0.9.3
 	github.com/tyler-smith/go-bip39 v1.1.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	gonum.org/v1/gonum v0.14.0
