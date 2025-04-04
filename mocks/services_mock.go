@@ -40,6 +40,7 @@ const (
 	getBlockFunc                     = "GetBlock"
 	getTransactionByIDFunc           = "GetTransactionByID"
 	getTransactionsByBlockIDFunc     = "GetTransactionsByBlockID"
+	getSystemTransactionFunc         = "GetSystemTransaction"
 	networkFunc                      = "Network"
 	pingFunc                         = "Ping"
 	removeContractFunc               = "RemoveContract"
@@ -62,6 +63,7 @@ type MockServices struct {
 	GetBlock                     *mock.Call
 	GetTransactionByID           *mock.Call
 	GetTransactionsByBlockID     *mock.Call
+	GetSystemTransaction         *mock.Call
 	Network                      *mock.Call
 	Ping                         *mock.Call
 	RemoveContract               *mock.Call
@@ -199,6 +201,11 @@ func DefaultMockServices() *MockServices {
 		Network:   m.On(networkFunc),
 		Ping:      m.On(pingFunc),
 		SetLogger: m.On(setLoggerFunc, mock.AnythingOfType("output.Logger")),
+		GetSystemTransaction: m.On(
+			getSystemTransactionFunc,
+			mock.Anything,
+			mock.AnythingOfType("flow.Identifier"),
+		),
 	}
 
 	t.GetAccount.Run(func(args mock.Arguments) {
@@ -211,6 +218,7 @@ func DefaultMockServices() *MockServices {
 	})
 
 	t.GetTransactionByID.Return(tests.NewTransaction(), nil)
+	t.GetSystemTransaction.Return(tests.NewTransaction(), nil)
 	t.GetCollection.Return(tests.NewCollection(), nil)
 	t.GetEvents.Return([]flow.BlockEvents{}, nil)
 	t.GetBlock.Return(tests.NewBlock(), nil)
