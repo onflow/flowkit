@@ -15,7 +15,7 @@ require (
 	github.com/onflow/flow-go v0.38.0-util.0.20250130182921-c8d283b60d12
 	github.com/onflow/flow-go-sdk v1.3.1
 	github.com/onflow/flow/protobuf/go/flow v0.4.7
-	github.com/onflow/go-ethereum v1.14.8
+	github.com/onflow/go-ethereum v1.14.7
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.10.0
