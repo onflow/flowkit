@@ -891,6 +891,27 @@ func (f *Flowkit) GetTransactionsByBlockID(
 	return tx, txRes, nil
 }
 
+func (f *Flowkit) GetSystemTransaction(
+	ctx context.Context,
+	blockID flow.Identifier,
+) (*flow.Transaction, *flow.TransactionResult, error) {
+	f.logger.StartProgress("Fetching System Transaction...")
+	defer f.logger.StopProgress()
+
+	tx, err := f.gateway.GetSystemTransaction(ctx, blockID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Fetch the result so that it can be correctly returned
+	result, err := f.gateway.GetSystemTransactionResult(ctx, blockID)
+	if err != nil {
+		return tx, nil, err
+	}
+
+	return tx, result, nil
+}
+
 // BuildTransaction builds a new transaction type for later signing and submitting to the network.
 //
 // AddressesRoles type defines the address for each role (payer, proposer, authorizers) and the script defines the transaction content.

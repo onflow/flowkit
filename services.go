@@ -103,6 +103,8 @@ type Services interface {
 
 	GetTransactionsByBlockID(context.Context, flow.Identifier) ([]*flow.Transaction, []*flow.TransactionResult, error)
 
+	GetSystemTransaction(context.Context, flow.Identifier) (*flow.Transaction, *flow.TransactionResult, error)
+
 	// BuildTransaction builds a new transaction type for later signing and submitting to the network.
 	//
 	// AddressesRoles type defines the address for each role (payer, proposer, authorizers) and the script defines the transaction content.

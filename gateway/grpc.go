@@ -47,9 +47,9 @@ type GrpcGateway struct {
 func NewGrpcGateway(network config.Network, opts ...grpcAccess.ClientOption) (*GrpcGateway, error) {
 	options := append(
 		[]grpcAccess.ClientOption{
-		grpcAccess.WithGRPCDialOptions(
-			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
-		),
+			grpcAccess.WithGRPCDialOptions(
+				grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxGRPCMessageSize)),
+			),
 		},
 		opts...,
 	)
@@ -145,6 +145,14 @@ func (g *GrpcGateway) GetTransactionResult(ctx context.Context, ID flow.Identifi
 	}
 
 	return result, nil
+}
+
+func (g *GrpcGateway) GetSystemTransaction(ctx context.Context, blockID flow.Identifier) (*flow.Transaction, error) {
+	return g.client.GetSystemTransaction(ctx, blockID)
+}
+
+func (g *GrpcGateway) GetSystemTransactionResult(ctx context.Context, blockID flow.Identifier) (*flow.TransactionResult, error) {
+	return g.client.GetSystemTransactionResult(ctx, blockID)
 }
 
 // ExecuteScript executes a script on Flow through the Access API.

@@ -29,16 +29,18 @@ import (
 )
 
 const (
-	GetAccountFunc            = "GetAccount"
-	SendSignedTransactionFunc = "SendSignedTransaction"
-	GetCollectionFunc         = "GetCollection"
-	GetTransactionResultFunc  = "GetTransactionResult"
-	GetEventsFunc             = "GetEvents"
-	GetLatestBlockFunc        = "GetLatestBlock"
-	GetBlockByHeightFunc      = "GetBlockByHeight"
-	GetBlockByIDFunc          = "GetBlockByID"
-	ExecuteScriptFunc         = "ExecuteScript"
-	GetTransactionFunc        = "GetTransaction"
+	GetAccountFunc                 = "GetAccount"
+	SendSignedTransactionFunc      = "SendSignedTransaction"
+	GetCollectionFunc              = "GetCollection"
+	GetTransactionResultFunc       = "GetTransactionResult"
+	GetEventsFunc                  = "GetEvents"
+	GetLatestBlockFunc             = "GetLatestBlock"
+	GetBlockByHeightFunc           = "GetBlockByHeight"
+	GetBlockByIDFunc               = "GetBlockByID"
+	ExecuteScriptFunc              = "ExecuteScript"
+	GetTransactionFunc             = "GetTransaction"
+	GetSystemTransactionFunc       = "GetSystemTransaction"
+	GetSystemTransactionResultFunc = "GetSystemTransactionResult"
 )
 
 type TestGateway struct {
@@ -55,6 +57,8 @@ type TestGateway struct {
 	GetTransaction                 *mock.Call
 	GetTransactionResultsByBlockID *mock.Call
 	GetTransactionsByBlockID       *mock.Call
+	GetSystemTransaction           *mock.Call
+	GetSystemTransactionResult     *mock.Call
 	GetLatestProtocolStateSnapshot *mock.Call
 	Ping                           *mock.Call
 	SecureConnection               *mock.Call
@@ -107,6 +111,16 @@ func DefaultMockGateway() *TestGateway {
 		GetBlockByHeight: m.On(GetBlockByHeightFunc, ctxMock, mock.Anything),
 		GetBlockByID:     m.On(GetBlockByIDFunc, ctxMock, mock.Anything),
 		GetLatestBlock:   m.On(GetLatestBlockFunc, ctxMock),
+		GetSystemTransaction: m.On(
+			GetSystemTransactionFunc,
+			ctxMock,
+			mock.AnythingOfType("flow.Identifier"),
+		),
+		GetSystemTransactionResult: m.On(
+			GetSystemTransactionResultFunc,
+			ctxMock,
+			mock.AnythingOfType("flow.Identifier"),
+		),
 	}
 
 	// default return values
@@ -130,6 +144,8 @@ func DefaultMockGateway() *TestGateway {
 	t.GetLatestBlock.Return(tests.NewBlock(), nil)
 	t.GetBlockByHeight.Return(tests.NewBlock(), nil)
 	t.GetBlockByID.Return(tests.NewBlock(), nil)
+	t.GetSystemTransaction.Return(tests.NewTransaction(), nil)
+	t.GetSystemTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 
 	return t
 }
