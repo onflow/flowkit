@@ -630,7 +630,7 @@ func TestAccountsAddContractWithArgs(t *testing.T) {
 		UpdateExistingContract(false),
 	)
 	assert.Error(t, err)
-	assert.True(t, strings.Contains(err.Error(), "invalid argument count, too few arguments: expected 1, got 0"))
+	assert.ErrorContains(t, err, "provided arguments length mismatch, required arguments 1, but provided 0")
 
 	c := resourceToContract(tests.ContractSimpleWithArgs)
 	c.Args = []cadence.Value{cadence.UInt64(4)}
@@ -1082,7 +1082,7 @@ func TestProject(t *testing.T) {
 			Network: config.EmulatorNetwork.Name,
 			Account: a.Name,
 			Contracts: []config.ContractDeployment{
-				{Name: c1.Name}, {Name: c3.Name},
+				{Name: c1.Name}, {Name: c3.Name, Args: []cadence.Value{cadence.String("foo")}},
 			},
 		}
 		state.Deployments().AddOrUpdate(d)
@@ -1159,7 +1159,7 @@ func TestProject(t *testing.T) {
 			Network: config.EmulatorNetwork.Name,
 			Account: a.Name,
 			Contracts: []config.ContractDeployment{
-				{Name: c1.Name}, {Name: c3.Name},
+				{Name: c1.Name}, {Name: c3.Name, Args: []cadence.Value{cadence.String("foo")}},
 			},
 		}
 		state.Deployments().AddOrUpdate(d)
