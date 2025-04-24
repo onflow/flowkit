@@ -1268,6 +1268,30 @@ func simpleDeploy(state *State, flowkit Flowkit, update bool) ([]*project.Contra
 	return flowkit.DeployProject(ctx, UpdateExistingContract(update))
 }
 
+// used for integration tests
+func simpleDeployInterface(state *State, flowkit Flowkit, update bool) ([]*project.Contract, error) {
+	srvAcc, _ := state.EmulatorServiceAccount()
+
+	c := config.Contract{
+		Name:     tests.ContractInterfaceSimple.Name,
+		Location: tests.ContractInterfaceSimple.Filename,
+	}
+	state.Contracts().AddOrUpdate(c)
+	state.Networks().AddOrUpdate(config.EmulatorNetwork)
+
+	d := config.Deployment{
+		Network: config.EmulatorNetwork.Name,
+		Account: srvAcc.Name,
+		Contracts: []config.ContractDeployment{{
+			Name: c.Name,
+			Args: nil,
+		}},
+	}
+	state.Deployments().AddOrUpdate(d)
+
+	return flowkit.DeployProject(ctx, UpdateExistingContract(update))
+}
+
 func TestProject_Integration(t *testing.T) {
 	t.Run("Deploy Project", func(t *testing.T) {
 		t.Parallel()
@@ -1278,6 +1302,17 @@ func TestProject_Integration(t *testing.T) {
 		assert.Len(t, contracts, 1)
 		assert.Equal(t, contracts[0].Name, tests.ContractHelloString.Name)
 		assert.Equal(t, string(contracts[0].Code()), string(tests.ContractHelloString.Source))
+	})
+
+	t.Run("Deploy Interface", func(t *testing.T) {
+		t.Parallel()
+
+		state, flowkit := setupIntegration()
+		contracts, err := simpleDeployInterface(state, flowkit, false)
+		assert.NoError(t, err)
+		assert.Len(t, contracts, 1)
+		assert.Equal(t, contracts[0].Name, tests.ContractInterfaceSimple.Name)
+		assert.Equal(t, string(contracts[0].Code()), string(tests.ContractInterfaceSimple.Source))
 	})
 
 	t.Run("Deploy Complex Project", func(t *testing.T) {

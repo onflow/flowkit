@@ -52,6 +52,14 @@ var ContractHelloString = Resource{
 	`),
 }
 
+var ContractInterfaceSimple = Resource{
+	Name:     "ISimple",
+	Filename: "contractInterfaceSimple.cdc",
+	Source: []byte(`
+		access(all) contract interface ISimple {}
+	`),
+}
+
 var ContractSimple = Resource{
 	Name:     "Simple",
 	Filename: "contractSimple.cdc",
@@ -524,7 +532,7 @@ var resources = []Resource{
 }
 
 func ReaderWriter() (afero.Afero, afero.Fs) {
-	var mockFS = afero.NewMemMapFs()
+	mockFS := afero.NewMemMapFs()
 
 	for _, c := range resources {
 		_ = afero.WriteFile(mockFS, c.Filename, c.Source, 0644)
