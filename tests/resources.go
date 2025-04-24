@@ -56,7 +56,9 @@ var ContractInterfaceSimple = Resource{
 	Name:     "ISimple",
 	Filename: "contractInterfaceSimple.cdc",
 	Source: []byte(`
-		access(all) contract interface ISimple {}
+		access(all) contract interface ISimple {
+			access(all) fun aFunc() 
+	}
 	`),
 }
 
