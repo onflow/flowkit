@@ -531,6 +531,7 @@ var resources = []Resource{
 	ContractBB,
 	ContractCC,
 	ContractFooCoverage,
+	ContractInterfaceSimple,
 }
 
 func ReaderWriter() (afero.Afero, afero.Fs) {
