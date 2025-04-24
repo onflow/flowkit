@@ -129,7 +129,7 @@ func addAccountContractWithArgs(
 
 	txArgs, addArgs := "", ""
 	interfaceAst := program.SoleContractInterfaceDeclaration()
-	if interfaceAst != nil {
+	if interfaceAst == nil {
 		// get contract init function
 		contractAst := program.SoleContractDeclaration()
 		if contractAst == nil {
