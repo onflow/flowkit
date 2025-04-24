@@ -127,43 +127,45 @@ func addAccountContractWithArgs(
 		return nil, err
 	}
 
-	// get contract init function
-	contractAst := program.SoleContractDeclaration()
-	if contractAst == nil {
-		return nil, fmt.Errorf("failed to find contract declaration")
-	}
-
-	// get contract init function
-	specialFunctions := contractAst.Members.SpecialFunctions()
-	var initFunction *ast.SpecialFunctionDeclaration
-	for _, specialFunction := range specialFunctions {
-		if specialFunction.FunctionDeclaration.Identifier.Identifier == "init" {
-			initFunction = specialFunction
-			break
-		}
-	}
-
-	// if init function is not found, return error
-	contractInitArgs := make([]*ast.Parameter, 0)
-	if initFunction != nil {
-		contractInitArgs = initFunction.FunctionDeclaration.ParameterList.Parameters
-	}
-
-	// get contract init function arguments
-	if len(contractInitArgs) != len(args) {
-		return nil, fmt.Errorf(
-			"provided arguments length mismatch, required arguments %d, but provided %d",
-			len(contractInitArgs),
-			len(args),
-		)
-	}
-
-	// here we itterate over all arguments and possibly extend the transaction input argument
-	// in the above template to include them
 	txArgs, addArgs := "", ""
-	for i, arg := range contractInitArgs {
-		txArgs += fmt.Sprintf(",arg%d:%s", i, arg.TypeAnnotation.Type.String())
-		addArgs += fmt.Sprintf(",arg%d", i)
+	interfaceAst := program.SoleContractInterfaceDeclaration()
+	if interfaceAst != nil {
+		// get contract init function
+		contractAst := program.SoleContractDeclaration()
+		if contractAst == nil {
+			return nil, fmt.Errorf("failed to find contract declaration")
+		}
+
+		// get contract init function
+		specialFunctions := contractAst.Members.SpecialFunctions()
+		var initFunction *ast.SpecialFunctionDeclaration
+		for _, specialFunction := range specialFunctions {
+			if specialFunction.FunctionDeclaration.Identifier.Identifier == "init" {
+				initFunction = specialFunction
+				break
+			}
+		}
+
+		// if init function is not found, return error
+		contractInitArgs := make([]*ast.Parameter, 0)
+		if initFunction != nil {
+			contractInitArgs = initFunction.FunctionDeclaration.ParameterList.Parameters
+		}
+
+		// get contract init function arguments
+		if len(contractInitArgs) != len(args) {
+			return nil, fmt.Errorf(
+				"provided arguments length mismatch, required arguments %d, but provided %d",
+				len(contractInitArgs),
+				len(args),
+			)
+		}
+		// here we itterate over all arguments and possibly extend the transaction input argument
+		// in the above template to include them
+		for i, arg := range contractInitArgs {
+			txArgs += fmt.Sprintf(",arg%d:%s", i, arg.TypeAnnotation.Type.String())
+			addArgs += fmt.Sprintf(",arg%d", i)
+		}
 	}
 
 	script := fmt.Sprintf(addAccountContractTemplate, txArgs, addArgs)
