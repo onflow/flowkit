@@ -513,6 +513,52 @@ func TestAccountsAddContract_Integration(t *testing.T) {
 		require.NotNil(t, deployments)
 	})
 
+	t.Run("Update Contract With Args", func(t *testing.T) {
+		t.Parallel()
+
+		state, flowkit := setupIntegration()
+		srvAcc, _ := state.EmulatorServiceAccount()
+
+		ID, _, err := flowkit.AddContract(
+			ctx,
+			srvAcc,
+			Script{
+				Code:     tests.ContractSimpleWithArgs.Source,
+				Location: tests.ContractSimpleWithArgs.Filename,
+				Args: []cadence.Value{
+					cadence.UInt64(4),
+				},
+			},
+			UpdateExistingContract(false),
+		)
+		require.NoError(t, err)
+		require.NotNil(t, ID)
+
+		acc, err := flowkit.GetAccount(ctx, srvAcc.Address)
+		require.NoError(t, err)
+		require.NotNil(t, acc)
+		assert.Equal(t, acc.Contracts["Simple"], tests.ContractSimpleWithArgs.Source)
+
+		_, _, err = flowkit.AddContract(
+			ctx,
+			srvAcc,
+			resourceToContract(tests.ContractSimpleWithArgsUpdated),
+			UpdateExistingContract(true),
+		)
+		require.NoError(t, err)
+
+		acc, err = flowkit.GetAccount(ctx, srvAcc.Address)
+		require.NoError(t, err)
+		assert.Equal(t, acc.Contracts["Simple"], tests.ContractSimpleWithArgsUpdated.Source)
+
+		contract, err := state.Contracts().ByName(tests.ContractSimpleWithArgsUpdated.Name)
+		require.NoError(t, err)
+		require.NotNil(t, contract)
+
+		deployments := state.Deployments().ByAccountAndNetwork(srvAcc.Name, "emulator")
+		require.NotNil(t, deployments)
+	})
+
 	t.Run("Add Contract Invalid Same Content", func(t *testing.T) {
 		t.Parallel()
 

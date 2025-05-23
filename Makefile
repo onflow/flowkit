@@ -18,7 +18,7 @@ MIXPANEL_PROJECT_TOKEN := 3fae49de272be1ceb8cf34119f747073
 
 .PHONY: test
 test:
-	GO111MODULE=on go test -v -coverprofile=$(COVER_PROFILE) $(if $(JSON_OUTPUT),-json,) ./...
+	GO111MODULE=on go1.23.8 test -v -coverprofile=$(COVER_PROFILE) $(if $(JSON_OUTPUT),-json,) ./...
 
 .PHONY: install-tools
 install-tools:
