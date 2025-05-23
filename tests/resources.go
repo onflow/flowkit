@@ -93,6 +93,20 @@ var ContractSimpleWithArgs = Resource{
 	`),
 }
 
+var ContractSimpleWithArgsUpdated = Resource{
+	Name:     "Simple",
+	Filename: "contractArgs.cdc",
+	Source: []byte(`
+		access(all) contract Simple {
+			access(all) let id: UInt64
+			access(all) fun newFunc() {}
+			init(initId: UInt64) {
+				self.id = initId
+			}
+		}
+	`),
+}
+
 var ContractEvents = Resource{
 	Name:     "ContractEvents",
 	Filename: "contractEvents.cdc",
