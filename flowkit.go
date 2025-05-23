@@ -302,16 +302,6 @@ func (f *Flowkit) AddContract(
 		return flow.EmptyID, false, err
 	}
 
-	tx, err := transactions.NewAddAccountContract(
-		account,
-		name,
-		program.Code(),
-		contract.Args,
-	)
-	if err != nil {
-		return flow.EmptyID, false, err
-	}
-
 	f.logger.StartProgress(fmt.Sprintf("Checking contract '%s' on account '%s'...", name, account.Address))
 	defer f.logger.StopProgress()
 
@@ -328,12 +318,24 @@ func (f *Flowkit) AddContract(
 	}
 
 	updateExisting := update(existingContract, program.Code())
-	if exists && !updateExisting {
-		return flow.EmptyID, false, fmt.Errorf("contract %s exists in account %s", name, account.Name)
-	}
 
-	if exists && updateExisting {
+	var tx *transactions.Transaction
+	if exists {
+		if !updateExisting {
+			return flow.EmptyID, false, fmt.Errorf("contract %s exists in account %s", name, account.Name)
+		}
+
 		tx, err = transactions.NewUpdateAccountContract(account, name, program.Code())
+		if err != nil {
+			return flow.EmptyID, false, err
+		}
+	} else {
+		tx, err = transactions.NewAddAccountContract(
+			account,
+			name,
+			program.Code(),
+			contract.Args,
+		)
 		if err != nil {
 			return flow.EmptyID, false, err
 		}
