@@ -24,7 +24,7 @@ require (
 	github.com/tyler-smith/go-bip39 v1.1.0
 	golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67
 	gonum.org/v1/gonum v0.15.0
-	google.golang.org/grpc v1.72.1
+	google.golang.org/grpc v1.72.2
 )
 
 require (
