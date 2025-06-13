@@ -612,8 +612,6 @@ github.com/onflow/flow-core-contracts/lib/go/contracts v1.6.1 h1:n2NTsVT4iH7snqW
 github.com/onflow/flow-core-contracts/lib/go/contracts v1.6.1/go.mod h1:3tMXL4npVbk/F1X6SqxZWelQn0pyGvMBVbUXsgvC6Is=
 github.com/onflow/flow-core-contracts/lib/go/templates v1.6.1 h1:Y0bDvS5fTOCrKr7QFl0by3qTq7MFnauVnHoxwW6nQzo=
 github.com/onflow/flow-core-contracts/lib/go/templates v1.6.1/go.mod h1:pN768Al/wLRlf3bwugv9TyxniqJxMu4sxnX9eQJam64=
-github.com/onflow/flow-emulator v1.4.2-0.20250613072031-7077d00a56a8 h1:WkrRXvwTpm1P4WKWUnIef3/2BqpVeiZqmMM/D8+dCME=
-github.com/onflow/flow-emulator v1.4.2-0.20250613072031-7077d00a56a8/go.mod h1:ifNpRY5nmj7HzBuevv3E6yPfWZTRcPIkn3ku6srZpxc=
 github.com/onflow/flow-emulator v1.5.0 h1:iT2dwqSjlxkZ5U3+8lCmD5h7dEo6Pj5dM1haFpjcBBo=
 github.com/onflow/flow-emulator v1.5.0/go.mod h1:ifNpRY5nmj7HzBuevv3E6yPfWZTRcPIkn3ku6srZpxc=
 github.com/onflow/flow-evm-bridge v0.1.0 h1:7X2osvo4NnQgHj8aERUmbYtv9FateX8liotoLnPL9nM=
@@ -630,8 +628,8 @@ github.com/onflow/flow-nft/lib/go/contracts v1.2.4 h1:gWJgSSgIGo0qWOqr90+khQ69Vo
 github.com/onflow/flow-nft/lib/go/contracts v1.2.4/go.mod h1:eZ9VMMNfCq0ho6kV25xJn1kXeCfxnkhj3MwF3ed08gY=
 github.com/onflow/flow-nft/lib/go/templates v1.2.1 h1:SAALMZPDw9Eb9p5kSLnmnFxjyig1MLiT4JUlLp0/bSE=
 github.com/onflow/flow-nft/lib/go/templates v1.2.1/go.mod h1:W6hOWU0xltPqNpv9gQX8Pj8Jtf0OmRxc1XX2V0kzJaI=
-github.com/onflow/flow/protobuf/go/flow v0.4.10 h1:CGEO3n96XZQd/k5HtkZyb90ouem9G+8fNcKyt8s2fvs=
-github.com/onflow/flow/protobuf/go/flow v0.4.10/go.mod h1:NA2pX2nw8zuaxfKphhKsk00kWLwfd+tv8mS23YXO4Sk=
+github.com/onflow/flow/protobuf/go/flow v0.4.11 h1:EYjaATmor1ONczbvJ6VejQAJK4elFRk5h9AapxQ7j4c=
+github.com/onflow/flow/protobuf/go/flow v0.4.11/go.mod h1:NA2pX2nw8zuaxfKphhKsk00kWLwfd+tv8mS23YXO4Sk=
 github.com/onflow/go-ethereum v1.15.10 h1:blZBeOLJDOVWqKuhkkMh6S2PKQAJvdgbvOL9ZNggFcU=
 github.com/onflow/go-ethereum v1.15.10/go.mod h1:t2nZJtwruVjA5u5yEK8InFzjImFLHrF7ak2bw3E4LDM=
 github.com/onflow/nft-storefront/lib/go/contracts v1.0.0 h1:sxyWLqGm/p4EKT6DUlQESDG1ZNMN9GjPCm1gTq7NGfc=
@@ -1350,8 +1348,6 @@ honnef.co/go/tools v0.0.1-2020.1.3/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9
 honnef.co/go/tools v0.0.1-2020.1.4/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9vFzvIQ3k=
 launchpad.net/gocheck v0.0.0-20140225173054-000000000087 h1:Izowp2XBH6Ya6rv+hqbceQyw/gSGoXfH/UPoTGduL54=
 launchpad.net/gocheck v0.0.0-20140225173054-000000000087/go.mod h1:hj7XX3B/0A+80Vse0e+BUHsHMTEhd0O4cpUHr/e/BUM=
-lukechampine.com/blake3 v1.4.0 h1:xDbKOZCVbnZsfzM6mHSYcGRHZ3YrLDzqz8XnV4uaD5w=
-lukechampine.com/blake3 v1.4.0/go.mod h1:MQJNQCTnR+kwOP/JEZSxj3MaQjp80FOFSNMMHXcSeX0=
 lukechampine.com/blake3 v1.4.1 h1:I3Smz7gso8w4/TunLKec6K2fn+kyKtDxr/xcQEN84Wg=
 lukechampine.com/blake3 v1.4.1/go.mod h1:QFosUxmjB8mnrWFSNwKmvxHpfY72bmD2tQ0kBMM3kwo=
 modernc.org/libc v1.37.6 h1:orZH3c5wmhIQFTXF+Nt+eeauyd+ZIt2BX6ARe+kD+aw=

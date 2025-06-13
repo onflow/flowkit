@@ -12,7 +12,7 @@ require (
 	github.com/onflow/flow-emulator v1.5.0
 	github.com/onflow/flow-go v0.41.0-rc.1.0.20250612202352-c000365f7daf
 	github.com/onflow/flow-go-sdk v1.6.0
-	github.com/onflow/flow/protobuf/go/flow v0.4.10
+	github.com/onflow/flow/protobuf/go/flow v0.4.11
 	github.com/onflow/go-ethereum v1.15.10
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
