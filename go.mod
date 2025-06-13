@@ -11,7 +11,7 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.6.0
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.4.2-0.20250613072031-7077d00a56a8
+	github.com/onflow/flow-emulator v1.5.0
 	github.com/onflow/flow-go v0.41.0-rc.1.0.20250612202352-c000365f7daf
 	github.com/onflow/flow-go-sdk v1.6.0
 	github.com/onflow/flow/protobuf/go/flow v0.4.10
@@ -234,7 +234,7 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
-	lukechampine.com/blake3 v1.4.0 // indirect
+	lukechampine.com/blake3 v1.4.1 // indirect
 	modernc.org/libc v1.37.6 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.7.2 // indirect
