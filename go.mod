@@ -7,11 +7,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v1.6.0
+	github.com/onflow/cadence v1.6.2
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.5.0
-	github.com/onflow/flow-go v0.41.0-rc.1.0.20250612202352-c000365f7daf
-	github.com/onflow/flow-go-sdk v1.6.0
+	github.com/onflow/flow-emulator v1.5.1
+	github.com/onflow/flow-go v0.41.0-rc.1.0.20250618213905-cfbf84027792
+	github.com/onflow/flow-go-sdk v1.6.1
 	github.com/onflow/flow/protobuf/go/flow v0.4.10
 	github.com/onflow/go-ethereum v1.15.10
 	github.com/pkg/errors v0.9.1
@@ -30,9 +30,9 @@ require (
 	cloud.google.com/go/auth v0.16.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
-	cloud.google.com/go/iam v1.5.0 // indirect
-	cloud.google.com/go/kms v1.21.2 // indirect
-	cloud.google.com/go/longrunning v0.6.6 // indirect
+	cloud.google.com/go/iam v1.5.2 // indirect
+	cloud.google.com/go/kms v1.22.0 // indirect
+	cloud.google.com/go/longrunning v0.6.7 // indirect
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e // indirect
 	github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec // indirect
@@ -226,7 +226,7 @@ require (
 	google.golang.org/api v0.232.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20250303144028-a0af3efb3deb // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250414145226-207652e42e2e // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250428153025-10db94c68c34 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
