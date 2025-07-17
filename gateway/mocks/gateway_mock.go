@@ -110,7 +110,7 @@ func DefaultMockGateway() *TestGateway {
 		),
 		GetBlockByHeight: m.On(GetBlockByHeightFunc, ctxMock, mock.Anything),
 		GetBlockByID:     m.On(GetBlockByIDFunc, ctxMock, mock.Anything),
-		GetLatestBlock:   m.On(GetLatestBlockFunc, ctxMock),
+		GetLatestBlock:   m.On(GetLatestBlockFunc, ctxMock, mock.AnythingOfType("bool")),
 		GetSystemTransaction: m.On(
 			GetSystemTransactionFunc,
 			ctxMock,
