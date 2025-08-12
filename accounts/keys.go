@@ -351,6 +351,7 @@ func (f *EnvKey) PrivateKey() (*crypto.PrivateKey, error) {
 func (f *EnvKey) ToConfig() config.AccountKey {
 	return config.AccountKey{
 		Type:       config.KeyTypeHex,
+		Index:      f.index,
 		SigAlgo:    f.sigAlgo,
 		HashAlgo:   f.hashAlgo,
 		PrivateKey: f.privateKey,
@@ -405,6 +406,7 @@ func (f *FileKey) PrivateKey() (*crypto.PrivateKey, error) {
 func (f *FileKey) ToConfig() config.AccountKey {
 	return config.AccountKey{
 		Type:     config.KeyTypeFile,
+		Index:    f.index,
 		SigAlgo:  f.sigAlgo,
 		HashAlgo: f.hashAlgo,
 		Location: f.location,
