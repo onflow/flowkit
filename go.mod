@@ -9,7 +9,7 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.6.2
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.6.0
+	github.com/onflow/flow-emulator v1.6.1
 	github.com/onflow/flow-go v0.41.0-rc.1.0.20250618213905-cfbf84027792
 	github.com/onflow/flow-go-sdk v1.6.1
 	github.com/onflow/flow/protobuf/go/flow v0.4.10
