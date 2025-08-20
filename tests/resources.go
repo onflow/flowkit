@@ -20,7 +20,6 @@ package tests
 
 import (
 	"fmt"
-
 	"github.com/onflow/cadence"
 	"github.com/onflow/cadence/common"
 	"github.com/onflow/flow-go-sdk"
@@ -596,20 +595,20 @@ func HashAlgos() []crypto.HashAlgorithm {
 	return hashAlgos
 }
 
-var accounts = test.AccountGenerator()
+var accountGenerator = test.AccountGenerator()
 
 var transactions = test.TransactionGenerator()
 
 var transactionResults = test.TransactionResultGenerator(entities.EventEncodingVersion_CCF_V0)
 
 func NewAccountWithAddress(address string) *flow.Account {
-	account := accounts.New()
+	account := accountGenerator.New()
 	account.Address = flow.HexToAddress(address)
 	return account
 }
 
 func NewAccountWithContracts(address string, contracts ...Resource) *flow.Account {
-	account := accounts.New()
+	account := accountGenerator.New()
 	account.Address = flow.HexToAddress(address)
 
 	if account.Contracts == nil {
