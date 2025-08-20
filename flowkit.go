@@ -28,12 +28,12 @@ import (
 	"sync"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	gethAccounts "github.com/ethereum/go-ethereum/accounts"
 	"github.com/lmars/go-slip10"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
-	goeth "github.com/onflow/go-ethereum/accounts"
 	"github.com/pkg/errors"
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/exp/maps"
@@ -667,7 +667,7 @@ func (f *Flowkit) derivePrivateKeyFromSeed(
 		derivationPath = "m/44'/539'/0'/0/0"
 	}
 
-	path, err := goeth.ParseDerivationPath(derivationPath)
+	path, err := gethAccounts.ParseDerivationPath(derivationPath)
 	if err != nil {
 		return nil, fmt.Errorf("invalid derivation path")
 	}

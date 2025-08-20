@@ -27,10 +27,10 @@ import (
 	"regexp"
 	"strings"
 
+	gethAccounts "github.com/ethereum/go-ethereum/accounts"
 	"github.com/lmars/go-slip10"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/onflow/flow-go-sdk/crypto/cloudkms"
-	goeth "github.com/onflow/go-ethereum/accounts"
 	"github.com/tyler-smith/go-bip39"
 
 	"github.com/onflow/flowkit/v2/config"
@@ -471,7 +471,7 @@ func (a *BIP44Key) Validate() error {
 		return fmt.Errorf("invalid mnemonic defined for account in flow.json")
 	}
 
-	derivationPath, err := goeth.ParseDerivationPath(a.derivationPath)
+	derivationPath, err := gethAccounts.ParseDerivationPath(a.derivationPath)
 	if err != nil {
 		return fmt.Errorf("invalid derivation path defined for account in flow.json")
 	}
