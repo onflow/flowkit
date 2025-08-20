@@ -40,7 +40,7 @@ type Gateway interface {
 	ExecuteScript(context.Context, []byte, []cadence.Value) (cadence.Value, error)
 	ExecuteScriptAtHeight(context.Context, []byte, []cadence.Value, uint64) (cadence.Value, error)
 	ExecuteScriptAtID(context.Context, []byte, []cadence.Value, flow.Identifier) (cadence.Value, error)
-	GetLatestBlock(context.Context) (*flow.Block, error)
+	GetLatestBlock(ctx context.Context, isSealed bool) (*flow.Block, error)
 	GetBlockByHeight(context.Context, uint64) (*flow.Block, error)
 	GetBlockByID(context.Context, flow.Identifier) (*flow.Block, error)
 	GetEvents(context.Context, string, uint64, uint64) ([]flow.BlockEvents, error)

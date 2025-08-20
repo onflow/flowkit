@@ -171,8 +171,8 @@ func (g *GrpcGateway) ExecuteScriptAtID(ctx context.Context, script []byte, argu
 }
 
 // GetLatestBlock gets the latest block on Flow through the Access API.
-func (g *GrpcGateway) GetLatestBlock(ctx context.Context) (*flow.Block, error) {
-	return g.client.GetLatestBlock(ctx, true)
+func (g *GrpcGateway) GetLatestBlock(ctx context.Context, isSealed bool) (*flow.Block, error) {
+	return g.client.GetLatestBlock(ctx, isSealed)
 }
 
 // GetBlockByID get block by ID from the Flow Access API.

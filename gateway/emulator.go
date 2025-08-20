@@ -236,8 +236,8 @@ func (g *EmulatorGateway) ExecuteScriptAtID(
 	return g.executeScriptQuery(ctx, script, arguments, scriptQuery{id: id})
 }
 
-func (g *EmulatorGateway) GetLatestBlock(ctx context.Context) (*flow.Block, error) {
-	block, _, err := g.adapter.GetLatestBlock(ctx, true)
+func (g *EmulatorGateway) GetLatestBlock(ctx context.Context, isSealed bool) (*flow.Block, error) {
+	block, _, err := g.adapter.GetLatestBlock(ctx, isSealed)
 	if err != nil {
 		return nil, UnwrapStatusError(err)
 	}

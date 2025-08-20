@@ -49,13 +49,14 @@ import (
 
 // BlockQuery defines possible queries for block.
 type BlockQuery struct {
-	ID     *flow.Identifier
-	Height uint64
-	Latest bool
+	ID       *flow.Identifier
+	Height   uint64
+	Latest   bool
+	IsSealed bool
 }
 
 // LatestBlockQuery specifies the latest block.
-var LatestBlockQuery = BlockQuery{Latest: true}
+var LatestBlockQuery = BlockQuery{Latest: true, IsSealed: true}
 
 // NewBlockQuery creates block query based on the passed query value.
 //
@@ -226,7 +227,7 @@ func (f *Flowkit) prepareTransaction(
 	tx *transactions.Transaction,
 	account *accounts.Account,
 ) (*transactions.Transaction, error) {
-	block, err := f.gateway.GetLatestBlock(ctx)
+	block, err := f.gateway.GetLatestBlock(ctx, false)
 	if err != nil {
 		return nil, err
 	}
@@ -455,7 +456,11 @@ func (f *Flowkit) GetBlock(ctx context.Context, query BlockQuery) (*flow.Block, 
 	var err error
 	var block *flow.Block
 	if query.Latest {
-		block, err = f.gateway.GetLatestBlock(ctx)
+		if query.IsSealed {
+			block, err = f.gateway.GetLatestBlock(ctx, true)
+		} else {
+			block, err = f.gateway.GetLatestBlock(ctx, false)
+		}
 	} else if query.ID != nil {
 		block, err = f.gateway.GetBlockByID(ctx, *query.ID)
 	} else {
@@ -929,7 +934,7 @@ func (f *Flowkit) BuildTransaction(
 		return nil, err
 	}
 
-	latestBlock, err := f.gateway.GetLatestBlock(ctx)
+	latestBlock, err := f.gateway.GetLatestBlock(ctx, false)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest sealed block: %w", err)
 	}
