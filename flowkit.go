@@ -724,6 +724,12 @@ func (f *Flowkit) DeployProject(ctx context.Context, update UpdateContract) ([]*
 		return nil, err
 	}
 
+	// Early return if no contracts are configured for deployment
+	if len(sorted) == 0 {
+		f.logger.Info(fmt.Sprintf("%s No contracts configured for deployment on network '%s'.\n\nTo add deployments, use 'flow config add deployment'.\nIf you meant to deploy to a different network, use the --network flag (e.g., 'flow project deploy --network testnet').\n\nFor more details, see: https://developers.flow.com/build/tools/flow-cli/deployment/deploy-project-contracts", output.WarningEmoji(), f.network.Name))
+		return sorted, nil
+	}
+
 	f.logger.Info(fmt.Sprintf(
 		"\nDeploying %d contracts for accounts: %s\n",
 		len(sorted),
@@ -769,11 +775,7 @@ func (f *Flowkit) DeployProject(ctx context.Context, update UpdateContract) ([]*
 		return nil, deployErr
 	}
 
-	if len(sorted) == 0 {
-		f.logger.Info(fmt.Sprintf("%s No contracts configured for deployment on network '%s'.\n\nTo add deployments, use 'flow config add deployment'.\nIf you meant to deploy to a different network, use the --network flag (e.g., 'flow project deploy --network testnet').\n\nFor more details, see: https://developers.flow.com/build/tools/flow-cli/deployment/deploy-project-contracts", output.WarningEmoji(), f.network.Name))
-	} else {
-		f.logger.Info(fmt.Sprintf("\n%s All contracts deployed successfully", output.SuccessEmoji()))
-	}
+	f.logger.Info(fmt.Sprintf("\n%s All contracts deployed successfully", output.SuccessEmoji()))
 	return sorted, nil
 }
 
