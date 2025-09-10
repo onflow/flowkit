@@ -200,7 +200,7 @@ func gcloudApplicationSignin(resourceID string) error {
 
 	output, err := loginCmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("Failed to run %q: %s", loginCmd.String(), err)
+		return fmt.Errorf("failed to run %q: %s", loginCmd.String(), err)
 	}
 
 	squareBracketRegex := regexp.MustCompile(`(?s)\[(.*)\]`)
