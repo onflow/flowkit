@@ -372,8 +372,8 @@ func Test_ConfigAccountsMap(t *testing.T) {
 
 func Test_ConfigAccountsMapWithEnvVars(t *testing.T) {
 
-	os.Setenv("FLOW_EMULATOR_ADDRESS", "f8d6e0586b0a20c7")
-	os.Setenv("FLOW_EMULATOR_KEY", "dd72967fd2bd75234ae9037dd4694c1f00baad63a10c35172bf65fbb8ad74b47")
+	assert.NoError(t, os.Setenv("FLOW_EMULATOR_ADDRESS", "f8d6e0586b0a20c7"))
+	assert.NoError(t, os.Setenv("FLOW_EMULATOR_KEY", "dd72967fd2bd75234ae9037dd4694c1f00baad63a10c35172bf65fbb8ad74b47"))
 
 	b := []byte(`{
 		"emulator-account": {
@@ -539,7 +539,7 @@ func Test_ConfigInvalidAddress(t *testing.T) {
 
 func Test_ReplaceENV(t *testing.T) {
 	t.Run("Valid ENV set vars", func(t *testing.T) {
-		os.Setenv("TEST", "foo")
+		assert.NoError(t, os.Setenv("TEST", "foo"))
 
 		tests := []string{"$TEST", "${TEST}"}
 		for _, test := range tests {

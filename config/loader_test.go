@@ -373,8 +373,8 @@ func Test_JSONEnv(t *testing.T) {
 	}`)
 	const key1 = "21c5dfdeb0ff03a7a73ef39788563b62c89adea67bbb21ab95e5f710bd1d40b7"
 	const key2 = "11c5dfdeb0ff03a7a73ef39788563b62c89adea67bbb21ab95e5f710bd1d40b7"
-	os.Setenv("EMULATOR_KEY", key1)
-	os.Setenv("ADVANCED_KEY", key2)
+	require.NoError(t, os.Setenv("EMULATOR_KEY", key1))
+	require.NoError(t, os.Setenv("ADVANCED_KEY", key2))
 	mockFS := afero.NewMemMapFs()
 	err := afero.WriteFile(mockFS, "test2-flow.json", b, 0644)
 	require.NoError(t, err)

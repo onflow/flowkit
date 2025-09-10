@@ -200,7 +200,7 @@ func gcloudApplicationSignin(resourceID string) error {
 
 	output, err := loginCmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("Failed to run %q: %s\n", loginCmd.String(), err)
+		return fmt.Errorf("Failed to run %q: %s", loginCmd.String(), err)
 	}
 
 	squareBracketRegex := regexp.MustCompile(`(?s)\[(.*)\]`)
@@ -208,9 +208,7 @@ func gcloudApplicationSignin(resourceID string) error {
 	// Should only be one value. Second index since first index contains the square brackets
 	googleApplicationCreds := regexResult[0][1]
 
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleApplicationCreds)
-
-	return nil
+	return os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleApplicationCreds)
 }
 
 func kmsKeyFromConfig(key config.AccountKey) (Key, error) {
