@@ -798,7 +798,7 @@ func TestBlocksGet_Integration(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, uint64(0), block.Height)
-		assert.Equal(t, "a20c602fbee6fe4491e116403e3258e7b7924609696ab2edb9a93eed2c29e445", block.ID.String())
+		assert.Equal(t, "e2b0ef51ee9b7be636c118e4550c67b4e9b97cb982506e6e47c4431c3e88cd23", block.ID.String())
 	})
 }
 
