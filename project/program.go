@@ -55,7 +55,7 @@ func (p *Program) AddressImportDeclarations() []*ast.ImportDeclaration {
 	addressImports := make([]*ast.ImportDeclaration, 0)
 
 	for _, importDeclaration := range p.astProgram.ImportDeclarations() {
-		if len(importDeclaration.Identifiers) > 0 && len(importDeclaration.Location.String()) > 0 {
+		if len(importDeclaration.Imports) > 0 && len(importDeclaration.Location.String()) > 0 {
 			addressImports = append(addressImports, importDeclaration)
 		}
 	}
