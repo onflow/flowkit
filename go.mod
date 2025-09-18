@@ -10,10 +10,10 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.7.0
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.7.0
-	github.com/onflow/flow-go v0.43.0-dev-pebble.1.0.20250910132853-12699a150fd9
+	github.com/onflow/flow-emulator v1.7.2
+	github.com/onflow/flow-go v0.43.0
 	github.com/onflow/flow-go-sdk v1.8.2
-	github.com/onflow/flow/protobuf/go/flow v0.4.12
+	github.com/onflow/flow/protobuf/go/flow v0.4.15
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.15.0
@@ -123,7 +123,7 @@ require (
 	github.com/jordanschalm/lockctx v0.0.0-20250412215529-226f85c10956 // indirect
 	github.com/k0kubun/pp/v3 v3.5.0 // indirect
 	github.com/kevinburke/go-bindata v3.24.0+incompatible // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -154,13 +154,13 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/onflow/atree v0.10.1 // indirect
 	github.com/onflow/fixed-point v0.1.1 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v1.7.4-0.20250905214304-819c6e946442 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v1.7.2-0.20250905214304-819c6e946442 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v1.8.1 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v1.8.1 // indirect
 	github.com/onflow/flow-evm-bridge v0.1.0 // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v1.0.1 // indirect
 	github.com/onflow/flow-ft/lib/go/templates v1.0.1 // indirect
-	github.com/onflow/flow-nft/lib/go/contracts v1.2.4 // indirect
-	github.com/onflow/flow-nft/lib/go/templates v1.2.1 // indirect
+	github.com/onflow/flow-nft/lib/go/contracts v1.3.0 // indirect
+	github.com/onflow/flow-nft/lib/go/templates v1.3.0 // indirect
 	github.com/onflow/go-ethereum v1.13.4 // indirect
 	github.com/onflow/nft-storefront/lib/go/contracts v1.0.0 // indirect
 	github.com/onflow/sdks v0.6.0-preview.1 // indirect
@@ -174,10 +174,10 @@ require (
 	github.com/pion/transport/v2 v2.2.10 // indirect
 	github.com/pion/transport/v3 v3.0.7 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/prometheus/client_golang v1.20.5 // indirect
-	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.61.0 // indirect
-	github.com/prometheus/procfs v0.15.1 // indirect
+	github.com/prometheus/client_golang v1.23.2 // indirect
+	github.com/prometheus/client_model v0.6.2 // indirect
+	github.com/prometheus/common v0.66.1 // indirect
+	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/psiemens/graceland v1.0.0 // indirect
 	github.com/psiemens/sconfig v0.1.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
@@ -189,9 +189,9 @@ require (
 	github.com/slok/go-http-metrics v0.12.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
-	github.com/spf13/cobra v1.8.1 // indirect
+	github.com/spf13/cobra v1.10.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.6 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/spf13/viper v1.15.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
@@ -219,6 +219,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
+	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
