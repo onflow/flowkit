@@ -911,7 +911,7 @@ func (f *Flowkit) GetSystemTransaction(
 		return nil, nil, err
 	}
 
-	// Fetch the result so that it can be correctly returned
+	// Fetch the system transaction result for the block
 	result, err := f.gateway.GetSystemTransactionResult(ctx, blockID)
 	if err != nil {
 		return tx, nil, err
@@ -924,32 +924,19 @@ func (f *Flowkit) GetSystemTransactionWithID(
 	ctx context.Context,
 	blockID flow.Identifier,
 	systemTxID flow.Identifier,
-) (*flow.Transaction, error) {
+) (*flow.Transaction, *flow.TransactionResult, error) {
 	f.logger.StartProgress("Fetching System Transaction by ID...")
 	defer f.logger.StopProgress()
 
-	return f.gateway.GetSystemTransactionWithID(ctx, blockID, systemTxID)
-}
-
-func (f *Flowkit) GetSystemTransactionResult(
-	ctx context.Context,
-	blockID flow.Identifier,
-) (*flow.TransactionResult, error) {
-	f.logger.StartProgress("Fetching System Transaction Result...")
-	defer f.logger.StopProgress()
-
-	return f.gateway.GetSystemTransactionResult(ctx, blockID)
-}
-
-func (f *Flowkit) GetSystemTransactionResultWithID(
-	ctx context.Context,
-	blockID flow.Identifier,
-	systemTxID flow.Identifier,
-) (*flow.TransactionResult, error) {
-	f.logger.StartProgress("Fetching System Transaction Result by ID...")
-	defer f.logger.StopProgress()
-
-	return f.gateway.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
+	tx, err := f.gateway.GetSystemTransactionWithID(ctx, blockID, systemTxID)
+	if err != nil {
+		return nil, nil, err
+	}
+	res, err := f.gateway.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
+	if err != nil {
+		return tx, nil, err
+	}
+	return tx, res, nil
 }
 
 // BuildTransaction builds a new transaction type for later signing and submitting to the network.
