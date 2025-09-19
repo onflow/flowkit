@@ -12,8 +12,8 @@ require (
 	github.com/onflow/crypto v0.25.3
 	github.com/onflow/flow-emulator v1.7.2
 	github.com/onflow/flow-go v0.43.0
-	github.com/onflow/flow-go-sdk v1.8.2
-	github.com/onflow/flow/protobuf/go/flow v0.4.15
+	github.com/onflow/flow-go-sdk v1.8.3
+	github.com/onflow/flow/protobuf/go/flow v0.4.16
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.15.0

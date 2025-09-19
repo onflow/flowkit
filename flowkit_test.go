@@ -1660,6 +1660,44 @@ func TestTransactions(t *testing.T) {
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionFunc, 1)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionResultFunc, 1)
 	})
+
+	t.Run("Get System Transaction With ID", func(t *testing.T) {
+		t.Parallel()
+		_, flowkit, gw := setup()
+
+		blockID := flow.HexToID("a310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
+		systemTxID := flow.HexToID("b310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
+
+		gw.GetSystemTransactionWithID.Run(func(args mock.Arguments) {
+			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
+			assert.Equal(t, systemTxID, args.Get(2).(flow.Identifier))
+			gw.GetSystemTransactionWithID.Return(tests.NewTransaction(), nil)
+		})
+
+		_, err := flowkit.GetSystemTransactionWithID(ctx, blockID, systemTxID)
+		assert.NoError(t, err)
+		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionWithIDFunc, ctx, blockID, systemTxID)
+		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionWithIDFunc, 1)
+	})
+
+	t.Run("Get System Transaction Result With ID", func(t *testing.T) {
+		t.Parallel()
+		_, flowkit, gw := setup()
+
+		blockID := flow.HexToID("c310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
+		systemTxID := flow.HexToID("d310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
+
+		gw.GetSystemTransactionResultWithID.Run(func(args mock.Arguments) {
+			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
+			assert.Equal(t, systemTxID, args.Get(2).(flow.Identifier))
+			gw.GetSystemTransactionResultWithID.Return(tests.NewTransactionResult(nil), nil)
+		})
+
+		_, err := flowkit.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
+		assert.NoError(t, err)
+		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionResultWithIDFunc, ctx, blockID, systemTxID)
+		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionResultWithIDFunc, 1)
+	})
 }
 
 func setupAccounts(state *State, flowkit Flowkit) {

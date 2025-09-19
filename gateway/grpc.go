@@ -155,6 +155,14 @@ func (g *GrpcGateway) GetSystemTransactionResult(ctx context.Context, blockID fl
 	return g.client.GetSystemTransactionResult(ctx, blockID)
 }
 
+func (g *GrpcGateway) GetSystemTransactionWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.Transaction, error) {
+	return g.client.GetSystemTransactionWithID(ctx, blockID, systemTxID)
+}
+
+func (g *GrpcGateway) GetSystemTransactionResultWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.TransactionResult, error) {
+	return g.client.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
+}
+
 // ExecuteScript executes a script on Flow through the Access API.
 func (g *GrpcGateway) ExecuteScript(ctx context.Context, script []byte, arguments []cadence.Value) (cadence.Value, error) {
 	return g.client.ExecuteScriptAtLatestBlock(ctx, script, arguments)
