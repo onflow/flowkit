@@ -1648,9 +1648,8 @@ func TestTransactions(t *testing.T) {
 		})
 
 		gw.GetTransactionResult.Run(func(args mock.Arguments) {
-			// waitSeal should be false when fetching result by ID
-			assert.Equal(t, false, args.Get(2).(bool))
-			gw.GetTransactionResult.Return(tests.NewTransactionResult(nil), nil)
+			// system transaction result fetched via gateway.GetSystemTransactionResult
+			gw.GetSystemTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 		})
 
 		_, _, err := flowkit.GetSystemTransaction(ctx, blockID)
@@ -1658,7 +1657,7 @@ func TestTransactions(t *testing.T) {
 		assert.NoError(t, err)
 		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionFunc, ctx, blockID)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionFunc, 1)
-		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
+		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionResultFunc, 1)
 	})
 
 	t.Run("Get System Transaction With ID", func(t *testing.T) {
@@ -1672,6 +1671,12 @@ func TestTransactions(t *testing.T) {
 			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
 			assert.Equal(t, systemTxID, args.Get(2).(flow.Identifier))
 			gw.GetSystemTransactionWithID.Return(tests.NewTransaction(), nil)
+		})
+
+		gw.GetSystemTransactionResultWithID.Run(func(args mock.Arguments) {
+			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
+			assert.Equal(t, systemTxID, args.Get(2).(flow.Identifier))
+			gw.GetSystemTransactionResultWithID.Return(tests.NewTransactionResult(nil), nil)
 		})
 
 		_, _, err := flowkit.GetSystemTransactionWithID(ctx, blockID, systemTxID)

@@ -911,8 +911,8 @@ func (f *Flowkit) GetSystemTransaction(
 		return nil, nil, err
 	}
 
-	// Fetch the result using the system transaction ID
-	result, err := f.gateway.GetTransactionResult(ctx, tx.ID(), false)
+	// Fetch the system transaction result for the block
+	result, err := f.gateway.GetSystemTransactionResult(ctx, blockID)
 	if err != nil {
 		return tx, nil, err
 	}
@@ -932,7 +932,7 @@ func (f *Flowkit) GetSystemTransactionWithID(
 	if err != nil {
 		return nil, nil, err
 	}
-	res, err := f.gateway.GetTransactionResult(ctx, tx.ID(), false)
+	res, err := f.gateway.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
 	if err != nil {
 		return tx, nil, err
 	}

@@ -29,41 +29,43 @@ import (
 )
 
 const (
-	GetAccountFunc            = "GetAccount"
-	SendSignedTransactionFunc = "SendSignedTransaction"
-	GetCollectionFunc         = "GetCollection"
-	GetTransactionResultFunc  = "GetTransactionResult"
-	GetEventsFunc             = "GetEvents"
-	GetLatestBlockFunc        = "GetLatestBlock"
-	GetBlockByHeightFunc      = "GetBlockByHeight"
-	GetBlockByIDFunc          = "GetBlockByID"
-	ExecuteScriptFunc         = "ExecuteScript"
-	GetTransactionFunc        = "GetTransaction"
-	GetSystemTransactionFunc  = "GetSystemTransaction"
-	// Note: result-only gateway method removed; keeping constant here is unnecessary
-	GetSystemTransactionWithIDFunc = "GetSystemTransactionWithID"
+	GetAccountFunc                       = "GetAccount"
+	SendSignedTransactionFunc            = "SendSignedTransaction"
+	GetCollectionFunc                    = "GetCollection"
+	GetTransactionResultFunc             = "GetTransactionResult"
+	GetEventsFunc                        = "GetEvents"
+	GetLatestBlockFunc                   = "GetLatestBlock"
+	GetBlockByHeightFunc                 = "GetBlockByHeight"
+	GetBlockByIDFunc                     = "GetBlockByID"
+	ExecuteScriptFunc                    = "ExecuteScript"
+	GetTransactionFunc                   = "GetTransaction"
+	GetSystemTransactionFunc             = "GetSystemTransaction"
+	GetSystemTransactionResultFunc       = "GetSystemTransactionResult"
+	GetSystemTransactionWithIDFunc       = "GetSystemTransactionWithID"
+	GetSystemTransactionResultWithIDFunc = "GetSystemTransactionResultWithID"
 )
 
 type TestGateway struct {
-	Mock                           *Gateway
-	SendSignedTransaction          *mock.Call
-	GetAccount                     *mock.Call
-	GetCollection                  *mock.Call
-	GetTransactionResult           *mock.Call
-	GetEvents                      *mock.Call
-	GetLatestBlock                 *mock.Call
-	GetBlockByHeight               *mock.Call
-	GetBlockByID                   *mock.Call
-	ExecuteScript                  *mock.Call
-	GetTransaction                 *mock.Call
-	GetTransactionResultsByBlockID *mock.Call
-	GetTransactionsByBlockID       *mock.Call
-	GetSystemTransaction           *mock.Call
-	GetSystemTransactionResult     *mock.Call
-	GetSystemTransactionWithID     *mock.Call
-	GetLatestProtocolStateSnapshot *mock.Call
-	Ping                           *mock.Call
-	SecureConnection               *mock.Call
+	Mock                             *Gateway
+	SendSignedTransaction            *mock.Call
+	GetAccount                       *mock.Call
+	GetCollection                    *mock.Call
+	GetTransactionResult             *mock.Call
+	GetEvents                        *mock.Call
+	GetLatestBlock                   *mock.Call
+	GetBlockByHeight                 *mock.Call
+	GetBlockByID                     *mock.Call
+	ExecuteScript                    *mock.Call
+	GetTransaction                   *mock.Call
+	GetTransactionResultsByBlockID   *mock.Call
+	GetTransactionsByBlockID         *mock.Call
+	GetSystemTransaction             *mock.Call
+	GetSystemTransactionResult       *mock.Call
+	GetSystemTransactionWithID       *mock.Call
+	GetSystemTransactionResultWithID *mock.Call
+	GetLatestProtocolStateSnapshot   *mock.Call
+	Ping                             *mock.Call
+	SecureConnection                 *mock.Call
 }
 
 func DefaultMockGateway() *TestGateway {
@@ -118,10 +120,19 @@ func DefaultMockGateway() *TestGateway {
 			ctxMock,
 			mock.AnythingOfType("flow.Identifier"),
 		),
-		// Removed: GetSystemTransactionResult no longer on Gateway
-		GetSystemTransactionResult: nil,
+		GetSystemTransactionResult: m.On(
+			GetSystemTransactionResultFunc,
+			ctxMock,
+			mock.AnythingOfType("flow.Identifier"),
+		),
 		GetSystemTransactionWithID: m.On(
 			GetSystemTransactionWithIDFunc,
+			ctxMock,
+			mock.AnythingOfType("flow.Identifier"),
+			mock.AnythingOfType("flow.Identifier"),
+		),
+		GetSystemTransactionResultWithID: m.On(
+			GetSystemTransactionResultWithIDFunc,
 			ctxMock,
 			mock.AnythingOfType("flow.Identifier"),
 			mock.AnythingOfType("flow.Identifier"),
@@ -150,8 +161,9 @@ func DefaultMockGateway() *TestGateway {
 	t.GetBlockByHeight.Return(tests.NewBlock(), nil)
 	t.GetBlockByID.Return(tests.NewBlock(), nil)
 	t.GetSystemTransaction.Return(tests.NewTransaction(), nil)
-	// Removed: no default for GetSystemTransactionResult on Gateway
+	t.GetSystemTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 	t.GetSystemTransactionWithID.Return(tests.NewTransaction(), nil)
+	t.GetSystemTransactionResultWithID.Return(tests.NewTransactionResult(nil), nil)
 
 	return t
 }
