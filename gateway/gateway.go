@@ -37,6 +37,8 @@ type Gateway interface {
 	GetTransactionsByBlockID(context.Context, flow.Identifier) ([]*flow.Transaction, error)
 	GetSystemTransaction(ctx context.Context, blockID flow.Identifier) (*flow.Transaction, error)
 	GetSystemTransactionResult(ctx context.Context, blockID flow.Identifier) (*flow.TransactionResult, error)
+	GetSystemTransactionWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.Transaction, error)
+	GetSystemTransactionResultWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.TransactionResult, error)
 	ExecuteScript(context.Context, []byte, []cadence.Value) (cadence.Value, error)
 	ExecuteScriptAtHeight(context.Context, []byte, []cadence.Value, uint64) (cadence.Value, error)
 	ExecuteScriptAtID(context.Context, []byte, []cadence.Value, flow.Identifier) (cadence.Value, error)

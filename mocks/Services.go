@@ -474,6 +474,96 @@ func (_m *Services) GetSystemTransaction(_a0 context.Context, _a1 flow.Identifie
 	return r0, r1, r2
 }
 
+// GetSystemTransactionResult provides a mock function with given fields: _a0, _a1
+func (_m *Services) GetSystemTransactionResult(_a0 context.Context, _a1 flow.Identifier) (*flow.TransactionResult, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSystemTransactionResult")
+	}
+
+	var r0 *flow.TransactionResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) (*flow.TransactionResult, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier) *flow.TransactionResult); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.TransactionResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetSystemTransactionResultWithID provides a mock function with given fields: _a0, _a1, _a2
+func (_m *Services) GetSystemTransactionResultWithID(_a0 context.Context, _a1 flow.Identifier, _a2 flow.Identifier) (*flow.TransactionResult, error) {
+	ret := _m.Called(_a0, _a1, _a2)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSystemTransactionResultWithID")
+	}
+
+	var r0 *flow.TransactionResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, flow.Identifier) (*flow.TransactionResult, error)); ok {
+		return rf(_a0, _a1, _a2)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, flow.Identifier) *flow.TransactionResult); ok {
+		r0 = rf(_a0, _a1, _a2)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.TransactionResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetSystemTransactionWithID provides a mock function with given fields: _a0, _a1, _a2
+func (_m *Services) GetSystemTransactionWithID(_a0 context.Context, _a1 flow.Identifier, _a2 flow.Identifier) (*flow.Transaction, error) {
+	ret := _m.Called(_a0, _a1, _a2)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSystemTransactionWithID")
+	}
+
+	var r0 *flow.Transaction
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, flow.Identifier) (*flow.Transaction, error)); ok {
+		return rf(_a0, _a1, _a2)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, flow.Identifier, flow.Identifier) *flow.Transaction); ok {
+		r0 = rf(_a0, _a1, _a2)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.Transaction)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, flow.Identifier, flow.Identifier) error); ok {
+		r1 = rf(_a0, _a1, _a2)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetTransactionByID provides a mock function with given fields: _a0, _a1, _a2
 func (_m *Services) GetTransactionByID(_a0 context.Context, _a1 flow.Identifier, _a2 bool) (*flow.Transaction, *flow.TransactionResult, error) {
 	ret := _m.Called(_a0, _a1, _a2)

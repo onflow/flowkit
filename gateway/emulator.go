@@ -159,6 +159,14 @@ func (g *EmulatorGateway) GetSystemTransactionResult(ctx context.Context, blockI
 	return nil, errors.New("GetSystemTransactionResult is not implemented")
 }
 
+func (g *EmulatorGateway) GetSystemTransactionWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.Transaction, error) {
+	return nil, errors.New("GetSystemTransactionWithID is not implemented")
+}
+
+func (g *EmulatorGateway) GetSystemTransactionResultWithID(ctx context.Context, blockID flow.Identifier, systemTxID flow.Identifier) (*flow.TransactionResult, error) {
+	return nil, errors.New("GetSystemTransactionResultWithID is not implemented")
+}
+
 func (g *EmulatorGateway) Ping() error {
 	ctx := context.Background()
 	err := g.adapter.Ping(ctx)

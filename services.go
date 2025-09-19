@@ -101,9 +101,20 @@ type Services interface {
 	// GetTransactionByID from the Flow network including the transaction result. Using the waitSeal we can wait for the transaction to be sealed.
 	GetTransactionByID(context.Context, flow.Identifier, bool) (*flow.Transaction, *flow.TransactionResult, error)
 
+	// GetTransactionsByBlockID returns all transactions in the block and their results.
 	GetTransactionsByBlockID(context.Context, flow.Identifier) ([]*flow.Transaction, []*flow.TransactionResult, error)
 
+	// GetSystemTransaction returns the last system transaction for the block and its result.
 	GetSystemTransaction(context.Context, flow.Identifier) (*flow.Transaction, *flow.TransactionResult, error)
+
+	// GetSystemTransactionWithID returns the system transaction for the block by transaction ID.
+	GetSystemTransactionWithID(context.Context, flow.Identifier, flow.Identifier) (*flow.Transaction, error)
+
+	// GetSystemTransactionResult returns the result for the last system transaction for the block.
+	GetSystemTransactionResult(context.Context, flow.Identifier) (*flow.TransactionResult, error)
+
+	// GetSystemTransactionResultWithID returns the result for the system transaction by transaction ID.
+	GetSystemTransactionResultWithID(context.Context, flow.Identifier, flow.Identifier) (*flow.TransactionResult, error)
 
 	// BuildTransaction builds a new transaction type for later signing and submitting to the network.
 	//

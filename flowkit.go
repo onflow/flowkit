@@ -920,6 +920,38 @@ func (f *Flowkit) GetSystemTransaction(
 	return tx, result, nil
 }
 
+func (f *Flowkit) GetSystemTransactionWithID(
+	ctx context.Context,
+	blockID flow.Identifier,
+	systemTxID flow.Identifier,
+) (*flow.Transaction, error) {
+	f.logger.StartProgress("Fetching System Transaction by ID...")
+	defer f.logger.StopProgress()
+
+	return f.gateway.GetSystemTransactionWithID(ctx, blockID, systemTxID)
+}
+
+func (f *Flowkit) GetSystemTransactionResult(
+	ctx context.Context,
+	blockID flow.Identifier,
+) (*flow.TransactionResult, error) {
+	f.logger.StartProgress("Fetching System Transaction Result...")
+	defer f.logger.StopProgress()
+
+	return f.gateway.GetSystemTransactionResult(ctx, blockID)
+}
+
+func (f *Flowkit) GetSystemTransactionResultWithID(
+	ctx context.Context,
+	blockID flow.Identifier,
+	systemTxID flow.Identifier,
+) (*flow.TransactionResult, error) {
+	f.logger.StartProgress("Fetching System Transaction Result by ID...")
+	defer f.logger.StopProgress()
+
+	return f.gateway.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
+}
+
 // BuildTransaction builds a new transaction type for later signing and submitting to the network.
 //
 // AddressesRoles type defines the address for each role (payer, proposer, authorizers) and the script defines the transaction content.
