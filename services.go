@@ -107,13 +107,13 @@ type Services interface {
 	// GetSystemTransaction returns the last system transaction for the block and its result.
 	GetSystemTransaction(context.Context, flow.Identifier) (*flow.Transaction, *flow.TransactionResult, error)
 
-	// GetSystemTransactionWithID returns the system transaction for the block by transaction ID.
+	// GetSystemTransactionWithID returns the system transaction by ID; if ID is empty, returns the last in the block.
 	GetSystemTransactionWithID(context.Context, flow.Identifier, flow.Identifier) (*flow.Transaction, error)
 
 	// GetSystemTransactionResult returns the result for the last system transaction for the block.
 	GetSystemTransactionResult(context.Context, flow.Identifier) (*flow.TransactionResult, error)
 
-	// GetSystemTransactionResultWithID returns the result for the system transaction by transaction ID.
+	// GetSystemTransactionResultWithID returns the result for the system transaction by ID; if ID is empty, returns the last in the block.
 	GetSystemTransactionResultWithID(context.Context, flow.Identifier, flow.Identifier) (*flow.TransactionResult, error)
 
 	// BuildTransaction builds a new transaction type for later signing and submitting to the network.
