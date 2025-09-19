@@ -1647,18 +1647,18 @@ func TestTransactions(t *testing.T) {
 			gw.GetSystemTransaction.Return(tests.NewTransaction(), nil)
 		})
 
-		gw.GetSystemTransactionResult.Run(func(args mock.Arguments) {
-			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
-			gw.GetSystemTransactionResult.Return(tests.NewTransactionResult(nil), nil)
+		gw.GetTransactionResult.Run(func(args mock.Arguments) {
+			// waitSeal should be false when fetching result by ID
+			assert.Equal(t, false, args.Get(2).(bool))
+			gw.GetTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 		})
 
 		_, _, err := flowkit.GetSystemTransaction(ctx, blockID)
 
 		assert.NoError(t, err)
 		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionFunc, ctx, blockID)
-		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionResultFunc, ctx, blockID)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionFunc, 1)
-		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionResultFunc, 1)
+		gw.Mock.AssertNumberOfCalls(t, mocks.GetTransactionResultFunc, 1)
 	})
 
 	t.Run("Get System Transaction With ID", func(t *testing.T) {
@@ -1674,30 +1674,13 @@ func TestTransactions(t *testing.T) {
 			gw.GetSystemTransactionWithID.Return(tests.NewTransaction(), nil)
 		})
 
-		_, err := flowkit.GetSystemTransactionWithID(ctx, blockID, systemTxID)
+		_, _, err := flowkit.GetSystemTransactionWithID(ctx, blockID, systemTxID)
 		assert.NoError(t, err)
 		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionWithIDFunc, ctx, blockID, systemTxID)
 		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionWithIDFunc, 1)
 	})
 
-	t.Run("Get System Transaction Result With ID", func(t *testing.T) {
-		t.Parallel()
-		_, flowkit, gw := setup()
-
-		blockID := flow.HexToID("c310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
-		systemTxID := flow.HexToID("d310685082f0b09f2a148b2e8905f08ea458ed873596b53b200699e8e1f6536f")
-
-		gw.GetSystemTransactionResultWithID.Run(func(args mock.Arguments) {
-			assert.Equal(t, blockID, args.Get(1).(flow.Identifier))
-			assert.Equal(t, systemTxID, args.Get(2).(flow.Identifier))
-			gw.GetSystemTransactionResultWithID.Return(tests.NewTransactionResult(nil), nil)
-		})
-
-		_, err := flowkit.GetSystemTransactionResultWithID(ctx, blockID, systemTxID)
-		assert.NoError(t, err)
-		gw.Mock.AssertCalled(t, mocks.GetSystemTransactionResultWithIDFunc, ctx, blockID, systemTxID)
-		gw.Mock.AssertNumberOfCalls(t, mocks.GetSystemTransactionResultWithIDFunc, 1)
-	})
+	// removed: result-with-id path; result is returned with transaction in GetSystemTransactionWithID
 }
 
 func setupAccounts(state *State, flowkit Flowkit) {
