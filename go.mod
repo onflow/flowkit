@@ -10,8 +10,8 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.7.0
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.7.2
-	github.com/onflow/flow-go v0.43.0
+	github.com/onflow/flow-emulator v1.7.4
+	github.com/onflow/flow-go v0.43.1-rc.1.0.20250924183344-715803471569
 	github.com/onflow/flow-go-sdk v1.8.3
 	github.com/onflow/flow/protobuf/go/flow v0.4.16
 	github.com/pkg/errors v0.9.1
@@ -154,8 +154,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/onflow/atree v0.10.1 // indirect
 	github.com/onflow/fixed-point v0.1.1 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/contracts v1.8.1 // indirect
-	github.com/onflow/flow-core-contracts/lib/go/templates v1.8.1 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/contracts v1.9.0 // indirect
+	github.com/onflow/flow-core-contracts/lib/go/templates v1.9.0 // indirect
 	github.com/onflow/flow-evm-bridge v0.1.0 // indirect
 	github.com/onflow/flow-ft/lib/go/contracts v1.0.1 // indirect
 	github.com/onflow/flow-ft/lib/go/templates v1.0.1 // indirect
