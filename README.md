@@ -1,16 +1,50 @@
-## Flowkit Package Design
-Flowkit is a core package used by the CLI commands. It features APIs for interacting with the Flow network 
-in the context of flow.json configuration values. Flowkit is defined by the [interface here](services.go).
+# Flowkit
 
-Flowkit contains multiple subpackages, the most important ones are: 
-- **config**: parsing and storing of flow.json values, as well as validation, 
-- **gateway**: implementation of Flow AN methods, uses emulator as well as Go SDK to communicate with ANs,
-- **project**: stateful operations on top of flow.json, which allows resolving imports in contracts used in deployments
+Flowkit is a Go library for building applications that interact with the Flow blockchain. It provides high-level APIs for managing Flow projects, including working with `flow.json` configurations, deploying contracts, executing scripts, and building transactions.
 
-It is important we define clear boundaries between flowkit and other CLI packages. If we are in doubt where certain 
-methods should be implemented we must ask ourselves if the method provides value for any other consumers of the 
-pacakge or only provides utility for CLI usage, if it's only providing utility for CLI then it should be added inside 
-the internal package, instead of flowkit. If in doubt better to add things to internal package and then move to flowkit 
-if such need is identified. 
+## Features
 
+- **Project Management** - Load and manage Flow project configurations (`flow.json`)
+- **Contract Deployment** - Deploy Cadence contracts to different networks
+- **Import Resolution** - Automatically resolve contract imports to blockchain addresses
+- **Multi-Network Support** - Work seamlessly with emulator, testnet, and mainnet
+- **Account Management** - Manage Flow accounts and signing keys
+- **Script Execution** - Execute Cadence scripts and build transactions
 
+## Installation
+
+```bash
+go get github.com/onflow/flowkit/v2
+```
+
+## Quick Example
+
+```go
+import "github.com/onflow/flowkit/v2"
+
+// Load your Flow project
+state, err := flowkit.Load([]string{"flow.json"}, afero.NewOsFs())
+
+// Get contracts for a network
+contracts, err := state.DeploymentContractsByNetwork(config.TestnetNetwork)
+
+// Resolve imports in your Cadence code
+importReplacer := project.NewImportReplacer(contracts, state.AliasesForNetwork(network))
+resolvedProgram, err := importReplacer.Replace(program)
+```
+
+## Documentation
+
+For comprehensive guides and examples, visit the [Flowkit documentation](https://developers.flow.com/build/tools/clients/flow-go-sdk/flowkit).
+
+## Package Structure
+
+Flowkit contains multiple subpackages:
+
+- **config** - Parsing and storing of `flow.json` values, as well as validation
+- **gateway** - Implementation of Flow Access Node methods, uses emulator and Go SDK to communicate with ANs
+- **project** - Stateful operations on top of `flow.json`, including import resolution for contract deployments
+- **accounts** - Account and key management
+- **transactions** - Transaction building and signing
+
+The main Flowkit interface is defined in [services.go](services.go).
