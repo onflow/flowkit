@@ -74,16 +74,16 @@ func TestResolver(t *testing.T) {
 
 		resolved := [][]byte{
 			[]byte(`
-			import Kibble from 0x0000000000000001 
-			import FT from 0x0000000000000002 
+			import Kibble from 0x0000000000000001
+			import FT from 0x0000000000000002
 			access(all) fun main() {}
     `), []byte(`
-			import Kibble from 0x0000000000000001 
-			import FT from 0x0000000000000002 
+			import Kibble from 0x0000000000000001
+			import FT from 0x0000000000000002
 			access(all) fun main() {}
     `), []byte(`
-			import Kibble from 0x0000000000000001 
-			import NFT from 0x0000000000000004 
+			import Kibble from 0x0000000000000001
+			import NFT from 0x0000000000000004
 			access(all) fun main() {}
     `), []byte(`
 			import Kibble from 0x0000000000000001
@@ -116,7 +116,7 @@ func TestResolver(t *testing.T) {
 		code := []byte(`
 			import Foo from "./Foo.cdc"
 			import "Bar"
-			
+
 			access(all) contract Zoo {}
 		`)
 		program, err := NewProgram(code, nil, "./Zoo.cdc")
@@ -128,11 +128,178 @@ func TestResolver(t *testing.T) {
 		expected := []byte(`
 			import Foo from 0x0000000000000001
 			import Bar from 0x0000000000000002
-			
+
 			access(all) contract Zoo {}
 		`)
 
 		assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+	})
+
+	t.Run("Resolve import aliases", func(t *testing.T) {
+		fusdCode := []byte(`access(all) contract FUSD {}`)
+
+		t.Run("Basic import alias - same source, different keys", func(t *testing.T) {
+			contracts := []*Contract{
+				NewContract("FUSD1", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x1"), "", nil),
+				NewContract("FUSD2", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x2"), "", nil),
+			}
+
+			replacer := NewImportReplacer(contracts, nil)
+
+			code := []byte(`
+				import "FUSD1"
+				import "FUSD2"
+
+				access(all) fun main(): UFix64 {
+					return FUSD1.totalSupply + FUSD2.totalSupply
+				}
+			`)
+
+			program, err := NewProgram(code, nil, "./scripts/test.cdc")
+			require.NoError(t, err)
+
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+
+			expected := []byte(`
+				import FUSD as FUSD1 from 0x0000000000000001
+				import FUSD as FUSD2 from 0x0000000000000002
+
+				access(all) fun main(): UFix64 {
+					return FUSD1.totalSupply + FUSD2.totalSupply
+				}
+			`)
+
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
+
+		t.Run("Smart name matching - key matches source name", func(t *testing.T) {
+			contracts := []*Contract{
+				NewContract("FUSD", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x1"), "", nil),
+				NewContract("FUSD2", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x2"), "", nil),
+			}
+
+			replacer := NewImportReplacer(contracts, nil)
+
+			code := []byte(`
+				import "FUSD"
+				import "FUSD2"
+
+				access(all) fun main() {}
+			`)
+
+			program, err := NewProgram(code, nil, "./scripts/test.cdc")
+			require.NoError(t, err)
+
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+
+			expected := []byte(`
+				import FUSD from 0x0000000000000001
+				import FUSD as FUSD2 from 0x0000000000000002
+
+				access(all) fun main() {}
+			`)
+
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
+
+		t.Run("Path normalization - different path formats", func(t *testing.T) {
+			contracts := []*Contract{
+				NewContract("FUSD1", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x1"), "", nil),
+				NewContract("FUSD2", "contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x2"), "", nil),
+			}
+
+			replacer := NewImportReplacer(contracts, nil)
+
+			code := []byte(`
+				import "FUSD1"
+				import "FUSD2"
+
+				access(all) fun main() {}
+			`)
+
+			program, err := NewProgram(code, nil, "./scripts/test.cdc")
+			require.NoError(t, err)
+
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+
+			// Both should be recognized as sharing the same source file
+			expected := []byte(`
+				import FUSD as FUSD1 from 0x0000000000000001
+				import FUSD as FUSD2 from 0x0000000000000002
+
+				access(all) fun main() {}
+			`)
+
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
+
+		t.Run("Mixed scenario - aliases and regular imports", func(t *testing.T) {
+			kibbleCode := []byte(`access(all) contract Kibble {}`)
+
+			contracts := []*Contract{
+				NewContract("FUSD1", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x1"), "", nil),
+				NewContract("FUSD2", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x2"), "", nil),
+				NewContract("Kibble", "./contracts/Kibble.cdc", kibbleCode, flow.HexToAddress("0x3"), "", nil),
+			}
+
+			replacer := NewImportReplacer(contracts, nil)
+
+			code := []byte(`
+				import "FUSD1"
+				import "FUSD2"
+				import "Kibble"
+
+				access(all) fun main() {}
+			`)
+
+			program, err := NewProgram(code, nil, "./scripts/test.cdc")
+			require.NoError(t, err)
+
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+
+			expected := []byte(`
+				import FUSD as FUSD1 from 0x0000000000000001
+				import FUSD as FUSD2 from 0x0000000000000002
+				import Kibble from 0x0000000000000003
+
+				access(all) fun main() {}
+			`)
+
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
+
+		t.Run("No alias needed - single contract from file", func(t *testing.T) {
+			contracts := []*Contract{
+				NewContract("FUSD", "./contracts/FUSD.cdc", fusdCode, flow.HexToAddress("0x1"), "", nil),
+			}
+
+			replacer := NewImportReplacer(contracts, nil)
+
+			code := []byte(`
+				import "FUSD"
+
+				access(all) fun main() {}
+			`)
+
+			program, err := NewProgram(code, nil, "./scripts/test.cdc")
+			require.NoError(t, err)
+
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+
+			// Should use regular import syntax
+			expected := []byte(`
+				import FUSD from 0x0000000000000001
+
+				access(all) fun main() {}
+			`)
+
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
 	})
 
 }
