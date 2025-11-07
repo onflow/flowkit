@@ -42,13 +42,18 @@ func NewProgram(code []byte, args []cadence.Value, location string) (*Program, e
 		return nil, err
 	}
 
-	return &Program{
+	p := &Program{
 		code:                       code,
 		args:                       args,
 		location:                   location,
 		astProgram:                 astProgram,
 		codeWithUnprocessedImports: code, // has converted import syntax e.g. 'import "Foo"'
-	}, nil
+	}
+	
+	// Convert address imports to identifier imports for codeWithUnprocessedImports
+	p.ConvertAddressImports()
+	
+	return p, nil
 }
 
 func (p *Program) AddressImportDeclarations() []*ast.ImportDeclaration {
@@ -88,15 +93,45 @@ func (p *Program) HasImports() bool {
 	return len(p.imports()) > 0
 }
 
-func (p *Program) replaceImport(from string, to string) *Program {
+func (p *Program) replaceImport(from string, to string, canonicalName ...string) *Program {
 	code := string(p.Code())
 
-	pathRegex := regexp.MustCompile(fmt.Sprintf(`import\s+(\w+)\s+from\s+"%s"`, from))
-	identifierRegex := regexp.MustCompile(fmt.Sprintf(`import\s+"(%s)"`, from))
+	// Extract the import name from the 'from' parameter
+	importName := from
+	if regexp.MustCompile(`\.cdc$`).MatchString(from) {
+		// If it's a path, extract the contract name
+		matches := regexp.MustCompile(`([^/]+)\.cdc$`).FindStringSubmatch(from)
+		if len(matches) > 1 {
+			importName = matches[1]
+		}
+	}
 
-	replacement := fmt.Sprintf(`import $1 from 0x%s`, to)
-	code = pathRegex.ReplaceAllString(code, replacement)
-	code = identifierRegex.ReplaceAllString(code, replacement)
+	// Handle path imports (e.g., import X from "./X.cdc")
+	pathRegex := regexp.MustCompile(fmt.Sprintf(`import\s+(\w+)\s+from\s+"%s"`, regexp.QuoteMeta(from)))
+	// Handle identifier imports (e.g., import "X")
+	identifierRegex := regexp.MustCompile(fmt.Sprintf(`import\s+"%s"`, regexp.QuoteMeta(from)))
+
+	// Determine if we need alias syntax
+	canonical := ""
+	if len(canonicalName) > 0 {
+		canonical = canonicalName[0]
+	}
+	
+	if canonical != "" && canonical != importName {
+		// Use alias syntax: import CanonicalName as AliasName from 0xAddress
+		pathReplacement := fmt.Sprintf(`import %s as $1 from 0x%s`, canonical, to)
+		identifierReplacement := fmt.Sprintf(`import %s as %s from 0x%s`, canonical, importName, to)
+		
+		code = pathRegex.ReplaceAllString(code, pathReplacement)
+		code = identifierRegex.ReplaceAllString(code, identifierReplacement)
+	} else {
+		// Use regular syntax: import Name from 0xAddress
+		replacement := fmt.Sprintf(`import $1 from 0x%s`, to)
+		code = pathRegex.ReplaceAllString(code, replacement)
+		
+		identifierReplacement := fmt.Sprintf(`import %s from 0x%s`, importName, to)
+		code = identifierRegex.ReplaceAllString(code, identifierReplacement)
+	}
 
 	p.code = []byte(code)
 	p.reload()
@@ -138,8 +173,13 @@ func (p *Program) Name() (string, error) {
 
 func (p *Program) ConvertAddressImports() {
 	code := string(p.code)
+	// Handle regular imports: import X from 0xAddress
 	addressImportRegex := regexp.MustCompile(`import\s+(\w+)\s+from\s+0x[0-9a-fA-F]+`)
 	modifiedCode := addressImportRegex.ReplaceAllString(code, `import "$1"`)
+	
+	// Handle alias imports: import X as Y from 0xAddress -> import "Y"
+	aliasImportRegex := regexp.MustCompile(`import\s+\w+\s+as\s+(\w+)\s+from\s+0x[0-9a-fA-F]+`)
+	modifiedCode = aliasImportRegex.ReplaceAllString(modifiedCode, `import "$1"`)
 
 	p.codeWithUnprocessedImports = []byte(modifiedCode)
 }
