@@ -306,6 +306,25 @@ func (p *State) AliasesForNetwork(network config.Network) project.LocationAliase
 }
 
 // CanonicalContractMapping returns a mapping of alias contract names to their canonical contract names.
+//
+// Example usage with import aliases:
+//
+//	// Given flow.json with:
+//	// "FUSD": { "source": "./FUSD.cdc", "aliases": {...} }
+//	// "FUSD_v2": { "source": "./FUSD.cdc", "canonical": "FUSD", "aliases": {...} }
+//	
+//	state, _ := flowkit.Load([]string{"flow.json"}, flowkit.NewReaderWriter())
+//	
+//	// Get canonical mappings
+//	mapping := state.CanonicalContractMapping()
+//	// Returns: {"FUSD_v2": "FUSD"}
+//	
+//	// Use with import replacer
+//	contracts, _ := state.DeploymentContractsByNetwork(network)
+//	aliases := state.AliasesForNetwork(network)
+//	replacer := project.NewImportReplacer(contracts, aliases, mapping)
+//	
+//	// Process imports: "FUSD_v2" → "import FUSD as FUSD_v2 from 0x..."
 func (p *State) CanonicalContractMapping() map[string]string {
 	canonicalMapping := make(map[string]string)
 	for _, contract := range p.conf.Contracts {
