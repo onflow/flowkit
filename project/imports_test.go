@@ -135,4 +135,112 @@ func TestResolver(t *testing.T) {
 		assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
 	})
 
+	t.Run("Resolve imports with canonical aliases", func(t *testing.T) {
+		// Create contracts - FUSD1 and FUSD2 are alias deployments of FUSD
+		// In practice, only the canonical contract (FUSD) would be deployed, and
+		// FUSD1/FUSD2 would be aliases pointing to different addresses where FUSD is deployed
+		contracts := []*Contract{
+			NewContract("FUSD", "./contracts/FUSD.cdc", nil, flow.HexToAddress("0x1"), "", nil),
+			NewContract("FUSD1", "", nil, flow.HexToAddress("0x2"), "", nil),  // Alias deployment
+			NewContract("FUSD2", "", nil, flow.HexToAddress("0x3"), "", nil),  // Another alias deployment
+			NewContract("FT", "./contracts/FT.cdc", nil, flow.HexToAddress("0x4"), "", nil),       // Regular contract
+		}
+		
+		// Canonical mapping to simulate FUSD1 and FUSD2 having FUSD as canonical
+		canonicalMapping := map[string]string{
+			"FUSD1": "FUSD",
+			"FUSD2": "FUSD",
+		}
+		
+		replacer := &ImportReplacer{
+			contracts:        contracts,
+			aliases:          nil,
+			canonicalMapping: canonicalMapping,
+		}
+		
+		t.Run("basic alias replacement", func(t *testing.T) {
+			code := []byte(`
+				import "FUSD"
+				import "FUSD1"
+				import "FUSD2"
+				import "FT"
+				
+				access(all) contract Test {}
+			`)
+			
+			program, err := NewProgram(code, nil, "./Test.cdc")
+			require.NoError(t, err)
+			
+			replaced, err := replacer.Replace(program)
+			require.NoError(t, err)
+			
+			expected := []byte(`
+				import FUSD from 0x0000000000000001
+				import FUSD as FUSD1 from 0x0000000000000002
+				import FUSD as FUSD2 from 0x0000000000000003
+				import FT from 0x0000000000000004
+				
+				access(all) contract Test {}
+			`)
+			
+			assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+		})
+	})
+
+	t.Run("ConvertAddressImports with aliases", func(t *testing.T) {
+		code := []byte(`
+			import FUSD from 0x0000000000000001
+			import FUSD as FUSD1 from 0x0000000000000002
+			import FUSD as FUSD2 from 0x0000000000000003
+			import FT from 0x0000000000000004
+			
+			access(all) contract Test {}
+		`)
+		
+		program, err := NewProgram(code, nil, "./Test.cdc")
+		require.NoError(t, err)
+		
+		// ConvertAddressImports should convert both regular and alias imports back to identifier imports
+		// For alias imports (import X as Y from 0x...), it should use the alias name (Y)
+		expected := []byte(`
+			import "FUSD"
+			import "FUSD1"
+			import "FUSD2"
+			import "FT"
+			
+			access(all) contract Test {}
+		`)
+		
+		assert.Equal(t, cleanCode(expected), cleanCode(program.CodeWithUnprocessedImports()))
+	})
+
+	t.Run("Import replacer with no canonical mapping", func(t *testing.T) {
+		// Test that contracts work normally without canonical mapping
+		contracts := []*Contract{
+			NewContract("Token", "./contracts/Token.cdc", nil, flow.HexToAddress("0x1"), "", nil),
+		}
+		
+		replacer := NewImportReplacer(contracts, nil)
+		
+		code := []byte(`
+			import "Token"
+			
+			access(all) contract Test {}
+		`)
+		
+		program, err := NewProgram(code, nil, "./Test.cdc")
+		require.NoError(t, err)
+		
+		replaced, err := replacer.Replace(program)
+		require.NoError(t, err)
+		
+		expected := []byte(`
+			import Token from 0x0000000000000001
+			
+			access(all) contract Test {}
+		`)
+		
+		assert.Equal(t, cleanCode(expected), cleanCode(replaced.Code()))
+	})
+
 }
