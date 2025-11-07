@@ -32,14 +32,22 @@ type Account interface {
 
 // ImportReplacer implements file import replacements functionality for the project contracts with optionally included aliases.
 type ImportReplacer struct {
-	contracts []*Contract
-	aliases   LocationAliases
+	contracts        []*Contract
+	aliases          LocationAliases
+	canonicalMapping map[string]string // maps alias names to their canonical contract names
 }
 
-func NewImportReplacer(contracts []*Contract, aliases LocationAliases) *ImportReplacer {
+func NewImportReplacer(contracts []*Contract, aliases LocationAliases, canonicalMapping ...map[string]string) *ImportReplacer {
+	canonical := make(map[string]string)
+	// If canonical mapping is provided, use it
+	if len(canonicalMapping) > 0 && canonicalMapping[0] != nil {
+		canonical = canonicalMapping[0]
+	}
+	
 	return &ImportReplacer{
-		contracts: contracts,
-		aliases:   aliases,
+		contracts:        contracts,
+		aliases:          aliases,
+		canonicalMapping: canonical,
 	}
 }
 
@@ -52,13 +60,17 @@ func (i *ImportReplacer) Replace(program *Program) (*Program, error) {
 		importLocation := filepath.Clean(absolutePath(program.Location(), imp))
 		address, isPath := contractsLocations[importLocation]
 		if isPath {
-			program.replaceImport(imp, address)
+			// Check if this import is an alias
+			canonicalName := i.getCanonicalNameForImport(imp, address)
+			program.replaceImport(imp, address, canonicalName)
 			continue
 		}
 		// check if import by identifier exists (e.g. import ["X"])
 		address, isIdentifier := contractsLocations[imp]
 		if isIdentifier {
-			program.replaceImport(imp, address)
+			// Check if this import is an alias
+			canonicalName := i.getCanonicalNameForImport(imp, address)
+			program.replaceImport(imp, address, canonicalName)
 			continue
 		}
 
@@ -82,6 +94,25 @@ func (i *ImportReplacer) getContractsLocations() map[string]string {
 	}
 
 	return locationAddress
+}
+
+// getCanonicalNameForImport determines the canonical contract name for an import.
+// Returns the canonical name if the import is an alias, otherwise returns the import name.
+func (i *ImportReplacer) getCanonicalNameForImport(importName string, address string) string {
+	// Extract just the contract name from the import path if it's a path
+	contractName := importName
+	if filepath.Ext(importName) == ".cdc" {
+		contractName = filepath.Base(importName)
+		contractName = contractName[:len(contractName)-4] // Remove .cdc extension
+	}
+	
+	// Check if this is an alias by looking up in canonical mapping
+	if canonicalName, isAlias := i.canonicalMapping[contractName]; isAlias {
+		return canonicalName
+	}
+	
+	// Not an alias, return the original contract name
+	return contractName
 }
 
 func absolutePath(basePath, relativePath string) string {
