@@ -35,6 +35,7 @@ type Contract struct {
 	Location     string
 	Aliases      Aliases
 	IsDependency bool
+	Canonical    string // Reference to canonical contract name if this is an alias
 }
 
 // Alias defines an existing pre-deployed contract address for specific network.
@@ -74,6 +75,19 @@ func (c *Contract) IsAliased() bool {
 	return len(c.Aliases) > 0
 }
 
+// IsAlias checks if this contract is an alias to another contract.
+func (c *Contract) IsAlias() bool {
+	return c.Canonical != ""
+}
+
+// CanonicalName returns the canonical contract name if this is an alias, otherwise returns the contract's own name.
+func (c *Contract) CanonicalName() string {
+	if c.Canonical != "" {
+		return c.Canonical
+	}
+	return c.Name
+}
+
 // ByName get contract by name or return an error if it doesn't exist.
 func (c *Contracts) ByName(name string) (*Contract, error) {
 	for i, contract := range *c {
@@ -110,6 +124,34 @@ func (c *Contracts) Remove(name string) error {
 	}
 
 	return nil
+}
+
+// ValidateCanonical validates that all canonical references are valid.
+func (c *Contracts) ValidateCanonical() error {
+	for _, contract := range *c {
+		if contract.Canonical != "" {
+			// Check self-reference
+			if contract.Canonical == contract.Name {
+				return fmt.Errorf("contract %s cannot have itself as canonical", contract.Name)
+			}
+			// Check target exists
+			if _, err := c.ByName(contract.Canonical); err != nil {
+				return fmt.Errorf("canonical contract %s referenced by %s does not exist", contract.Canonical, contract.Name)
+			}
+		}
+	}
+	return nil
+}
+
+// GetAliases returns all contracts that have the given contract as their canonical.
+func (c *Contracts) GetAliases(canonicalName string) []*Contract {
+	var aliases []*Contract
+	for i, contract := range *c {
+		if contract.Canonical == canonicalName {
+			aliases = append(aliases, &(*c)[i])
+		}
+	}
+	return aliases
 }
 
 const dependencyManagerDirectory = "imports"
