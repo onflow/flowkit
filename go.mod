@@ -10,17 +10,17 @@ require (
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
 	github.com/onflow/cadence v1.8.3
 	github.com/onflow/crypto v0.25.3
-	github.com/onflow/flow-emulator v1.10.4
-	github.com/onflow/flow-go v0.43.3-0.20251029192457-d4f875155987
+	github.com/onflow/flow-emulator v1.12.0
+	github.com/onflow/flow-go v0.44.0-experimental-cadence-v1.8.3.0.20251104232503-4df61ad15eed
 	github.com/onflow/flow-go-sdk v1.9.2
-	github.com/onflow/flow/protobuf/go/flow v0.4.16
+	github.com/onflow/flow/protobuf/go/flow v0.4.18
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.15.0
 	github.com/stretchr/testify v1.11.1
 	github.com/thoas/go-funk v0.9.3
 	github.com/tyler-smith/go-bip39 v1.1.0
-	golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67
+	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b
 	gonum.org/v1/gonum v0.16.0
 	google.golang.org/grpc v1.76.0
 )
@@ -153,6 +153,7 @@ require (
 	github.com/multiformats/go-multistream v0.6.0 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/onflow/atree v0.11.0 // indirect
 	github.com/onflow/fixed-point v0.1.1 // indirect
@@ -247,11 +248,11 @@ require (
 	lukechampine.com/uint128 v1.3.0 // indirect
 	modernc.org/cc/v3 v3.41.0 // indirect
 	modernc.org/ccgo/v3 v3.16.15 // indirect
-	modernc.org/libc v1.37.6 // indirect
-	modernc.org/mathutil v1.6.0 // indirect
-	modernc.org/memory v1.7.2 // indirect
-	modernc.org/opt v0.1.3 // indirect
-	modernc.org/sqlite v1.28.0 // indirect
-	modernc.org/strutil v1.2.0 // indirect
+	modernc.org/libc v1.66.10 // indirect
+	modernc.org/mathutil v1.7.1 // indirect
+	modernc.org/memory v1.11.0 // indirect
+	modernc.org/opt v0.1.4 // indirect
+	modernc.org/sqlite v1.40.0 // indirect
+	modernc.org/strutil v1.2.1 // indirect
 	modernc.org/token v1.1.0 // indirect
 )
