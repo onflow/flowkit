@@ -178,15 +178,7 @@ func (p *State) DeploymentContractsByNetwork(network config.Network) ([]*project
 				return nil, err
 			}
 
-			// If this contract is an alias, get the canonical contract's location
 			location := c.Location
-			if c.IsAlias() {
-				canonicalContract, err := p.conf.Contracts.ByName(c.Canonical)
-				if err != nil {
-					return nil, fmt.Errorf("canonical contract %s not found for alias %s", c.Canonical, c.Name)
-				}
-				location = canonicalContract.Location
-			}
 			// if we loaded config from a single location, we should make the path of contracts defined in config relative to
 			// config path we have provided, this will make cases where we execute loading in different path than config work
 			if len(p.confLoader.LoadedLocations) == 1 {
@@ -288,17 +280,8 @@ func (p *State) AliasesForNetwork(network config.Network) project.LocationAliase
 	for _, contract := range p.conf.Contracts {
 		if contract.IsAliased() && contract.Aliases.ByNetwork(network.Name) != nil {
 			alias := contract.Aliases.ByNetwork(network.Name).Address.String()
-			
-			// For alias contracts, use their canonical contract's location as well
-			location := contract.Location
-			if contract.IsAlias() {
-				if canonicalContract, err := p.conf.Contracts.ByName(contract.Canonical); err == nil {
-					location = canonicalContract.Location
-				}
-			}
-			
-			aliases[filepath.Clean(location)] = alias // alias for import by file location
-			aliases[contract.Name] = alias             // alias for import by name
+			aliases[filepath.Clean(contract.Location)] = alias // alias for import by file location
+			aliases[contract.Name] = alias                     // alias for import by name
 		}
 	}
 
