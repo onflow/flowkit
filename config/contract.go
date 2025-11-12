@@ -134,10 +134,6 @@ func (c *Contracts) ValidateCanonical() error {
 			if contract.Canonical == contract.Name {
 				return fmt.Errorf("contract %s cannot have itself as canonical", contract.Name)
 			}
-			// Check target exists
-			if _, err := c.ByName(contract.Canonical); err != nil {
-				return fmt.Errorf("canonical contract %s referenced by %s does not exist", contract.Canonical, contract.Name)
-			}
 		}
 	}
 	return nil
