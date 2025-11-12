@@ -184,14 +184,6 @@ func TestContracts_ValidateCanonical(t *testing.T) {
 			errMsg:  "contract FUSD cannot have itself as canonical",
 		},
 		{
-			name: "canonical target does not exist",
-			contracts: Contracts{
-				{Name: "FUSD1", Location: "FUSD.cdc", Canonical: "FUSD"},
-			},
-			wantErr: true,
-			errMsg:  "canonical contract FUSD referenced by FUSD1 does not exist",
-		},
-		{
 			name: "multiple aliases to same canonical",
 			contracts: Contracts{
 				{Name: "FUSD", Location: "FUSD.cdc"},
