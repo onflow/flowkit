@@ -23,7 +23,7 @@ go get github.com/onflow/flowkit/v2
 import "github.com/onflow/flowkit/v2"
 
 // Load your Flow project
-state, err := flowkit.Load([]string{"flow.json"}, afero.NewOsFs())
+state, err := flowkit.Load([]string{"flow.json"}, afero.Afero{Fs: afero.NewOsFs()})
 
 // Get contracts for a network
 contracts, err := state.DeploymentContractsByNetwork(config.TestnetNetwork)
