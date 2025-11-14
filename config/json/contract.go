@@ -45,8 +45,9 @@ func (j jsonContracts) transformToConfig() (config.Contracts, error) {
 			contracts = append(contracts, contract)
 		} else {
 			contract := config.Contract{
-				Name:     contractName,
-				Location: c.Advanced.Source,
+				Name:      contractName,
+				Location:  c.Advanced.Source,
+				Canonical: c.Advanced.Canonical,
 			}
 			for network, alias := range c.Advanced.Aliases {
 				address := flow.HexToAddress(alias)
@@ -73,8 +74,8 @@ func transformContractsToJSON(contracts config.Contracts) jsonContracts {
 			continue
 		}
 
-		// if simple case
-		if !c.IsAliased() {
+		// if simple case (no aliases and no canonical)
+		if !c.IsAliased() && c.Canonical == "" {
 			jsonContracts[c.Name] = jsonContract{
 				Simple: filepath.ToSlash(c.Location),
 			}
@@ -87,8 +88,9 @@ func transformContractsToJSON(contracts config.Contracts) jsonContracts {
 
 			jsonContracts[c.Name] = jsonContract{
 				Advanced: jsonContractAdvanced{
-					Source:  filepath.ToSlash(c.Location),
-					Aliases: aliases,
+					Source:    filepath.ToSlash(c.Location),
+					Aliases:   aliases,
+					Canonical: c.Canonical,
 				},
 			}
 		}
@@ -99,8 +101,9 @@ func transformContractsToJSON(contracts config.Contracts) jsonContracts {
 
 // jsonContractAdvanced for json parsing advanced config.
 type jsonContractAdvanced struct {
-	Source  string            `json:"source"`
-	Aliases map[string]string `json:"aliases"`
+	Source    string            `json:"source"`
+	Aliases   map[string]string `json:"aliases"`
+	Canonical string            `json:"canonical,omitempty"`
 }
 
 // jsonContract structure for json parsing.

@@ -109,3 +109,122 @@ func TestContracts_AddDependencyAsContract(t *testing.T) {
 	assert.Equal(t, "imports/0000000000abcdef/TestContract.cdc", contract.Location)
 	assert.Len(t, contract.Aliases, 1)
 }
+
+func TestContract_IsAlias(t *testing.T) {
+	tests := []struct {
+		name     string
+		contract Contract
+		expected bool
+	}{
+		{
+			name:     "contract with canonical is an alias",
+			contract: Contract{Name: "FUSD1", Canonical: "FUSD"},
+			expected: true,
+		},
+		{
+			name:     "contract without canonical is not an alias",
+			contract: Contract{Name: "FUSD"},
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, tt.contract.IsAlias())
+		})
+	}
+}
+
+func TestContract_CanonicalName(t *testing.T) {
+	tests := []struct {
+		name     string
+		contract Contract
+		expected string
+	}{
+		{
+			name:     "alias returns canonical name",
+			contract: Contract{Name: "FUSD1", Canonical: "FUSD"},
+			expected: "FUSD",
+		},
+		{
+			name:     "non-alias returns its own name",
+			contract: Contract{Name: "FUSD"},
+			expected: "FUSD",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, tt.contract.CanonicalName())
+		})
+	}
+}
+
+func TestContracts_ValidateCanonical(t *testing.T) {
+	tests := []struct {
+		name      string
+		contracts Contracts
+		wantErr   bool
+		errMsg    string
+	}{
+		{
+			name: "valid canonical reference",
+			contracts: Contracts{
+				{Name: "FUSD", Location: "FUSD.cdc"},
+				{Name: "FUSD1", Location: "FUSD.cdc", Canonical: "FUSD"},
+			},
+			wantErr: false,
+		},
+		{
+			name: "self-referential canonical",
+			contracts: Contracts{
+				{Name: "FUSD", Location: "FUSD.cdc", Canonical: "FUSD"},
+			},
+			wantErr: true,
+			errMsg:  "contract FUSD cannot have itself as canonical",
+		},
+		{
+			name: "multiple aliases to same canonical",
+			contracts: Contracts{
+				{Name: "FUSD", Location: "FUSD.cdc"},
+				{Name: "FUSD1", Location: "FUSD.cdc", Canonical: "FUSD"},
+				{Name: "FUSD2", Location: "FUSD.cdc", Canonical: "FUSD"},
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.contracts.ValidateCanonical()
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errMsg)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestContracts_GetAliases(t *testing.T) {
+	contracts := Contracts{
+		{Name: "FUSD", Location: "FUSD.cdc"},
+		{Name: "FUSD1", Location: "FUSD.cdc", Canonical: "FUSD"},
+		{Name: "FUSD2", Location: "FUSD.cdc", Canonical: "FUSD"},
+		{Name: "FT", Location: "FT.cdc"},
+		{Name: "FT1", Location: "FT.cdc", Canonical: "FT"},
+	}
+
+	fusdAliases := contracts.GetAliases("FUSD")
+	assert.Len(t, fusdAliases, 2)
+	assert.Equal(t, "FUSD1", fusdAliases[0].Name)
+	assert.Equal(t, "FUSD2", fusdAliases[1].Name)
+
+	ftAliases := contracts.GetAliases("FT")
+	assert.Len(t, ftAliases, 1)
+	assert.Equal(t, "FT1", ftAliases[0].Name)
+
+	noAliases := contracts.GetAliases("NonExistent")
+	assert.Len(t, noAliases, 0)
+}
