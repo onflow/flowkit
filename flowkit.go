@@ -289,6 +289,7 @@ func (f *Flowkit) AddContract(
 		importReplacer := project.NewImportReplacer(
 			contracts,
 			state.AliasesForNetwork(f.network),
+			state.CanonicalContractMapping(),
 		)
 
 		program, err = importReplacer.Replace(program)
@@ -833,6 +834,7 @@ func (f *Flowkit) ExecuteScript(ctx context.Context, script Script, query Script
 		importReplacer := project.NewImportReplacer(
 			contracts,
 			state.AliasesForNetwork(f.network),
+			state.CanonicalContractMapping(),
 		)
 
 		if state == nil {
@@ -990,6 +992,7 @@ func (f *Flowkit) BuildTransaction(
 		importReplacer := project.NewImportReplacer(
 			contracts,
 			state.AliasesForNetwork(f.network),
+			state.CanonicalContractMapping(),
 		)
 
 		program, err = importReplacer.Replace(program)
@@ -1122,6 +1125,7 @@ func (f *Flowkit) ReplaceImportsInScript(
 	importReplacer := project.NewImportReplacer(
 		contracts,
 		state.AliasesForNetwork(f.network),
+		state.CanonicalContractMapping(),
 	)
 
 	program, err := project.NewProgram(script.Code, script.Args, script.Location)
