@@ -76,3 +76,89 @@ func Test_TransformDependenciesToJSON(t *testing.T) {
 
 	assert.Equal(t, cleanSpecialChars(bOut), cleanSpecialChars(x))
 }
+
+func Test_ConfigDependenciesWithCanonical(t *testing.T) {
+	b := []byte(`{
+		"NumberFormatter": {
+			"source": "testnet://8a4dce54554b225d.NumberFormatter",
+			"hash": "dc7043832da46dbcc8242a53fa95b37f020bc374df42586a62703b2651979fb9",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "8a4dce54554b225d"
+			}
+		},
+		"NumberFormatterAlias": {
+			"source": "testnet://8a4dce54554b225d.NumberFormatter",
+			"hash": "dc7043832da46dbcc8242a53fa95b37f020bc374df42586a62703b2651979fb9",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "8a4dce54554b225d"
+			},
+			"canonical": "NumberFormatter"
+		}
+	}`)
+
+	var jsonDependencies jsonDependencies
+	err := json.Unmarshal(b, &jsonDependencies)
+	assert.NoError(t, err)
+
+	dependencies, err := jsonDependencies.transformToConfig()
+	assert.NoError(t, err)
+
+	assert.Len(t, dependencies, 2)
+
+	canonicalDep := dependencies.ByName("NumberFormatter")
+	assert.NotNil(t, canonicalDep)
+	assert.Equal(t, "", canonicalDep.Canonical)
+
+	aliasDep := dependencies.ByName("NumberFormatterAlias")
+	assert.NotNil(t, aliasDep)
+	assert.Equal(t, "NumberFormatter", aliasDep.Canonical)
+}
+
+func Test_TransformDependenciesWithCanonicalToJSON(t *testing.T) {
+	b := []byte(`{
+		"NumberFormatter": {
+			"source": "testnet://8a4dce54554b225d.NumberFormatter",
+			"hash": "dc7043832da46dbcc8242a53fa95b37f020bc374df42586a62703b2651979fb9",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "8a4dce54554b225d"
+			}
+		},
+		"NumberFormatterAlias": {
+			"source": "testnet://8a4dce54554b225d.NumberFormatter",
+			"hash": "dc7043832da46dbcc8242a53fa95b37f020bc374df42586a62703b2651979fb9",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"testnet": "8a4dce54554b225d"
+			},
+			"canonical": "NumberFormatter"
+		}
+	}`)
+
+	var jsonContracts jsonContracts
+	errContracts := json.Unmarshal(b, &jsonContracts)
+	assert.NoError(t, errContracts)
+
+	var jsonDependencies jsonDependencies
+	err := json.Unmarshal(b, &jsonDependencies)
+	assert.NoError(t, err)
+
+	contracts, err := jsonContracts.transformToConfig()
+	assert.NoError(t, err)
+	dependencies, err := jsonDependencies.transformToConfig()
+	assert.NoError(t, err)
+
+	j := transformDependenciesToJSON(dependencies, contracts)
+
+	x, _ := json.Marshal(j)
+
+	// Parse back and check canonical field
+	var result map[string]jsonDependency
+	err = json.Unmarshal(x, &result)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "", result["NumberFormatter"].Extended.Canonical)
+	assert.Equal(t, "NumberFormatter", result["NumberFormatterAlias"].Extended.Canonical)
+}

@@ -248,6 +248,9 @@
             }
           },
           "type": "object"
+        },
+        "canonical": {
+          "type": "string"
         }
       },
       "additionalProperties": false,

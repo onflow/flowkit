@@ -59,8 +59,9 @@ func (j jsonDependencies) transformToConfig() (config.Dependencies, error) {
 			}
 
 			dep = config.Dependency{
-				Name: dependencyName,
-				Hash: dependency.Extended.Hash,
+				Name:      dependencyName,
+				Hash:      dependency.Extended.Hash,
+				Canonical: dependency.Extended.Canonical,
 				Source: config.Source{
 					NetworkName:  depNetwork,
 					Address:      flow.HexToAddress(depAddress),
@@ -99,9 +100,10 @@ func transformDependenciesToJSON(configDependencies config.Dependencies, configC
 
 		jsonDeps[dep.Name] = jsonDependency{
 			Extended: jsonDependencyExtended{
-				Source:  buildSourceString(dep.Source),
-				Hash:    dep.Hash,
-				Aliases: aliases,
+				Source:    buildSourceString(dep.Source),
+				Hash:      dep.Hash,
+				Aliases:   aliases,
+				Canonical: dep.Canonical,
 			},
 		}
 	}
@@ -123,9 +125,10 @@ func buildSourceString(source config.Source) string {
 
 // jsonDependencyExtended for json parsing advanced config.
 type jsonDependencyExtended struct {
-	Source  string            `json:"source"`
-	Hash    string            `json:"hash"`
-	Aliases map[string]string `json:"aliases"`
+	Source    string            `json:"source"`
+	Hash      string            `json:"hash"`
+	Aliases   map[string]string `json:"aliases"`
+	Canonical string            `json:"canonical,omitempty"`
 }
 
 // jsonDependency structure for json parsing.

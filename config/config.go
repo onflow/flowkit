@@ -61,6 +61,14 @@ func (c *Config) Validate() error {
 		}
 	}
 
+	if err := c.Contracts.ValidateCanonical(); err != nil {
+		return err
+	}
+
+	if err := c.Dependencies.ValidateCanonical(); err != nil {
+		return err
+	}
+
 	for _, em := range c.Emulators {
 		if _, err := c.Accounts.ByName(em.ServiceAccount); err != nil {
 			return fmt.Errorf("emulator %s contains nonexisting service account %s", em.Name, em.ServiceAccount)
