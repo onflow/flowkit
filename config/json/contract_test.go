@@ -185,3 +185,104 @@ func Test_TransformComplexContractToJSON(t *testing.T) {
 
 	assert.JSONEq(t, string(b), string(x))
 }
+
+func Test_ConfigContractsWithCanonical(t *testing.T) {
+	b := []byte(`{
+		"FUSD": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "9a0766d93b6608b7",
+				"mainnet": "3c5959b568896393"
+			}
+		},
+		"FUSD1": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "e223d8a629e49c68",
+				"mainnet": "8d0e87b65159ae63"
+			},
+			"canonical": "FUSD"
+		},
+		"FUSD2": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "0f9df91c9121c460",
+				"mainnet": "754a90d51a1c8e1b"
+			},
+			"canonical": "FUSD"
+		}
+	}`)
+
+	var jsonContracts jsonContracts
+	err := json.Unmarshal(b, &jsonContracts)
+	assert.NoError(t, err)
+
+	contracts, err := jsonContracts.transformToConfig()
+	assert.NoError(t, err)
+
+	assert.Len(t, contracts, 3)
+
+	fusd, _ := contracts.ByName("FUSD")
+	assert.NotNil(t, fusd)
+	assert.Equal(t, "", fusd.Canonical)
+	assert.False(t, fusd.IsAlias())
+
+	fusd1, _ := contracts.ByName("FUSD1")
+	assert.NotNil(t, fusd1)
+	assert.Equal(t, "FUSD", fusd1.Canonical)
+	assert.True(t, fusd1.IsAlias())
+	assert.Equal(t, "FUSD", fusd1.CanonicalName())
+
+	fusd2, _ := contracts.ByName("FUSD2")
+	assert.NotNil(t, fusd2)
+	assert.Equal(t, "FUSD", fusd2.Canonical)
+	assert.True(t, fusd2.IsAlias())
+	assert.Equal(t, "FUSD", fusd2.CanonicalName())
+}
+
+func Test_TransformContractsWithCanonicalToJSON(t *testing.T) {
+	b := []byte(`{
+		"FUSD": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "9a0766d93b6608b7",
+				"mainnet": "3c5959b568896393"
+			}
+		},
+		"FUSD1": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "e223d8a629e49c68",
+				"mainnet": "8d0e87b65159ae63"
+			},
+			"canonical": "FUSD"
+		},
+		"FUSD2": {
+			"source": "./contracts/FUSD.cdc",
+			"aliases": {
+				"testnet": "0f9df91c9121c460",
+				"mainnet": "754a90d51a1c8e1b"
+			},
+			"canonical": "FUSD"
+		}
+	}`)
+
+	var jsonContracts jsonContracts
+	err := json.Unmarshal(b, &jsonContracts)
+	assert.NoError(t, err)
+
+	contracts, err := jsonContracts.transformToConfig()
+	assert.NoError(t, err)
+
+	j := transformContractsToJSON(contracts)
+
+	x, _ := json.Marshal(j)
+
+	var result map[string]jsonContract
+	err = json.Unmarshal(x, &result)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "", result["FUSD"].Advanced.Canonical)
+	assert.Equal(t, "FUSD", result["FUSD1"].Advanced.Canonical)
+	assert.Equal(t, "FUSD", result["FUSD2"].Advanced.Canonical)
+}
