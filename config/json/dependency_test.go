@@ -152,7 +152,6 @@ func Test_TransformDependenciesWithCanonicalToJSON(t *testing.T) {
 
 	j := transformDependenciesToJSON(dependencies, contracts)
 
-	// Marshal and check
 	x, _ := json.Marshal(j)
 
 	// Parse back and check canonical field
