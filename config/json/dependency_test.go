@@ -107,12 +107,10 @@ func Test_ConfigDependenciesWithCanonical(t *testing.T) {
 
 	assert.Len(t, dependencies, 2)
 
-	// Check canonical dependency
 	canonicalDep := dependencies.ByName("NumberFormatter")
 	assert.NotNil(t, canonicalDep)
 	assert.Equal(t, "", canonicalDep.Canonical)
 
-	// Check alias dependency
 	aliasDep := dependencies.ByName("NumberFormatterAlias")
 	assert.NotNil(t, aliasDep)
 	assert.Equal(t, "NumberFormatter", aliasDep.Canonical)
