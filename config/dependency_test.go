@@ -42,3 +42,34 @@ func TestDependencies_AddOrUpdate(t *testing.T) {
 	dep := dependencies.ByName("mydep")
 	assert.NotNil(t, dep)
 }
+
+func TestDependencies_ValidateCanonical(t *testing.T) {
+	t.Run("valid canonical reference", func(t *testing.T) {
+		dependencies := Dependencies{
+			Dependency{Name: "NumberFormatter", Canonical: ""},
+			Dependency{Name: "NumberFormatterAlias", Canonical: "NumberFormatter"},
+		}
+
+		err := dependencies.ValidateCanonical()
+		assert.NoError(t, err)
+	})
+
+	t.Run("self-referential canonical", func(t *testing.T) {
+		dependencies := Dependencies{
+			Dependency{Name: "NumberFormatter", Canonical: "NumberFormatter"},
+		}
+
+		err := dependencies.ValidateCanonical()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "cannot have itself as canonical")
+	})
+
+	t.Run("no canonical reference", func(t *testing.T) {
+		dependencies := Dependencies{
+			Dependency{Name: "NumberFormatter", Canonical: ""},
+		}
+
+		err := dependencies.ValidateCanonical()
+		assert.NoError(t, err)
+	})
+}

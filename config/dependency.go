@@ -49,10 +49,11 @@ type Source struct {
 }
 
 type Dependency struct {
-	Name    string
-	Source  Source
-	Hash    string
-	Aliases Aliases
+	Name      string
+	Source    Source
+	Hash      string
+	Aliases   Aliases
+	Canonical string
 }
 
 type Dependencies []Dependency
@@ -76,4 +77,16 @@ func (d *Dependencies) AddOrUpdate(dep Dependency) {
 	}
 
 	*d = append(*d, dep)
+}
+
+// ValidateCanonical validates that all canonical references are valid for dependencies.
+func (d *Dependencies) ValidateCanonical() error {
+	for _, dependency := range *d {
+		if dependency.Canonical != "" {
+			if dependency.Canonical == dependency.Name {
+				return fmt.Errorf("dependency %s cannot have itself as canonical", dependency.Name)
+			}
+		}
+	}
+	return nil
 }
