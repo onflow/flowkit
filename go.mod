@@ -13,7 +13,7 @@ require (
 	github.com/onflow/flow-emulator v1.12.3
 	github.com/onflow/flow-go v0.44.0-experimental-cadence-v1.8.3.0.20251117184523-ab0655178589
 	github.com/onflow/flow-go-sdk v1.9.3
-	github.com/onflow/flow/protobuf/go/flow v0.4.18
+	github.com/onflow/flow/protobuf/go/flow v0.4.19
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/afero v1.15.0
