@@ -37,16 +37,18 @@ func (j jsonNetworks) transformToConfig() (config.Networks, error) {
 	networks := make(config.Networks, 0)
 
 	for networkName, n := range j {
-		if n.Advanced.Key != "" && n.Advanced.Host != "" {
-			err := validateECDSAP256Pub(n.Advanced.Key)
-			if err != nil {
-				return nil, fmt.Errorf("invalid key %s for network with name %s", n.Advanced.Key, networkName)
+		// Advanced form: host required, key optional, fork optional
+		if n.Advanced.Host != "" || n.Advanced.Fork != "" {
+			if n.Advanced.Key != "" {
+				if err := validateECDSAP256Pub(n.Advanced.Key); err != nil {
+					return nil, fmt.Errorf("invalid key %s for network with name %s", n.Advanced.Key, networkName)
+				}
 			}
-
 			networks = append(networks, config.Network{
 				Name: networkName,
 				Host: n.Advanced.Host,
 				Key:  n.Advanced.Key,
+				Fork: n.Advanced.Fork,
 			})
 		} else if n.Simple.Host != "" {
 			networks = append(networks, config.Network{
@@ -66,7 +68,8 @@ func transformNetworksToJSON(networks config.Networks) jsonNetworks {
 	jsonNetworks := jsonNetworks{}
 
 	for _, n := range networks {
-		if n.Key != "" {
+		// Use advanced when key or fork present; otherwise simple
+		if n.Key != "" || n.Fork != "" {
 			jsonNetworks[n.Name] = transformAdvancedNetworkToJSON(n)
 		} else {
 			jsonNetworks[n.Name] = transformSimpleNetworkToJSON(n)
@@ -89,6 +92,7 @@ func transformAdvancedNetworkToJSON(n config.Network) jsonNetwork {
 		Advanced: advancedNetwork{
 			Host: n.Host,
 			Key:  n.Key,
+			Fork: n.Fork,
 		},
 	}
 }
@@ -103,8 +107,9 @@ type simpleNetwork struct {
 }
 
 type advancedNetwork struct {
-	Host string `json:"host"`
-	Key  string `json:"key"`
+	Host string `json:"host,omitempty"`
+	Key  string `json:"key,omitempty"`
+	Fork string `json:"fork,omitempty"`
 }
 
 func (j *jsonNetwork) UnmarshalJSON(b []byte) error {
@@ -121,6 +126,7 @@ func (j *jsonNetwork) UnmarshalJSON(b []byte) error {
 	if err == nil {
 		j.Advanced.Host = advanced.Host
 		j.Advanced.Key = advanced.Key
+		j.Advanced.Fork = advanced.Fork
 	}
 
 	return err
