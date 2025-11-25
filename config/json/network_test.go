@@ -125,14 +125,14 @@ func Test_TransformConfigAdvanced(t *testing.T) {
 		assert.Equal(t, "access.testnet.nodes.onflow.org:9000", testnet.Host)
 		assert.Equal(t, "5000676131ad3e22d853a3f75a5b5d0db4236d08dd6612e2baad771014b5266a242bccecc3522ff7207ac357dbe4f225c709d9b273ac484fed5d13976a39bdcd", testnet.Key)
 	})
-	t.Run("should return error if advanced config does not have key", func(t *testing.T) {
+	t.Run("should allow advanced config without key", func(t *testing.T) {
 		b := []byte(`{"testnet":{"host":"access.testnet.nodes.onflow.org:9000"}}`)
 		var jsonNetworks jsonNetworks
 		err := json.Unmarshal(b, &jsonNetworks)
 		assert.NoError(t, err)
 
 		_, err = jsonNetworks.transformToConfig()
-		assert.Error(t, err)
+		assert.NoError(t, err)
 	})
 	t.Run("should return error if advanced config does not have host", func(t *testing.T) {
 		b := []byte(`{"testnet":{"key": "5000676131ad3e22d853a3f75a5b5d0db4236d08dd6612e2baad771014b5266a242bccecc3522ff7207ac357dbe4f225c709d9b273ac484fed5d13976a39bdcd"}}`)

@@ -55,6 +55,7 @@ type Network struct {
 	Name string
 	Host string
 	Key  string
+	Fork string // Source network for alias resolution (e.g., "mainnet" for forked networks)
 }
 
 // ByName get network by name or return an error if not found.

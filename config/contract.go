@@ -211,6 +211,20 @@ func (c *Contracts) AddDependencyAsContract(dependency Dependency, networkName s
 				})
 			}
 		}
+		// Also add any custom network aliases from the dependency (e.g., mainnet-fork)
+		for _, depAlias := range dependency.Aliases {
+			// Skip if already added by supportedNetworks()
+			alreadyExists := false
+			for _, existing := range aliases {
+				if existing.Network == depAlias.Network {
+					alreadyExists = true
+					break
+				}
+			}
+			if !alreadyExists {
+				aliases = append(aliases, depAlias)
+			}
+		}
 	} else {
 		aliases = append(aliases, dependency.Aliases...)
 	}
