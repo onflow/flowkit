@@ -242,6 +242,7 @@ func (c *Contracts) AddDependencyAsContract(dependency Dependency, networkName s
 		Location:     filepath.ToSlash(fmt.Sprintf("%s/%s/%s.cdc", dependencyManagerDirectory, dependency.Source.Address, dependency.Source.ContractName)),
 		Aliases:      aliases,
 		IsDependency: true,
+		Canonical:    dependency.Canonical,
 	}
 
 	if _, err := c.ByName(contract.Name); err != nil {

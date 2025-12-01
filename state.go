@@ -316,20 +316,30 @@ func (p *State) AliasesForNetwork(network config.Network) project.LocationAliase
 //	// Get canonical mappings
 //	mapping := state.CanonicalContractMapping()
 //	// Returns: {"FUSD_v2": "FUSD"}
-//	
+//
 //	// Use with import replacer
 //	contracts, _ := state.DeploymentContractsByNetwork(network)
 //	aliases := state.AliasesForNetwork(network)
 //	replacer := project.NewImportReplacer(contracts, aliases, mapping)
-//	
+//
 //	// Process imports: "FUSD_v2" → "import FUSD as FUSD_v2 from 0x..."
 func (p *State) CanonicalContractMapping() map[string]string {
 	canonicalMapping := make(map[string]string)
+
+	// Include canonical mappings from contracts
 	for _, contract := range p.conf.Contracts {
 		if contract.IsAlias() {
 			canonicalMapping[contract.Name] = contract.Canonical
 		}
 	}
+
+	// Include canonical mappings from dependencies
+	for _, dependency := range p.conf.Dependencies {
+		if dependency.Canonical != "" {
+			canonicalMapping[dependency.Name] = dependency.Canonical
+		}
+	}
+
 	return canonicalMapping
 }
 
