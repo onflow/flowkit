@@ -164,7 +164,7 @@ func (p *State) SetEmulatorKey(privateKey crypto.PrivateKey) {
 func (p *State) DeploymentContractsByNetwork(network config.Network) ([]*project.Contract, error) {
 	contracts := make([]*project.Contract, 0)
 
-	// get deployments for the specified network
+	// get deployments for the specified network (explicit, no fallback)
 	for _, deploy := range p.conf.Deployments.ByNetwork(network.Name) {
 		account, err := p.accounts.ByName(deploy.Account)
 		if err != nil {
@@ -276,12 +276,27 @@ func (p *State) ContractAddress(contract *config.Contract, network config.Networ
 func (p *State) AliasesForNetwork(network config.Network) project.LocationAliases {
 	aliases := make(project.LocationAliases)
 
-	// get all contracts for selected network and if any has an address as target make it an alias
+	// Determine fallback from network.Fork if provided (e.g., forked emulator should use mainnet aliases)
+	fallback := network.Fork
+
+	// get all contracts for selected network; if alias not defined, try fallback
 	for _, contract := range p.conf.Contracts {
-		if contract.IsAliased() && contract.Aliases.ByNetwork(network.Name) != nil {
-			alias := contract.Aliases.ByNetwork(network.Name).Address.String()
-			aliases[filepath.Clean(contract.Location)] = alias // alias for import by file location
-			aliases[contract.Name] = alias                     // alias for import by name
+		if !contract.IsAliased() {
+			continue
+		}
+		if a := contract.Aliases.ByNetwork(network.Name); a != nil {
+			addr := a.Address.String()
+			aliases[filepath.Clean(contract.Location)] = addr
+			aliases[contract.Name] = addr
+			continue
+		}
+		if fallback != "" {
+			if a := contract.Aliases.ByNetwork(fallback); a != nil {
+				addr := a.Address.String()
+				aliases[filepath.Clean(contract.Location)] = addr
+				aliases[contract.Name] = addr
+				continue
+			}
 		}
 	}
 

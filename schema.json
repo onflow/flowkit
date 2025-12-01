@@ -105,14 +105,13 @@
         },
         "key": {
           "type": "string"
+        },
+        "fork": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "host",
-        "key"
-      ]
+      "type": "object"
     },
     "contractDeployment": {
       "properties": {
