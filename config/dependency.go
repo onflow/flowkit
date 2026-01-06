@@ -49,11 +49,12 @@ type Source struct {
 }
 
 type Dependency struct {
-	Name      string
-	Source    Source
-	Hash      string
-	Aliases   Aliases
-	Canonical string
+	Name        string
+	Source      Source
+	Hash        string
+	BlockHeight uint64
+	Aliases     Aliases
+	Canonical   string
 }
 
 type Dependencies []Dependency
