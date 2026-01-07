@@ -30,6 +30,7 @@ import (
 // Gateway describes blockchain access interface
 type Gateway interface {
 	GetAccount(context.Context, flow.Address) (*flow.Account, error)
+	GetAccountAtBlockHeight(context.Context, flow.Address, uint64) (*flow.Account, error)
 	SendSignedTransaction(context.Context, *flow.Transaction) (*flow.Transaction, error)
 	GetTransaction(context.Context, flow.Identifier) (*flow.Transaction, error)
 	GetTransactionResultsByBlockID(ctx context.Context, blockID flow.Identifier) ([]*flow.TransactionResult, error)

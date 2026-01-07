@@ -111,6 +111,15 @@ func (g *EmulatorGateway) GetAccount(ctx context.Context, address flow.Address) 
 	return account, nil
 }
 
+func (g *EmulatorGateway) GetAccountAtBlockHeight(ctx context.Context, address flow.Address, blockHeight uint64) (*flow.Account, error) {
+	account, err := g.adapter.GetAccountAtBlockHeight(ctx, address, blockHeight)
+	if err != nil {
+		return nil, UnwrapStatusError(err)
+	}
+	return account, nil
+}
+
+
 func (g *EmulatorGateway) SendSignedTransaction(ctx context.Context, tx *flow.Transaction) (*flow.Transaction, error) {
 	err := g.adapter.SendTransaction(ctx, *tx)
 	if err != nil {

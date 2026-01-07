@@ -162,3 +162,67 @@ func Test_TransformDependenciesWithCanonicalToJSON(t *testing.T) {
 	assert.Equal(t, "", result["NumberFormatter"].Extended.Canonical)
 	assert.Equal(t, "NumberFormatter", result["NumberFormatterAlias"].Extended.Canonical)
 }
+
+func Test_ConfigDependenciesWithBlockHeight(t *testing.T) {
+	b := []byte(`{
+		"HelloWorld": {
+			"source": "testnet://877931736ee77cff.HelloWorld",
+			"hash": "abcd1234",
+			"block_height": 12345678,
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		}
+	}`)
+
+	var jsonDependencies jsonDependencies
+	err := json.Unmarshal(b, &jsonDependencies)
+	assert.NoError(t, err)
+
+	dependencies, err := jsonDependencies.transformToConfig()
+	assert.NoError(t, err)
+
+	assert.Len(t, dependencies, 1)
+
+	dep := dependencies.ByName("HelloWorld")
+	assert.NotNil(t, dep)
+	assert.Equal(t, "abcd1234", dep.Hash)
+	assert.Equal(t, uint64(12345678), dep.BlockHeight)
+}
+
+func Test_TransformDependenciesWithBlockHeightToJSON(t *testing.T) {
+	b := []byte(`{
+		"HelloWorld": {
+			"source": "testnet://877931736ee77cff.HelloWorld",
+			"hash": "abcd1234",
+			"block_height": 12345678,
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		}
+	}`)
+
+	var jsonContracts jsonContracts
+	errContracts := json.Unmarshal(b, &jsonContracts)
+	assert.NoError(t, errContracts)
+
+	var jsonDependencies jsonDependencies
+	err := json.Unmarshal(b, &jsonDependencies)
+	assert.NoError(t, err)
+
+	contracts, err := jsonContracts.transformToConfig()
+	assert.NoError(t, err)
+	dependencies, err := jsonDependencies.transformToConfig()
+	assert.NoError(t, err)
+
+	j := transformDependenciesToJSON(dependencies, contracts)
+	x, _ := json.Marshal(j)
+
+	// Parse back and check block_height field
+	var result map[string]jsonDependency
+	err = json.Unmarshal(x, &result)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "abcd1234", result["HelloWorld"].Extended.Hash)
+	assert.Equal(t, uint64(12345678), result["HelloWorld"].Extended.BlockHeight)
+}

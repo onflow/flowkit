@@ -30,6 +30,7 @@ import (
 
 const (
 	GetAccountFunc                       = "GetAccount"
+	GetAccountAtBlockHeightFunc          = "GetAccountAtBlockHeight"
 	SendSignedTransactionFunc            = "SendSignedTransaction"
 	GetCollectionFunc                    = "GetCollection"
 	GetTransactionResultFunc             = "GetTransactionResult"
@@ -49,6 +50,7 @@ type TestGateway struct {
 	Mock                             *Gateway
 	SendSignedTransaction            *mock.Call
 	GetAccount                       *mock.Call
+	GetAccountAtBlockHeight          *mock.Call
 	GetCollection                    *mock.Call
 	GetTransactionResult             *mock.Call
 	GetEvents                        *mock.Call
@@ -82,6 +84,12 @@ func DefaultMockGateway() *TestGateway {
 			GetAccountFunc,
 			ctxMock,
 			mock.AnythingOfType("flow.Address"),
+		),
+		GetAccountAtBlockHeight: m.On(
+			GetAccountAtBlockHeightFunc,
+			ctxMock,
+			mock.AnythingOfType("flow.Address"),
+			mock.AnythingOfType("uint64"),
 		),
 		GetCollection: m.On(
 			GetCollectionFunc,
@@ -146,7 +154,16 @@ func DefaultMockGateway() *TestGateway {
 
 	t.GetAccount.Run(func(args mock.Arguments) {
 		addr := args.Get(1).(flow.Address)
-		t.GetAccount.Return(tests.NewAccountWithAddress(addr.String()), nil)
+		acc := tests.NewAccountWithAddress(addr.String())
+		t.GetAccount.Return(acc, nil)
+	})
+
+	t.GetAccountAtBlockHeight.Run(func(args mock.Arguments) {
+		addr := args.Get(1).(flow.Address)
+		// Return the same account structure as GetAccount for consistency
+		// If the test needs specific contracts, it should override this mock
+		acc := tests.NewAccountWithAddress(addr.String())
+		t.GetAccountAtBlockHeight.Return(acc, nil)
 	})
 
 	t.ExecuteScript.Run(func(args mock.Arguments) {

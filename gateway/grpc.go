@@ -109,6 +109,17 @@ func (g *GrpcGateway) GetAccount(ctx context.Context, address flow.Address) (*fl
 	return account, nil
 }
 
+// GetAccountAtBlockHeight gets an account by address at a specific block height from the Flow Access API.
+func (g *GrpcGateway) GetAccountAtBlockHeight(ctx context.Context, address flow.Address, blockHeight uint64) (*flow.Account, error) {
+	account, err := g.client.GetAccountAtBlockHeight(ctx, address, blockHeight)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get account with address %s at block height %d: %w", address, blockHeight, err)
+	}
+
+	return account, nil
+}
+
+
 // SendSignedTransaction sends a transaction to flow that is already prepared and signed.
 func (g *GrpcGateway) SendSignedTransaction(ctx context.Context, tx *flow.Transaction) (*flow.Transaction, error) {
 	err := g.client.SendTransaction(ctx, *tx)
