@@ -27,7 +27,9 @@ import (
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	grpcAccess "github.com/onflow/flow-go-sdk/access/grpc"
+	"github.com/onflow/flow-go-sdk/access/grpc/convert"
 	"github.com/onflow/flow-go/utils/grpcutils"
+	"github.com/onflow/flow/protobuf/go/flow/access"
 	"google.golang.org/grpc"
 
 	"github.com/onflow/flowkit/v2/config"
@@ -189,19 +191,70 @@ func (g *GrpcGateway) ExecuteScriptAtID(ctx context.Context, script []byte, argu
 	return g.client.ExecuteScriptAtBlockID(ctx, ID, script, arguments)
 }
 
-// GetLatestBlock gets the latest block on Flow through the Access API.
+// GetLatestBlock gets the latest sealed block on Flow through the Access API with full block payload.
 func (g *GrpcGateway) GetLatestBlock(ctx context.Context) (*flow.Block, error) {
-	return g.client.GetLatestBlock(ctx, true)
+	// Make a direct gRPC call with FullBlockResponse=true to get complete block data including seals
+	req := &access.GetLatestBlockRequest{
+		IsSealed:          true,
+		FullBlockResponse: true,
+	}
+
+	rpcClient := g.client.RPCClient()
+	res, err := rpcClient.GetLatestBlock(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get latest block: %w", err)
+	}
+
+	block, err := convert.MessageToBlock(res.GetBlock())
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert block message: %w", err)
+	}
+
+	return block, nil
 }
 
-// GetBlockByID get block by ID from the Flow Access API.
+// GetBlockByID gets a block by ID from the Flow Access API with full block payload.
 func (g *GrpcGateway) GetBlockByID(ctx context.Context, id flow.Identifier) (*flow.Block, error) {
-	return g.client.GetBlockByID(ctx, id)
+	// Make a direct gRPC call with FullBlockResponse=true to get complete block data including seals
+	req := &access.GetBlockByIDRequest{
+		Id:                id.Bytes(),
+		FullBlockResponse: true,
+	}
+
+	rpcClient := g.client.RPCClient()
+	res, err := rpcClient.GetBlockByID(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get block by ID: %w", err)
+	}
+
+	block, err := convert.MessageToBlock(res.GetBlock())
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert block message: %w", err)
+	}
+
+	return block, nil
 }
 
-// GetBlockByHeight get block by height from the Flow Access API.
+// GetBlockByHeight gets a block by height from the Flow Access API with full block payload.
 func (g *GrpcGateway) GetBlockByHeight(ctx context.Context, height uint64) (*flow.Block, error) {
-	return g.client.GetBlockByHeight(ctx, height)
+	// Make a direct gRPC call with FullBlockResponse=true to get complete block data including seals
+	req := &access.GetBlockByHeightRequest{
+		Height:            height,
+		FullBlockResponse: true,
+	}
+
+	rpcClient := g.client.RPCClient()
+	res, err := rpcClient.GetBlockByHeight(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get block by height: %w", err)
+	}
+
+	block, err := convert.MessageToBlock(res.GetBlock())
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert block message: %w", err)
+	}
+
+	return block, nil
 }
 
 // GetEvents gets events by name and block range from the Flow Access API.
