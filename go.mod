@@ -21,7 +21,7 @@ require (
 	github.com/thoas/go-funk v0.9.3
 	github.com/tyler-smith/go-bip39 v1.1.0
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b
-	gonum.org/v1/gonum v0.16.0
+	gonum.org/v1/gonum v0.17.0
 	google.golang.org/grpc v1.78.0
 )
 
