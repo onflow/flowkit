@@ -347,6 +347,36 @@ func (_m *Gateway) GetLatestProtocolStateSnapshot(_a0 context.Context) ([]byte, 
 	return r0, r1
 }
 
+// GetNodeVersionInfo provides a mock function with given fields: _a0
+func (_m *Gateway) GetNodeVersionInfo(_a0 context.Context) (*flow.NodeVersionInfo, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetNodeVersionInfo")
+	}
+
+	var r0 *flow.NodeVersionInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) (*flow.NodeVersionInfo, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) *flow.NodeVersionInfo); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*flow.NodeVersionInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetSystemTransaction provides a mock function with given fields: ctx, blockID
 func (_m *Gateway) GetSystemTransaction(ctx context.Context, blockID flow.Identifier) (*flow.Transaction, error) {
 	ret := _m.Called(ctx, blockID)

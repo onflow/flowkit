@@ -335,6 +335,10 @@ func (g *EmulatorGateway) GetLatestProtocolStateSnapshot(ctx context.Context) ([
 	return snapshot, nil
 }
 
+func (g *EmulatorGateway) GetNodeVersionInfo(context.Context) (*flow.NodeVersionInfo, error) {
+	return &flow.NodeVersionInfo{}, nil
+}
+
 // SecureConnection placeholder func to complete gateway interface implementation
 func (g *EmulatorGateway) SecureConnection() bool {
 	return false

@@ -284,6 +284,11 @@ func (g *GrpcGateway) GetLatestProtocolStateSnapshot(ctx context.Context) ([]byt
 	return g.client.GetLatestProtocolStateSnapshot(ctx)
 }
 
+// GetNodeVersionInfo returns version information for the access node.
+func (g *GrpcGateway) GetNodeVersionInfo(ctx context.Context) (*flow.NodeVersionInfo, error) {
+	return g.client.GetNodeVersionInfo(ctx)
+}
+
 // Ping is used to check if the access node is alive and healthy.
 func (g *GrpcGateway) Ping() error {
 	ctx := context.Background()

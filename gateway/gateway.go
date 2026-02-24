@@ -49,6 +49,7 @@ type Gateway interface {
 	GetEvents(context.Context, string, uint64, uint64) ([]flow.BlockEvents, error)
 	GetCollection(context.Context, flow.Identifier) (*flow.Collection, error)
 	GetLatestProtocolStateSnapshot(context.Context) ([]byte, error)
+	GetNodeVersionInfo(context.Context) (*flow.NodeVersionInfo, error)
 	Ping() error
 	WaitServer(context.Context) error
 	SecureConnection() bool
