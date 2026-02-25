@@ -44,6 +44,7 @@ const (
 	GetSystemTransactionResultFunc       = "GetSystemTransactionResult"
 	GetSystemTransactionWithIDFunc       = "GetSystemTransactionWithID"
 	GetSystemTransactionResultWithIDFunc = "GetSystemTransactionResultWithID"
+	GetNodeVersionInfoFunc               = "GetNodeVersionInfo"
 )
 
 type TestGateway struct {
@@ -66,6 +67,7 @@ type TestGateway struct {
 	GetSystemTransactionWithID       *mock.Call
 	GetSystemTransactionResultWithID *mock.Call
 	GetLatestProtocolStateSnapshot   *mock.Call
+	GetNodeVersionInfo               *mock.Call
 	Ping                             *mock.Call
 	SecureConnection                 *mock.Call
 }
@@ -145,6 +147,7 @@ func DefaultMockGateway() *TestGateway {
 			mock.AnythingOfType("flow.Identifier"),
 			mock.AnythingOfType("flow.Identifier"),
 		),
+		GetNodeVersionInfo: m.On(GetNodeVersionInfoFunc, ctxMock),
 	}
 
 	// default return values
@@ -181,6 +184,7 @@ func DefaultMockGateway() *TestGateway {
 	t.GetSystemTransactionResult.Return(tests.NewTransactionResult(nil), nil)
 	t.GetSystemTransactionWithID.Return(tests.NewTransaction(), nil)
 	t.GetSystemTransactionResultWithID.Return(tests.NewTransactionResult(nil), nil)
+	t.GetNodeVersionInfo.Return((*flow.NodeVersionInfo)(nil), nil)
 
 	return t
 }
