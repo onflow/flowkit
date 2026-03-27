@@ -20,12 +20,14 @@ package output
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gosuri/uilive"
 )
 
 var spinnerCharset = []rune{'⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'}
+var mu = sync.Mutex{}
 
 type Spinner struct {
 	prefix string
@@ -46,7 +48,10 @@ func (s *Spinner) Start() {
 }
 
 func (s *Spinner) run() {
+	mu.Lock()
+	// writes to global variable, need a global lock to avoid race conditions
 	writer := uilive.New()
+	mu.Unlock()
 
 	ticker := time.NewTicker(100 * time.Millisecond)
 
@@ -56,7 +61,10 @@ func (s *Spinner) run() {
 		select {
 		case <-s.done:
 			_, _ = fmt.Fprintf(writer, "\r")
+			mu.Lock()
+			// writes to global variable, need a global lock to avoid race conditions
 			_ = writer.Flush()
+			mu.Unlock()
 			close(s.done)
 			return
 		case <-ticker.C:
