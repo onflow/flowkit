@@ -94,12 +94,15 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-// Default returns the default configuration.
+// Default returns a *copy* of the default configuration.
 func Default() *Config {
-	return &Config{
-		Emulators: DefaultEmulators,
-		Networks:  DefaultNetworks,
+	cfg := &Config{
+		Emulators: make(Emulators, len(DefaultEmulators)),
+		Networks:  make(Networks, len(DefaultNetworks)),
 	}
+	copy(cfg.Emulators, DefaultEmulators)
+	copy(cfg.Networks, DefaultNetworks)
+	return cfg
 }
 
 var ErrOutdatedFormat = errors.New("you are using old configuration format")

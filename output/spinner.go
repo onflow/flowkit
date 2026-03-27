@@ -75,7 +75,9 @@ func (s *Spinner) run() {
 				spinnerCharset[i%len(spinnerCharset)],
 				s.suffix,
 			)
+			mu.Lock()
 			_ = writer.Flush()
+			mu.Unlock()
 			i++
 		}
 	}
