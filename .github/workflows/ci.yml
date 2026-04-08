@@ -37,7 +37,7 @@ jobs:
           make check-headers
           make check-schema
       - name: Upload coverage report
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           file: ./coverage.txt
           flags: unittests
