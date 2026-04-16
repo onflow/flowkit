@@ -15,7 +15,7 @@ require (
 	github.com/onflow/flow-go-sdk v1.10.2
 	github.com/onflow/flow/protobuf/go/flow v0.4.20
 	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 	github.com/spf13/afero v1.15.0
 	github.com/stretchr/testify v1.11.1
 	github.com/thoas/go-funk v0.9.3
