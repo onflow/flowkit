@@ -3,7 +3,7 @@ module github.com/onflow/flowkit/v2
 go 1.25.1
 
 require (
-	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.2.0
 	github.com/ethereum/go-ethereum v1.16.8
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
