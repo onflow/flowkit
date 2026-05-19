@@ -54,4 +54,5 @@ jobs:
         run: make generate
       - uses: golangci/golangci-lint-action@v9
         with:
+          version: v2.11.2
           args: --timeout=3m
