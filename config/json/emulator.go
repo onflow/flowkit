@@ -24,24 +24,24 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonEmulators map[string]jsonEmulator
+type jsonEmulators struct {
+	orderedMap[jsonEmulator]
+}
 
 // transformToConfig transforms json structures to config structure.
 func (j jsonEmulators) transformToConfig() (config.Emulators, error) {
 	emulators := make(config.Emulators, 0)
 
-	for name, e := range j {
+	for name, e := range j.All {
 		if e.Port < 0 || e.Port > 65535 {
 			return nil, fmt.Errorf("invalid port value")
 		}
 
-		emulator := config.Emulator{
+		emulators = append(emulators, config.Emulator{
 			Name:           name,
 			Port:           e.Port,
 			ServiceAccount: e.ServiceAccount,
-		}
-
-		emulators = append(emulators, emulator)
+		})
 	}
 
 	return emulators, nil
@@ -49,16 +49,16 @@ func (j jsonEmulators) transformToConfig() (config.Emulators, error) {
 
 // transformToJSON transforms config structure to json structures for saving.
 func transformEmulatorsToJSON(emulators config.Emulators) jsonEmulators {
-	jsonEmulators := jsonEmulators{}
+	var jsonEmulators jsonEmulators
 
 	for _, e := range emulators {
 		if e == config.DefaultEmulator {
 			continue
 		}
-		jsonEmulators[e.Name] = jsonEmulator{
+		jsonEmulators.Set(e.Name, jsonEmulator{
 			Port:           e.Port,
 			ServiceAccount: e.ServiceAccount,
-		}
+		})
 	}
 
 	return jsonEmulators

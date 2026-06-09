@@ -96,7 +96,7 @@ func Test_IgnoreOldFormat(t *testing.T) {
 	conf, err := jsonNetworks.transformToConfig()
 	assert.NoError(t, err)
 
-	assert.Len(t, jsonNetworks, 3)
+	assert.Equal(t, 3, jsonNetworks.Len())
 
 	testnet, err := conf.ByName("testnet")
 	assert.NoError(t, err)

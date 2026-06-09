@@ -30,12 +30,14 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonDependencies map[string]jsonDependency
+type jsonDependencies struct {
+	orderedMap[jsonDependency]
+}
 
 func (j jsonDependencies) transformToConfig() (config.Dependencies, error) {
 	deps := make(config.Dependencies, 0)
 
-	for dependencyName, dependency := range j {
+	for dependencyName, dependency := range j.All {
 		var dep config.Dependency
 
 		if dependency.Simple != "" {
@@ -87,7 +89,7 @@ func (j jsonDependencies) transformToConfig() (config.Dependencies, error) {
 }
 
 func transformDependenciesToJSON(configDependencies config.Dependencies, configContracts config.Contracts) jsonDependencies {
-	jsonDeps := jsonDependencies{}
+	var jsonDeps jsonDependencies
 
 	for _, dep := range configDependencies {
 		aliases := make(map[string]string)
@@ -99,7 +101,7 @@ func transformDependenciesToJSON(configDependencies config.Dependencies, configC
 			}
 		}
 
-		jsonDeps[dep.Name] = jsonDependency{
+		jsonDeps.Set(dep.Name, jsonDependency{
 			Extended: jsonDependencyExtended{
 				Source:      buildSourceString(dep.Source),
 				Hash:        dep.Hash,
@@ -107,7 +109,7 @@ func transformDependenciesToJSON(configDependencies config.Dependencies, configC
 				Aliases:     aliases,
 				Canonical:   dep.Canonical,
 			},
-		}
+		})
 	}
 
 	return jsonDeps
