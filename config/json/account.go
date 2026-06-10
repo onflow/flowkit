@@ -34,7 +34,9 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonAccounts map[string]account
+type jsonAccounts struct {
+	orderedMap[account]
+}
 
 const (
 	defaultHashAlgo = crypto.SHA3_256
@@ -239,22 +241,19 @@ func transformAdvancedToConfig(accountName string, a advancedAccount) (*config.A
 func (j jsonAccounts) transformToConfig() (config.Accounts, error) {
 	accounts := make(config.Accounts, 0)
 
-	for accountName, a := range j {
-		var account *config.Account
+	for accountName, a := range j.All {
+		var acc *config.Account
 		var err error
 		if a.Simple.Address != "" {
-			account, err = transformSimpleToConfig(accountName, a.Simple)
-			if err != nil {
-				return nil, err
-			}
+			acc, err = transformSimpleToConfig(accountName, a.Simple)
 		} else { // advanced format
-			account, err = transformAdvancedToConfig(accountName, a.Advanced)
-			if err != nil {
-				return nil, err
-			}
+			acc, err = transformAdvancedToConfig(accountName, a.Advanced)
+		}
+		if err != nil {
+			return nil, err
 		}
 
-		accounts = append(accounts, *account)
+		accounts = append(accounts, *acc)
 	}
 
 	return accounts, nil
@@ -262,13 +261,13 @@ func (j jsonAccounts) transformToConfig() (config.Accounts, error) {
 
 // transformToJSON transforms config structure to json structures for saving.
 func transformAccountsToJSON(accounts config.Accounts) jsonAccounts {
-	jsonAccounts := jsonAccounts{}
+	var jsonAccounts jsonAccounts
 
 	for _, a := range accounts {
 		if a.Key.IsDefault() {
-			jsonAccounts[a.Name] = transformSimpleAccountToJSON(a)
+			jsonAccounts.Set(a.Name, transformSimpleAccountToJSON(a))
 		} else {
-			jsonAccounts[a.Name] = transformAdvancedAccountToJSON(a)
+			jsonAccounts.Set(a.Name, transformAdvancedAccountToJSON(a))
 		}
 	}
 

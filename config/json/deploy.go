@@ -28,17 +28,17 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonDeployments map[string]jsonDeployment
+type jsonDeployments struct {
+	orderedMap[jsonDeployment]
+}
 
 // transformToConfig transforms json structures to config structure.
 func (j jsonDeployments) transformToConfig() (config.Deployments, error) {
 	deployments := make(config.Deployments, 0)
 
-	for networkName, deploys := range j {
-
-		var deploy config.Deployment
-		for accountName, contracts := range deploys {
-			deploy = config.Deployment{
+	for networkName, deploys := range j.All {
+		for accountName, contracts := range deploys.All {
+			deploy := config.Deployment{
 				Network: networkName,
 				Account: accountName,
 			}
@@ -89,7 +89,7 @@ func (j jsonDeployments) transformToConfig() (config.Deployments, error) {
 
 // transformToJSON transforms config structure to json structures for saving.
 func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeployments {
-	jsonDeploys := jsonDeployments{}
+	var jsonDeploys jsonDeployments
 
 	for _, d := range configDeployments {
 
@@ -114,14 +114,12 @@ func transformDeploymentsToJSON(configDeployments config.Deployments) jsonDeploy
 			}
 		}
 
-		if _, ok := jsonDeploys[d.Network]; ok {
-			jsonDeploys[d.Network][d.Account] = deployments
-		} else {
-			jsonDeploys[d.Network] = jsonDeployment{
-				d.Account: deployments,
-			}
+		network, ok := jsonDeploys.Get(d.Network)
+		if !ok {
+			network = jsonDeployment{}
 		}
-
+		network.Set(d.Account, deployments)
+		jsonDeploys.Set(d.Network, network)
 	}
 
 	return jsonDeploys
@@ -137,7 +135,9 @@ type deployment struct {
 	advanced contractDeployment
 }
 
-type jsonDeployment map[string][]deployment
+type jsonDeployment struct {
+	orderedMap[[]deployment]
+}
 
 func (d *deployment) UnmarshalJSON(b []byte) error {
 

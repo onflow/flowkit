@@ -30,13 +30,15 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonNetworks map[string]jsonNetwork
+type jsonNetworks struct {
+	orderedMap[jsonNetwork]
+}
 
 // transformToConfig transforms json structures to config structure.
 func (j jsonNetworks) transformToConfig() (config.Networks, error) {
 	networks := make(config.Networks, 0)
 
-	for networkName, n := range j {
+	for networkName, n := range j.All {
 		// Advanced form: host required, key optional, fork optional
 		if n.Advanced.Host != "" || n.Advanced.Fork != "" {
 			if n.Advanced.Key != "" {
@@ -65,14 +67,14 @@ func (j jsonNetworks) transformToConfig() (config.Networks, error) {
 
 // transformNetworksToJSON transforms config structure to json structures for saving.
 func transformNetworksToJSON(networks config.Networks) jsonNetworks {
-	jsonNetworks := jsonNetworks{}
+	var jsonNetworks jsonNetworks
 
 	for _, n := range networks {
 		// Use advanced when key or fork present; otherwise simple
 		if n.Key != "" || n.Fork != "" {
-			jsonNetworks[n.Name] = transformAdvancedNetworkToJSON(n)
+			jsonNetworks.Set(n.Name, transformAdvancedNetworkToJSON(n))
 		} else {
-			jsonNetworks[n.Name] = transformSimpleNetworkToJSON(n)
+			jsonNetworks.Set(n.Name, transformSimpleNetworkToJSON(n))
 		}
 	}
 

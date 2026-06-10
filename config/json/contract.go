@@ -29,36 +29,37 @@ import (
 	"github.com/onflow/flowkit/v2/config"
 )
 
-type jsonContracts map[string]jsonContract
+type jsonContracts struct {
+	orderedMap[jsonContract]
+}
 
 // transformToConfig transforms json structures to config structure.
 func (j jsonContracts) transformToConfig() (config.Contracts, error) {
 	contracts := make(config.Contracts, 0)
 
-	for contractName, c := range j {
+	for contractName, c := range j.All {
 		if c.Simple != "" {
-			contract := config.Contract{
+			contracts = append(contracts, config.Contract{
 				Name:     contractName,
 				Location: c.Simple,
-			}
-
-			contracts = append(contracts, contract)
-		} else {
-			contract := config.Contract{
-				Name:      contractName,
-				Location:  c.Advanced.Source,
-				Canonical: c.Advanced.Canonical,
-			}
-			for network, alias := range c.Advanced.Aliases {
-				address := flow.HexToAddress(alias)
-				if address == flow.EmptyAddress {
-					return nil, fmt.Errorf("invalid alias address for a contract")
-				}
-
-				contract.Aliases.Add(network, address)
-			}
-			contracts = append(contracts, contract)
+			})
+			continue
 		}
+
+		contract := config.Contract{
+			Name:      contractName,
+			Location:  c.Advanced.Source,
+			Canonical: c.Advanced.Canonical,
+		}
+		for network, alias := range c.Advanced.Aliases {
+			address := flow.HexToAddress(alias)
+			if address == flow.EmptyAddress {
+				return nil, fmt.Errorf("invalid alias address for a contract")
+			}
+
+			contract.Aliases.Add(network, address)
+		}
+		contracts = append(contracts, contract)
 	}
 
 	return contracts, nil
@@ -66,7 +67,7 @@ func (j jsonContracts) transformToConfig() (config.Contracts, error) {
 
 // transformToJSON transforms config structure to json structures for saving.
 func transformContractsToJSON(contracts config.Contracts) jsonContracts {
-	jsonContracts := jsonContracts{}
+	var jsonContracts jsonContracts
 
 	for _, c := range contracts {
 		// If it's a dependency, skip. These are used under the hood and should not be saved.
@@ -76,9 +77,9 @@ func transformContractsToJSON(contracts config.Contracts) jsonContracts {
 
 		// if simple case (no aliases and no canonical)
 		if !c.IsAliased() && c.Canonical == "" {
-			jsonContracts[c.Name] = jsonContract{
+			jsonContracts.Set(c.Name, jsonContract{
 				Simple: filepath.ToSlash(c.Location),
-			}
+			})
 		} else { // if advanced config
 			// check if we already created for this name then add or create
 			aliases := make(map[string]string)
@@ -86,13 +87,13 @@ func transformContractsToJSON(contracts config.Contracts) jsonContracts {
 				aliases[alias.Network] = alias.Address.String()
 			}
 
-			jsonContracts[c.Name] = jsonContract{
+			jsonContracts.Set(c.Name, jsonContract{
 				Advanced: jsonContractAdvanced{
 					Source:    filepath.ToSlash(c.Location),
 					Aliases:   aliases,
 					Canonical: c.Canonical,
 				},
-			}
+			})
 		}
 	}
 

@@ -18,6 +18,7 @@
 package json
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/onflow/flow-go-sdk"
@@ -254,4 +255,137 @@ func Test_SerializeConfigToJsonEmulatorNotDefault(t *testing.T) {
 	conf, _ := parser.Serialize(&config)
 	assert.JSONEq(t, string(configJson), string(conf))
 
+}
+
+// Test_RoundTripPreservesKeyOrder verifies that loading a flow.json and then
+// re-serializing it preserves the user's chosen ordering of keys within each
+// section, including nested deployments. This was the motivating bug for the
+// orderedMap data structure.
+func Test_RoundTripPreservesKeyOrder(t *testing.T) {
+	input := []byte(`{
+	"contracts": {
+		"ZetaContract": "./z.cdc",
+		"AlphaContract": "./a.cdc",
+		"MuContract": "./m.cdc"
+	},
+	"dependencies": {
+		"Burner": "testnet://9a0766d93b6608b7.Burner",
+		"AAA": "testnet://9a0766d93b6608b7.AAA"
+	},
+	"networks": {
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.testnet.nodes.onflow.org:9000",
+		"emulator": "127.0.0.1:3569"
+	},
+	"accounts": {
+		"zoo-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "11c5dfdeb0ff03a7a73ef39788563b62c89adea67bbb21ab95e5f710bd1d40b7"
+		},
+		"alpha-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "11c5dfdeb0ff03a7a73ef39788563b62c89adea67bbb21ab95e5f710bd1d40b7"
+		}
+	},
+	"deployments": {
+		"testnet": {
+			"zoo-account": ["ZetaContract"]
+		},
+		"emulator": {
+			"alpha-account": ["MuContract", "AlphaContract"]
+		}
+	}
+}`)
+
+	parser := NewParser()
+	conf, err := parser.Deserialize(input)
+	assert.NoError(t, err)
+
+	out, err := parser.Serialize(conf)
+	assert.NoError(t, err)
+
+	// Re-parse into the JSON layer directly to compare structural ordering
+	// without depending on whitespace.
+	var original, roundTripped jsonConfig
+	assert.NoError(t, json.Unmarshal(input, &original))
+	assert.NoError(t, json.Unmarshal(out, &roundTripped))
+
+	assert.Equal(t,
+		sectionKeys(original.Contracts.orderedMap),
+		sectionKeys(roundTripped.Contracts.orderedMap),
+		"contracts order changed")
+	assert.Equal(t,
+		sectionKeys(original.Dependencies.orderedMap),
+		sectionKeys(roundTripped.Dependencies.orderedMap),
+		"dependencies order changed")
+	assert.Equal(t,
+		sectionKeys(original.Networks.orderedMap),
+		sectionKeys(roundTripped.Networks.orderedMap),
+		"networks order changed")
+	assert.Equal(t,
+		sectionKeys(original.Accounts.orderedMap),
+		sectionKeys(roundTripped.Accounts.orderedMap),
+		"accounts order changed")
+	assert.Equal(t,
+		sectionKeys(original.Deployments.orderedMap),
+		sectionKeys(roundTripped.Deployments.orderedMap),
+		"deployments order changed")
+
+	// Verify inner deployment account ordering is also preserved (this is the
+	// nested orderedMap[[]deployment] case).
+	originalEmu, _ := original.Deployments.Get("emulator")
+	roundTrippedEmu, _ := roundTripped.Deployments.Get("emulator")
+	assert.Equal(t,
+		sectionKeys(originalEmu.orderedMap),
+		sectionKeys(roundTrippedEmu.orderedMap),
+		"deployments.emulator account order changed")
+}
+
+// Test_NewKeysAppendAtEnd verifies that when a new entry is added programmatically
+// (e.g. a new dependency is fetched), it is appended at the end rather than
+// inserted alphabetically.
+func Test_NewKeysAppendAtEnd(t *testing.T) {
+	input := []byte(`{
+	"contracts": {
+		"ZetaContract": "./z.cdc",
+		"AlphaContract": "./a.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "11c5dfdeb0ff03a7a73ef39788563b62c89adea67bbb21ab95e5f710bd1d40b7"
+		}
+	}
+}`)
+
+	parser := NewParser()
+	conf, err := parser.Deserialize(input)
+	assert.NoError(t, err)
+
+	conf.Contracts.AddOrUpdate(config.Contract{
+		Name:     "MuContract",
+		Location: "./m.cdc",
+	})
+
+	out, err := parser.Serialize(conf)
+	assert.NoError(t, err)
+
+	var result jsonConfig
+	assert.NoError(t, json.Unmarshal(out, &result))
+
+	assert.Equal(t,
+		[]string{"ZetaContract", "AlphaContract", "MuContract"},
+		sectionKeys(result.Contracts.orderedMap),
+		"new contract should be appended at the end, not inserted alphabetically")
+}
+
+func sectionKeys[V any](m orderedMap[V]) []string {
+	keys := make([]string, 0, m.Len())
+	for k := range m.All {
+		keys = append(keys, k)
+	}
+	return keys
 }

@@ -26,13 +26,19 @@ import (
 )
 
 // jsonConfig implements JSON format for persisting and parsing configuration.
+//
+// Sections use ordered maps to preserve user-chosen key ordering across
+// load/save cycles. Both `omitempty` and `omitzero` are set: `omitzero` is what
+// actually skips empty sections during marshaling (since `omitempty` is a no-op
+// for struct values), while `omitempty` is read by the invopop jsonschema
+// reflector to mark these fields as optional in the generated schema.
 type jsonConfig struct {
-	Emulators    jsonEmulators    `json:"emulators,omitempty"`
-	Contracts    jsonContracts    `json:"contracts,omitempty"`
-	Dependencies jsonDependencies `json:"dependencies,omitempty"`
-	Networks     jsonNetworks     `json:"networks,omitempty"`
-	Accounts     jsonAccounts     `json:"accounts,omitempty"`
-	Deployments  jsonDeployments  `json:"deployments,omitempty"`
+	Emulators    jsonEmulators    `json:"emulators,omitempty,omitzero"`
+	Contracts    jsonContracts    `json:"contracts,omitempty,omitzero"`
+	Dependencies jsonDependencies `json:"dependencies,omitempty,omitzero"`
+	Networks     jsonNetworks     `json:"networks,omitempty,omitzero"`
+	Accounts     jsonAccounts     `json:"accounts,omitempty,omitzero"`
+	Deployments  jsonDeployments  `json:"deployments,omitempty,omitzero"`
 }
 
 func (j *jsonConfig) transformToConfig() (*config.Config, error) {
