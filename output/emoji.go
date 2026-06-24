@@ -18,7 +18,10 @@
 
 package output
 
-import "runtime"
+import (
+	"fmt"
+	"runtime"
+)
 
 func printEmoji(emoji string) string {
 	if runtime.GOOS == "windows" {
@@ -58,4 +61,8 @@ func OkEmoji() string {
 
 func SuccessEmoji() string {
 	return printEmoji("🎉")
+}
+
+func MessageWithEmojiPrefix(emoji string, message string) string {
+	return fmt.Sprintf("%s%s", printEmoji(emoji+" "), message)
 }
