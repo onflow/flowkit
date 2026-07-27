@@ -8,11 +8,11 @@ require (
 	github.com/gosuri/uilive v0.0.4
 	github.com/invopop/jsonschema v0.7.0
 	github.com/lmars/go-slip10 v0.0.0-20190606092855-400ba44fee12
-	github.com/onflow/cadence v1.10.3
+	github.com/onflow/cadence v1.10.5
 	github.com/onflow/crypto v0.25.4
 	github.com/onflow/flow-emulator v1.21.1
-	github.com/onflow/flow-go v0.48.1-evm-cache-block.0.20260602223212-19c6bdbbe069
-	github.com/onflow/flow-go-sdk v1.10.3
+	github.com/onflow/flow-go v0.50.1-0.20260727121002-7305484aa748
+	github.com/onflow/flow-go-sdk v1.10.5
 	github.com/onflow/flow/protobuf/go/flow v0.4.20
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
@@ -155,7 +155,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/onflow/atree v0.16.0 // indirect
+	github.com/onflow/atree v0.16.1 // indirect
 	github.com/onflow/fixed-point v0.1.1 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/contracts v1.10.3 // indirect
 	github.com/onflow/flow-core-contracts/lib/go/templates v1.10.3 // indirect
