@@ -22,12 +22,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/onflow/cadence/runtime"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/pkg/errors"
-	"golang.org/x/exp/slices"
 
 	"github.com/onflow/flowkit/v2/accounts"
 	"github.com/onflow/flowkit/v2/config"
@@ -211,15 +211,14 @@ func (p *State) DeploymentContractsByNetwork(network config.Network) ([]*project
 
 // AccountsForNetwork returns all accounts used on a network defined by deployments.
 func (p *State) AccountsForNetwork(network config.Network) *accounts.Accounts {
-	exists := make(map[string]bool, 0)
 	accs := make(accounts.Accounts, 0)
 
 	for _, account := range *p.accounts {
 		if p.conf.Deployments.ByAccountAndNetwork(account.Name, network.Name) != nil {
-			slices.ContainsFunc(accs, func(a accounts.Account) bool {
+			alreadyAdded := slices.ContainsFunc(accs, func(a accounts.Account) bool {
 				return a.Name == account.Name
 			})
-			if !exists[account.Name] {
+			if !alreadyAdded {
 				accs = append(accs, account)
 			}
 		}
