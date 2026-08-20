@@ -20,10 +20,10 @@ package config
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
-	"golang.org/x/exp/slices"
 )
 
 const (

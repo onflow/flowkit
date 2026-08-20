@@ -21,12 +21,12 @@ package config
 import (
 	"fmt"
 	"path/filepath"
+	"slices"
 
 	"github.com/onflow/flow-go/fvm/systemcontracts"
 	flowGo "github.com/onflow/flow-go/model/flow"
 
 	"github.com/onflow/flow-go-sdk"
-	"golang.org/x/exp/slices"
 )
 
 // Contract defines the configuration for a Cadence contract.

@@ -23,6 +23,7 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -37,7 +38,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 
 	"github.com/onflow/flowkit/v2/accounts"
 	"github.com/onflow/flowkit/v2/config"

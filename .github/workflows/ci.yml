@@ -11,7 +11,8 @@ on:
       - 'feature/**'
 
 env:
-  GO_VERSION: '1.25'
+  GO_VERSION: '1.26'
+  GOLANGCI_LINT_VERSION: 'v2.12'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
@@ -54,5 +55,5 @@ jobs:
         run: make generate
       - uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.11.2
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
           args: --timeout=3m

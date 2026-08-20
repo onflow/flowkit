@@ -24,12 +24,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/invopop/jsonschema"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/crypto"
-	"golang.org/x/exp/slices"
 
 	"github.com/onflow/flowkit/v2/config"
 )

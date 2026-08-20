@@ -20,9 +20,9 @@ package config
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/onflow/cadence"
-	"golang.org/x/exp/slices"
 )
 
 // ContractDeployment defines the deployment of the contract with possible args.
