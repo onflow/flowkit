@@ -47,6 +47,64 @@ func Test_KMS_Keys(t *testing.T) {
 	assert.Equal(t, confKey, kmsKey.ToConfig())
 }
 
+func Test_AWSKMS_Keys(t *testing.T) {
+	confKey := config.AccountKey{
+		Type:       config.KeyTypeAWSKMS,
+		Index:      0,
+		SigAlgo:    config.DefaultSigAlgo,
+		HashAlgo:   crypto.SHA2_256,
+		ResourceID: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+	}
+
+	kmsKey, err := keyFromConfig(confKey)
+	assert.NoError(t, err)
+
+	_, err = kmsKey.PrivateKey()
+	assert.EqualError(t, err, "private key not accessible")
+	assert.Equal(t, confKey, kmsKey.ToConfig())
+}
+
+// AWS KMS signs ECDSA keys with ECDSA_SHA_256 only, so the configured hash algorithm must
+// never reach the signer.
+func Test_AWSKMS_KeysHashAlgorithm(t *testing.T) {
+	confKey := config.AccountKey{
+		Type:       config.KeyTypeAWSKMS,
+		SigAlgo:    config.DefaultSigAlgo,
+		HashAlgo:   crypto.SHA3_256,
+		ResourceID: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+	}
+
+	kmsKey, err := keyFromConfig(confKey)
+	assert.NoError(t, err)
+
+	assert.Equal(t, crypto.SHA2_256, kmsKey.HashAlgo())
+	assert.Equal(t, crypto.SHA2_256, kmsKey.ToConfig().HashAlgo)
+}
+
+func Test_AWSKMS_KeysInvalidResourceID(t *testing.T) {
+	tests := map[string]string{
+		"empty":            "",
+		"google resource":  "projects/my-project/locations/global/keyRings/flow/cryptoKeys/my-account/cryptoKeyVersions/1",
+		"key without id":   "arn:aws:kms:us-west-2:111122223333:key",
+		"alias":            "arn:aws:kms:us-west-2:111122223333:alias/my-key",
+		"short account id": "arn:aws:kms:us-west-2:1111222233333:key/1234abcd",
+		"missing region":   "arn:aws:kms::111122223333:key/1234abcd",
+		"missing account":  "arn:aws:kms:us-west-2::key/1234abcd",
+	}
+
+	for name, resourceID := range tests {
+		t.Run(name, func(t *testing.T) {
+			_, err := keyFromConfig(config.AccountKey{
+				Type:       config.KeyTypeAWSKMS,
+				SigAlgo:    config.DefaultSigAlgo,
+				HashAlgo:   config.DefaultHashAlgo,
+				ResourceID: resourceID,
+			})
+			assert.Error(t, err)
+		})
+	}
+}
+
 func Test_File_key(t *testing.T) {
 	confKey := config.AccountKey{
 		Type:     config.KeyTypeFile,

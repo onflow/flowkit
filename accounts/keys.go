@@ -27,9 +27,12 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	gethAccounts "github.com/ethereum/go-ethereum/accounts"
 	"github.com/lmars/go-slip10"
 	"github.com/onflow/flow-go-sdk/crypto"
+	"github.com/onflow/flow-go-sdk/crypto/awskms"
 	"github.com/onflow/flow-go-sdk/crypto/cloudkms"
 	"github.com/tyler-smith/go-bip39"
 
@@ -69,6 +72,8 @@ var _ Key = &HexKey{}
 
 var _ Key = &KMSKey{}
 
+var _ Key = &AWSKMSKey{}
+
 var _ Key = &BIP44Key{}
 
 var _ Key = &EnvKey{}
@@ -84,6 +89,8 @@ func keyFromConfig(accountKeyConf config.AccountKey) (Key, error) {
 		return bip44KeyFromConfig(accountKeyConf)
 	case config.KeyTypeGoogleKMS:
 		return kmsKeyFromConfig(accountKeyConf)
+	case config.KeyTypeAWSKMS:
+		return awsKMSKeyFromConfig(accountKeyConf)
 	case config.KeyTypeFile:
 		return fileKeyFromConfig(accountKeyConf)
 	}
@@ -226,6 +233,97 @@ func kmsKeyFromConfig(key config.AccountKey) (Key, error) {
 		},
 		kmsKey: accountKMSKey,
 	}, nil
+}
+
+// AWSKMSKey implements AWS KMS system for signing.
+type AWSKMSKey struct {
+	*baseKey
+	kmsKey awskms.Key
+}
+
+// ToConfig convert account key to configuration.
+func (a *AWSKMSKey) ToConfig() config.AccountKey {
+	return config.AccountKey{
+		Type:       a.keyType,
+		Index:      a.index,
+		SigAlgo:    a.sigAlgo,
+		HashAlgo:   a.hashAlgo,
+		ResourceID: a.kmsKey.ARN(),
+	}
+}
+
+func (a *AWSKMSKey) Signer(ctx context.Context) (crypto.Signer, error) {
+	awsCfg, err := awsKMSConfig(ctx, a.kmsKey)
+	if err != nil {
+		return nil, err
+	}
+
+	accountKMSSigner, err := awskms.NewClient(awsCfg).SignerForKey(
+		ctx,
+		a.kmsKey,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return accountKMSSigner, nil
+}
+
+func (a *AWSKMSKey) Validate() error {
+	awsCfg, err := awsKMSConfig(context.Background(), a.kmsKey)
+	if err != nil {
+		return err
+	}
+
+	if _, err = awsCfg.Credentials.Retrieve(context.Background()); err != nil {
+		return fmt.Errorf(
+			"could not load AWS credentials for KMS key %s, configure them with `aws configure sso` or `aws sso login`: %w",
+			a.kmsKey.ARN(),
+			err,
+		)
+	}
+
+	return nil
+}
+
+func (a *AWSKMSKey) PrivateKey() (*crypto.PrivateKey, error) {
+	return nil, fmt.Errorf("private key not accessible")
+}
+
+// awsKMSKeyARNPattern matches the canonical AWS KMS key ARN, for example
+// arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+// Key aliases and other KMS resource types are not supported because they cannot be
+// reconstructed from a parsed key, and the signing key must be addressed by its ARN.
+var awsKMSKeyARNPattern = regexp.MustCompile(`^arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[A-Za-z0-9-]+$`)
+
+func awsKMSKeyFromConfig(key config.AccountKey) (Key, error) {
+	if !awsKMSKeyARNPattern.MatchString(key.ResourceID) {
+		return nil, fmt.Errorf(
+			"invalid AWS KMS resource ID %q, expected the ARN format arn:aws:kms:<region>:<account-id>:key/<key-id>",
+			key.ResourceID,
+		)
+	}
+
+	accountKMSKey, err := awskms.KeyFromResourceARN(key.ResourceID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AWSKMSKey{
+		baseKey: &baseKey{
+			keyType:  config.KeyTypeAWSKMS,
+			index:    key.Index,
+			sigAlgo:  key.SigAlgo,
+			hashAlgo: crypto.SHA2_256, // AWS KMS signs ECDSA keys with ECDSA_SHA_256 only
+		},
+		kmsKey: accountKMSKey,
+	}, nil
+}
+
+// awsKMSConfig loads the default AWS configuration, defaulting the region to the one
+// the KMS key lives in so a region does not have to be configured separately.
+func awsKMSConfig(ctx context.Context, key awskms.Key) (aws.Config, error) {
+	return awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(key.Region))
 }
 
 // HexKey implements account key in hex representation.
