@@ -22,7 +22,10 @@ import (
 	"testing"
 
 	"github.com/onflow/flow-go-sdk"
+	"github.com/onflow/flow-go-sdk/crypto"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/onflow/flowkit/v2/config"
 )
 
 func Test_Accounts(t *testing.T) {
@@ -127,4 +130,36 @@ func Test_Accounts(t *testing.T) {
 		assert.EqualError(t, err, "could not find account with address 0000000000000001 in the configuration")
 	})
 
+}
+
+func Test_AWSKMS_AccountRoundTrip(t *testing.T) {
+	conf := config.Config{
+		Accounts: config.Accounts{
+			{
+				Name:    "aws-kms-account",
+				Address: flow.HexToAddress("0xf8d6e0586b0a20c7"),
+				Key: config.AccountKey{
+					Type:       config.KeyTypeAWSKMS,
+					SigAlgo:    config.DefaultSigAlgo,
+					HashAlgo:   config.DefaultHashAlgo, // must be replaced by SHA2_256
+					ResourceID: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+				},
+			},
+		},
+	}
+
+	accounts, err := FromConfig(&conf)
+	assert.NoError(t, err)
+
+	account, err := accounts.ByName("aws-kms-account")
+	assert.NoError(t, err)
+	assert.Equal(t, config.KeyTypeAWSKMS, account.Key.Type())
+	assert.Equal(t, crypto.SHA2_256, account.Key.HashAlgo())
+
+	roundTripped := ToConfig(accounts)
+	assert.Equal(t, crypto.SHA2_256, roundTripped[0].Key.HashAlgo)
+	assert.Equal(t,
+		"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+		roundTripped[0].Key.ResourceID,
+	)
 }

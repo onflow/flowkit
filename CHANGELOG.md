@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+AWS KMS support for account keys. Accounts can now be configured with the `aws-kms` key type, which signs transactions using an AWS KMS asymmetric key referenced by its ARN. It works like the existing `google-kms` key type, only the `resourceID` format differs:
+
+```json
+"accounts": {
+  "my-account": {
+    "address": "0x0000000000000000",
+    "key": {
+      "type": "aws-kms",
+      "resourceID": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+    }
+  }
+}
+```
+
+The region is read from the ARN, credentials are resolved from the default AWS configuration, and the key must be an ECDSA P-256 or secp256k1 key. AWS KMS signs those keys with `ECDSA_SHA_256` only, so the hash algorithm is fixed to `SHA2_256` and setting a different one in the configuration is an error.
+
 ## 1.0.0
 
 ### Changed

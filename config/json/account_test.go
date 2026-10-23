@@ -158,6 +158,67 @@ func Test_ConfigAccountKeysAdvancedKMS(t *testing.T) {
 	assert.Nil(t, key.PrivateKey)
 }
 
+func Test_ConfigAccountKeysAdvancedAWSKMS(t *testing.T) {
+	b := []byte(`{
+		"test": {
+			"address": "service",
+			"key": {
+				"type": "aws-kms",
+				"index": 1,
+				"signatureAlgorithm": "ECDSA_P256",
+				"resourceID": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+			}
+		}
+	}`)
+
+	var jsonAccounts jsonAccounts
+	err := json.Unmarshal(b, &jsonAccounts)
+	assert.NoError(t, err)
+
+	accounts, err := jsonAccounts.transformToConfig()
+	assert.NoError(t, err)
+
+	account, err := accounts.ByName("test")
+	assert.NoError(t, err)
+	key := account.Key
+
+	assert.Equal(t, "f8d6e0586b0a20c7", account.Address.String())
+	assert.Equal(t, "SHA2_256", key.HashAlgo.String())
+	assert.Equal(t, uint32(1), key.Index)
+	assert.Equal(t, "ECDSA_P256", key.SigAlgo.String())
+	assert.Equal(t, "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", key.ResourceID)
+	assert.Nil(t, key.PrivateKey)
+
+	jsonAccs := transformAccountsToJSON(accounts)
+	result, err := json.Marshal(jsonAccs)
+	assert.NoError(t, err)
+
+	assert.JSONEq(t,
+		`{"test":{"address":"f8d6e0586b0a20c7","key":{"type":"aws-kms","index":1,"hashAlgorithm":"SHA2_256","resourceID":"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"}}}`,
+		string(result),
+	)
+}
+
+func Test_ConfigAccountKeysAdvancedAWSKMSInvalidHashAlgorithm(t *testing.T) {
+	b := []byte(`{
+		"test": {
+			"address": "service",
+			"key": {
+				"type": "aws-kms",
+				"hashAlgorithm": "SHA3_256",
+				"resourceID": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+			}
+		}
+	}`)
+
+	var jsonAccounts jsonAccounts
+	err := json.Unmarshal(b, &jsonAccounts)
+	assert.NoError(t, err)
+
+	_, err = jsonAccounts.transformToConfig()
+	assert.EqualError(t, err, "invalid hash algorithm for account test: aws-kms keys only support SHA2_256")
+}
+
 func Test_ConfigAccountOldFormats(t *testing.T) {
 	b := []byte(`{
 		"old-format-1": {

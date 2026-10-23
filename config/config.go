@@ -46,6 +46,7 @@ type KeyType string
 const (
 	KeyTypeHex       KeyType = "hex"
 	KeyTypeGoogleKMS KeyType = "google-kms"
+	KeyTypeAWSKMS    KeyType = "aws-kms"
 	KeyTypeBip44     KeyType = "bip44"
 	KeyTypeFile      KeyType = "file"
 )

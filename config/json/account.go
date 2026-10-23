@@ -154,9 +154,18 @@ func transformAdvancedToConfig(accountName string, a advancedAccount) (*config.A
 		return nil, fmt.Errorf("invalid hash algorithm for account %s", accountName)
 	}
 
-	validTypes := []config.KeyType{config.KeyTypeHex, config.KeyTypeFile, config.KeyTypeBip44, config.KeyTypeGoogleKMS}
+	validTypes := []config.KeyType{config.KeyTypeHex, config.KeyTypeFile, config.KeyTypeBip44, config.KeyTypeGoogleKMS, config.KeyTypeAWSKMS}
 	if !slices.Contains(validTypes, a.Key.Type) {
 		return nil, fmt.Errorf("invalid key type for account %s", accountName)
+	}
+
+	// AWS KMS signs ECDSA keys with ECDSA_SHA_256 only, so the hash algorithm is not a
+	// choice for that key type.
+	if a.Key.Type == config.KeyTypeAWSKMS {
+		if a.Key.HashAlgo != "" && hashAlgo != crypto.SHA2_256 {
+			return nil, fmt.Errorf("invalid hash algorithm for account %s: aws-kms keys only support SHA2_256", accountName)
+		}
+		hashAlgo = crypto.SHA2_256
 	}
 
 	// check that only one is provided because the values are mutually exclusive
@@ -217,7 +226,7 @@ func transformAdvancedToConfig(accountName string, a advancedAccount) (*config.A
 			key.DerivationPath = "m/44'/539'/0'/0/0"
 		}
 
-	case config.KeyTypeGoogleKMS:
+	case config.KeyTypeGoogleKMS, config.KeyTypeAWSKMS:
 		if a.Key.ResourceID == "" {
 			return nil, fmt.Errorf("missing resource ID value for key on account %s", accountName)
 		}
@@ -323,7 +332,7 @@ func transformAdvancedKeyToJSON(key config.AccountKey) advanceKey {
 	case config.KeyTypeBip44:
 		advancedKey.Mnemonic = key.Mnemonic
 		advancedKey.DerivationPath = key.DerivationPath
-	case config.KeyTypeGoogleKMS:
+	case config.KeyTypeGoogleKMS, config.KeyTypeAWSKMS:
 		advancedKey.ResourceID = key.ResourceID
 	case config.KeyTypeFile:
 		advancedKey.Location = filepath.ToSlash(key.Location)
@@ -357,7 +366,7 @@ type advanceKey struct {
 	// bip44 key type
 	Mnemonic       string `json:"mnemonic,omitempty"`
 	DerivationPath string `json:"derivationPath,omitempty"`
-	// kms key type
+	// kms key types (google-kms, aws-kms)
 	ResourceID string `json:"resourceID,omitempty"`
 	// key location
 	Location string `json:"location,omitempty"`
