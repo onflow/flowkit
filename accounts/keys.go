@@ -292,14 +292,20 @@ func (a *AWSKMSKey) PrivateKey() (*crypto.PrivateKey, error) {
 
 // awsKMSKeyARNPattern matches the canonical AWS KMS key ARN, for example
 // arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+//
 // Key aliases and other KMS resource types are not supported because they cannot be
 // reconstructed from a parsed key, and the signing key must be addressed by its ARN.
+//
+// Only the standard `aws` partition is accepted. awskms.Key.ARN() rebuilds the ARN as
+// arn:aws:kms:<region>:<account>:key/<id> and the SDK sends that as the KeyId, so a
+// aws-cn or aws-us-gov key would be addressed with the wrong partition and rejected by
+// the service. Supporting those partitions needs a change in the SDK.
 var awsKMSKeyARNPattern = regexp.MustCompile(`^arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[A-Za-z0-9-]+$`)
 
 func awsKMSKeyFromConfig(key config.AccountKey) (Key, error) {
 	if !awsKMSKeyARNPattern.MatchString(key.ResourceID) {
 		return nil, fmt.Errorf(
-			"invalid AWS KMS resource ID %q, expected the ARN format arn:aws:kms:<region>:<account-id>:key/<key-id>",
+			"invalid AWS KMS resource ID %q, expected the ARN format arn:aws:kms:<region>:<account-id>:key/<key-id> (the aws-cn and aws-us-gov partitions are not supported)",
 			key.ResourceID,
 		)
 	}
@@ -311,10 +317,13 @@ func awsKMSKeyFromConfig(key config.AccountKey) (Key, error) {
 
 	return &AWSKMSKey{
 		baseKey: &baseKey{
-			keyType:  config.KeyTypeAWSKMS,
-			index:    key.Index,
-			sigAlgo:  key.SigAlgo,
-			hashAlgo: crypto.SHA2_256, // AWS KMS signs ECDSA keys with ECDSA_SHA_256 only
+			keyType: config.KeyTypeAWSKMS,
+			index:   key.Index,
+			sigAlgo: key.SigAlgo,
+			// AWS KMS signs ECDSA keys with ECDSA_SHA_256 only, so the configured hash
+			// algorithm is overridden rather than trusted. The JSON layer rejects a
+			// conflicting value; this covers programmatic construction of the config.
+			hashAlgo: crypto.SHA2_256,
 		},
 		kmsKey: accountKMSKey,
 	}, nil

@@ -90,6 +90,8 @@ func Test_AWSKMS_KeysInvalidResourceID(t *testing.T) {
 		"short account id": "arn:aws:kms:us-west-2:1111222233333:key/1234abcd",
 		"missing region":   "arn:aws:kms::111122223333:key/1234abcd",
 		"missing account":  "arn:aws:kms:us-west-2::key/1234abcd",
+		"govcloud":         "arn:aws-us-gov:kms:us-gov-west-1:111122223333:key/1234abcd",
+		"china":            "arn:aws-cn:kms:cn-north-1:111122223333:key/1234abcd",
 	}
 
 	for name, resourceID := range tests {
