@@ -163,9 +163,13 @@ func (a *KMSKey) Signer(ctx context.Context) (crypto.Signer, error) {
 		return nil, err
 	}
 
-	accountKMSSigner, err := kmsClient.SignerForKey(
+	// Honor the hash algorithm declared in flow.json. GCP KMS only supports SHA2_256
+	// natively for its EC_SIGN_P256_SHA256 key type, so if the on-chain key is
+	// registered with SHA3_256 we need to pre-hash client-side and submit the digest.
+	accountKMSSigner, err := kmsClient.SignerForKeyWithHashAlgo(
 		ctx,
 		a.kmsKey,
+		a.HashAlgo(),
 	)
 	if err != nil {
 		return nil, err
